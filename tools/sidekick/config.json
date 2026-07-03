@@ -1,0 +1,21 @@
+{
+    "project": "CogEDS Demo",
+    "host": "main--demo--cogeds.aem.live",
+    "previewHost": "main--demo--cogeds.aem.page",
+    "liveHost": "main--demo--cogeds.aem.live",
+    "plugins": [
+        {
+            "id": "library",
+            "title": "Library",
+            "environments": [
+                "edit"
+            ],
+            "url": "/tools/sidekick/library.html",
+            "isPalette": true,
+            "includePaths": [
+                "**.docx**",
+                "**.html**"
+            ]
+        }
+    ]
+}
