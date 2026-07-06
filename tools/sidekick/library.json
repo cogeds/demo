@@ -11,19 +11,19 @@
     "data": [
       {
         "name": "Cards",
-        "path": "/block-library/blocks/cards"
+        "path": "/blocks/cards"
       },
       {
         "name": "Columns",
-        "path": "/block-library/blocks/columns"
+        "path": "/blocks/columns"
       },
       {
         "name": "Hero",
-        "path": "/block-library/blocks/hero"
+        "path": "/blocks/hero"
       },
       {
         "name": "Widget",
-        "path": "/block-library/blocks/widget"
+        "path": "/blocks/widget"
       }
     ]
   }
