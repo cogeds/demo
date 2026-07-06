@@ -11,19 +11,19 @@
     "data": [
       {
         "name": "Cards",
-        "path": "/blocks/cards"
+        "path": "tools/sidekick/blocks/cards"
       },
       {
         "name": "Columns",
-        "path": "/blocks/columns"
+        "path": "tools/sidekick/blocks/columns"
       },
       {
         "name": "Hero",
-        "path": "/blocks/hero"
+        "path": "tools/sidekick/blocks/hero"
       },
       {
         "name": "Customcomponent",
-        "path": "/blocks/custom-component"
+        "path": "tools/sidekick/blocks/custom-component"
       }
     ]
   }

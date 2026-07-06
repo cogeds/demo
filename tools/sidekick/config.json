@@ -10,7 +10,7 @@
             "environments": [
                 "edit"
             ],
-            "url": "/tools/sidekick/library.html",
+            "url": "/tools/sidekick/library.json",
             "isPalette": true,
             "includePaths": [
                 "**.docx**",
