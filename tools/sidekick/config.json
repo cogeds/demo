@@ -6,11 +6,12 @@
     "plugins": [
         {
             "id": "library",
-            "title": "Library",
+            "title": "Toyota Microsite Blocks Library",
             "environments": [
                 "edit"
             ],
-            "url": "/tools/sidekick/library.json",
+            "url": "/tools/sidekick/library.html",
+            "icon": "https://brand.toyota.com/content/dam/brandhub/guidelines/logo/four-column/BHUB_Logo_ColorVariations_SingleColor_03.svg",
             "isPalette": true,
             "includePaths": [
                 "**.docx**",
