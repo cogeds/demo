@@ -5,9 +5,9 @@
   ":version": 4,
   ":type": "multi-sheet",
   "blocks": {
-    "total": 4,
+    "total": 3
     "offset": 0,
-    "limit": 4,
+    "limit": 3,
     "data": [
       {
         "name": "Cards",
@@ -22,12 +22,8 @@
         "path": "/blocks/hero"
       },
       {
-        "name": "Widget",
-        "path": "/blocks/widget"
-      },
-      {
         "name": "Customcomponent",
-        "path": "/blocks/customcomponent"
+        "path": "/blocks/custom-component"
       }
     ]
   }
