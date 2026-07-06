@@ -1,0 +1,30 @@
+{
+  ":names": [
+    "blocks"
+  ],
+  ":version": 3,
+  ":type": "multi-sheet",
+  "blocks": {
+    "total": 4,
+    "offset": 0,
+    "limit": 4,
+    "data": [
+      {
+        "name": "Cards",
+        "path": "/block-library/blocks/cards"
+      },
+      {
+        "name": "Columns",
+        "path": "/block-library/blocks/columns"
+      },
+      {
+        "name": "Hero",
+        "path": "/block-library/blocks/hero"
+      },
+      {
+        "name": "Widget",
+        "path": "/block-library/blocks/widget"
+      }
+    ]
+  }
+}
