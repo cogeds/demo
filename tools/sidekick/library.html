@@ -1,30 +1,42 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>CogEDS Demo Block Library</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script
-      type="module"
-      src="https://www.aem.live/tools/sidekick/library/index.js"
-    ></script>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="Description" content="CogEDS Demo Sidekick Library" />
+    <meta name="robots" content="noindex" />
+
     <style>
       html,
       body {
         margin: 0;
         padding: 0;
         height: 100%;
-        font-family: Arial, sans-serif;
-        background: #fff;
+      }
+
+      helix-sidekick,
+      aem-sidekick {
+        display: none;
       }
     </style>
+    <title>CogEDS Demo Block Library</title>
   </head>
+
   <body>
-    <sidekick-library></sidekick-library>
+    <script
+      type="module"
+      src="https://www.hlx.live/tools/sidekick/library/index.js"
+    ></script>
     <script>
       const library = document.createElement('sidekick-library');
       library.config = {
         base: '/tools/sidekick/library.json',
       };
+
+      document.body.prepend(library);
     </script>
   </body>
 </html>
