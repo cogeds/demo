@@ -1,3 +1,12 @@
+/* full-bleed wrapper: span up to 1600px with no side padding/margin
+   (specific enough to override `main > .section > div` from styles.css) */
+main .section .carousel-wrapper {
+    width: 100%;
+    max-width: 1600px;
+    margin-inline: auto;
+    padding-inline: 0;
+}
+
 .carousel {
     position: relative;
 }
