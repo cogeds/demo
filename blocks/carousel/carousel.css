@@ -29,8 +29,8 @@
     scroll-snap-align: start;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: flex-start;
     position: relative;
     width: 100%;
 
@@ -46,8 +46,8 @@
     }
 }
 
-.carousel .carousel-slide:has(.carousel-slide-content[data-align="center"]) {
-    align-items: center;
+.carousel .carousel-slide:has(.carousel-slide-content[data-align="left"]) {
+    align-items: flex-start;
 }
 
 .carousel .carousel-slide:has(.carousel-slide-content[data-align="right"]) {
@@ -84,24 +84,25 @@
     position: absolute;
     inset: 0;
     background:
-        linear-gradient(180deg, rgb(0 0 0 / 0%) 45%, rgb(0 0 0 / 55%) 100%),
-        linear-gradient(90deg, rgb(0 0 0 / 35%) 0%, rgb(0 0 0 / 0%) 55%);
+        linear-gradient(180deg, rgb(0 0 0 / 45%) 0%, rgb(0 0 0 / 0%) 40%),
+        linear-gradient(0deg, rgb(0 0 0 / 30%) 0%, rgb(0 0 0 / 0%) 20%);
     pointer-events: none;
 }
 
 .carousel .carousel-slide .carousel-slide-content {
     z-index: 1;
-    margin: 0 24px 64px;
+    margin: 40px 24px 0;
     padding: 0;
     color: white;
     position: relative;
-    max-width: min(90%, 560px);
+    max-width: min(90%, 900px);
     width: var(--slide-content-width, auto);
+    text-align: center;
     text-shadow: 0 1px 12px rgb(0 0 0 / 45%);
 
     /* content eases in as its slide becomes active */
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(-16px);
     transition: opacity 0.6s ease, transform 0.6s ease;
     transition-delay: 0.15s;
 }
@@ -266,7 +267,7 @@
     }
 
     .carousel .carousel-slide .carousel-slide-content {
-        margin: 0 0 72px 72px;
+        margin-top: 56px;
     }
 }
 
