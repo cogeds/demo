@@ -233,7 +233,6 @@ main .section .carousel-wrapper {
 /* active indicator stretches into a pill */
 .carousel .carousel-slide-indicator button:disabled,
 .carousel .carousel-slide-indicator button[aria-current="true"] {
-    width: 30px;
     background-color: white;
 }
 
