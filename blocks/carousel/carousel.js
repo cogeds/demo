@@ -10,13 +10,20 @@ function updateActiveSlide(slide) {
 
   // mark the actually-centered element (real or clone) as visible, hide the rest
   slides.forEach((aSlide) => {
-    const isActive = aSlide === slide;
-    aSlide.setAttribute('aria-hidden', !isActive);
-    aSlide.querySelectorAll('a').forEach((link) => {
+    aSlide.setAttribute('aria-hidden', aSlide !== slide);
+  });
+
+  // the content lives in a fixed overlay (it does not scroll with the images);
+  // crossfade to the item that matches the active slide
+  block.querySelectorAll('.carousel-content .carousel-slide-content').forEach((content) => {
+    const isActive = Number(content.dataset.slideIndex) === slideIndex;
+    content.classList.toggle('is-active', isActive);
+    content.setAttribute('aria-hidden', !isActive);
+    content.querySelectorAll('a, button').forEach((el) => {
       if (!isActive) {
-        link.setAttribute('tabindex', '-1');
+        el.setAttribute('tabindex', '-1');
       } else {
-        link.removeAttribute('tabindex');
+        el.removeAttribute('tabindex');
       }
     });
   });
@@ -209,17 +216,22 @@ function createSlide(row, slideIndex, carouselId) {
   slide.setAttribute('id', `carousel-${carouselId}-slide-${slideIndex}`);
   slide.classList.add('carousel-slide');
 
-  row.querySelectorAll(':scope > div').forEach((column, colIdx) => {
-    column.classList.add(`carousel-slide-${colIdx === 0 ? 'image' : 'content'}`);
-    slide.append(column);
+  // first column is the background image (stays in the scrolling track);
+  // any remaining column becomes the content (moved to the fixed overlay)
+  const columns = [...row.querySelectorAll(':scope > div')];
+  let content = null;
+  columns.forEach((column, colIdx) => {
+    if (colIdx === 0) {
+      column.classList.add('carousel-slide-image');
+      slide.append(column);
+    } else {
+      column.classList.add('carousel-slide-content');
+      column.dataset.slideIndex = slideIndex;
+      content = column;
+    }
   });
 
-  const labeledBy = slide.querySelector('h1, h2, h3, h4, h5, h6');
-  if (labeledBy) {
-    slide.setAttribute('aria-labelledby', labeledBy.getAttribute('id'));
-  }
-
-  return slide;
+  return { slide, content };
 }
 
 /**
@@ -276,11 +288,16 @@ export default async function decorate(block) {
     container.append(slideNavButtons);
   }
 
+  // fixed overlay that holds the slide content (it does not scroll with the images)
+  const contentOverlay = document.createElement('div');
+  contentOverlay.classList.add('carousel-content');
+
   const realSlides = [];
   rows.forEach((row, idx) => {
-    const slide = createSlide(row, idx, carouselId);
+    const { slide, content } = createSlide(row, idx, carouselId);
     realSlides.push(slide);
     slidesWrapper.append(slide);
+    if (content) contentOverlay.append(content);
 
     if (slideIndicators) {
       const indicator = document.createElement('li');
@@ -298,11 +315,19 @@ export default async function decorate(block) {
   }
 
   container.append(slidesWrapper);
+  if (contentOverlay.children.length) container.append(contentOverlay);
   block.prepend(container);
 
   if (!isSingleSlide) {
     bindEvents(block);
     // establish the initial active slide (indicators, aria, content reveal)
     updateActiveSlide(realSlides[0]);
+  } else {
+    // single slide: no controls/autoplay, just reveal its content
+    const only = contentOverlay.querySelector('.carousel-slide-content');
+    if (only) {
+      only.classList.add('is-active');
+      only.setAttribute('aria-hidden', 'false');
+    }
   }
 }

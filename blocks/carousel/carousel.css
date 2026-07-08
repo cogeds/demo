@@ -42,10 +42,6 @@
 .carousel .carousel-slide {
     flex: 0 0 100%;
     scroll-snap-align: start;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
     position: relative;
     width: 100%;
 
@@ -59,14 +55,6 @@
         /* matches the 1920x700 wide banner ratio on larger screens */
         aspect-ratio: 1920 / 700;
     }
-}
-
-.carousel .carousel-slide:has(.carousel-slide-content[data-align="left"]) {
-    align-items: flex-start;
-}
-
-.carousel .carousel-slide:has(.carousel-slide-content[data-align="right"]) {
-    align-items: flex-end;
 }
 
 .carousel .carousel-slide .carousel-slide-image {
@@ -83,21 +71,9 @@
     height: 100%;
     width: 100%;
     object-fit: cover;
-
-    /* slow ken-burns drift adds life to the static banner */
-    transform: scale(1.05);
-    transition: transform 8s ease-out;
 }
 
-.carousel[data-active-slide]
-    .carousel-slide[aria-hidden="false"]
-    .carousel-slide-image
-    picture
-    > img {
-    transform: scale(1);
-}
-
-/* gradient scrim so overlaid text and controls stay legible on any image */
+/* gradient scrim so the overlaid content stays legible on any image */
 .carousel .carousel-slide .carousel-slide-image::after {
     content: "";
     position: absolute;
@@ -108,47 +84,58 @@
     pointer-events: none;
 }
 
-.carousel .carousel-slide .carousel-slide-content {
+/* fixed content overlay — sits over the images and never scrolls with them */
+.carousel .carousel-content {
+    position: absolute;
+    inset: 0;
     z-index: 1;
-    margin: 40px 24px 0;
-    padding: 0;
-    color: white;
-    position: relative;
+    pointer-events: none;
+}
+
+/* each slide's content stacks in the same fixed spot and crossfades in/out */
+.carousel .carousel-content .carousel-slide-content {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
     max-width: min(90%, 900px);
-    width: var(--slide-content-width, auto);
+    margin: 0;
+    padding: 0 24px;
+    color: white;
     text-align: center;
     text-shadow: 0 1px 12px rgb(0 0 0 / 45%);
 
-    /* content eases in as its slide becomes active */
+    /* smooth crossfade between slides (no abrupt hide/show) */
     opacity: 0;
-    transform: translateY(-16px);
+    visibility: hidden;
     transition:
         opacity 0.6s ease,
-        transform 0.6s ease;
-    transition-delay: 0.15s;
+        visibility 0s linear 0.6s;
 }
 
-.carousel .carousel-slide[aria-hidden="false"] .carousel-slide-content {
+.carousel .carousel-content .carousel-slide-content.is-active {
     opacity: 1;
-    transform: translateY(0);
+    visibility: visible;
+    transition: opacity 0.6s ease;
 }
 
-.carousel .carousel-slide .carousel-slide-content > * {
+.carousel .carousel-content .carousel-slide-content > * {
     margin: 0 0 12px;
 }
 
-.carousel .carousel-slide .carousel-slide-content > *:last-child {
+.carousel .carousel-content .carousel-slide-content > *:last-child {
     margin-bottom: 0;
 }
 
-.carousel .carousel-slide .carousel-slide-content h1,
-.carousel .carousel-slide .carousel-slide-content h2,
-.carousel .carousel-slide .carousel-slide-content h3 {
+.carousel .carousel-content .carousel-slide-content h1,
+.carousel .carousel-content .carousel-slide-content h2,
+.carousel .carousel-content .carousel-slide-content h3 {
     font-family: var(--heading-font-family);
     line-height: 1.1;
 }
 
-.carousel .carousel-slide .carousel-slide-content .button-wrapper {
+.carousel .carousel-content .carousel-slide-content .button-wrapper {
     margin-top: 20px;
 }
 
@@ -253,8 +240,8 @@
         right: 28px;
     }
 
-    .carousel .carousel-slide .carousel-slide-content {
-        margin-top: 56px;
+    .carousel .carousel-content .carousel-slide-content {
+        top: 56px;
     }
 }
 
@@ -265,12 +252,16 @@
     }
 }
 
-/* honor reduced-motion preferences */
+/* honor reduced-motion preferences: crossfade instantly, no animation */
 @media (prefers-reduced-motion: reduce) {
-    .carousel .carousel-slide .carousel-slide-image picture > img,
-    .carousel .carousel-slide .carousel-slide-content {
+    .carousel .carousel-content .carousel-slide-content {
         transition: none;
-        transform: none;
-        opacity: 1;
     }
+}
+
+/* keep CTAs clickable even though the overlay is otherwise click-through
+   (declared last so it stays more specific than the control-button rules) */
+.carousel .carousel-content .carousel-slide-content.is-active a,
+.carousel .carousel-content .carousel-slide-content.is-active button {
+    pointer-events: auto;
 }
