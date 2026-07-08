@@ -45,6 +45,27 @@ function showSlide(block, slideIndex = 0) {
   });
 }
 
+const AUTOPLAY_INTERVAL = 6000;
+
+function stopAutoplay(block) {
+  if (block.dataset.autoplayTimer) {
+    clearInterval(Number(block.dataset.autoplayTimer));
+    delete block.dataset.autoplayTimer;
+  }
+}
+
+function startAutoplay(block) {
+  // don't autoplay if the user paused it, prefers reduced motion, or the tab is hidden
+  if (block.dataset.paused === 'true') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (document.hidden) return;
+  stopAutoplay(block);
+  const timer = window.setInterval(() => {
+    showSlide(block, parseInt(block.dataset.activeSlide || 0, 10) + 1);
+  }, AUTOPLAY_INTERVAL);
+  block.dataset.autoplayTimer = timer;
+}
+
 function bindEvents(block) {
   const slideIndicators = block.querySelector('.carousel-slide-indicators');
   if (!slideIndicators) return;
@@ -71,6 +92,33 @@ function bindEvents(block) {
   block.querySelectorAll('.carousel-slide').forEach((slide) => {
     slideObserver.observe(slide);
   });
+
+  // play/pause toggle
+  const playPause = block.querySelector('.carousel-play-pause');
+  if (playPause) {
+    playPause.addEventListener('click', () => {
+      const paused = block.dataset.paused === 'true';
+      block.dataset.paused = (!paused).toString();
+      playPause.setAttribute('aria-pressed', (!paused).toString());
+      playPause.setAttribute('aria-label', paused ? playPause.dataset.pauseLabel : playPause.dataset.playLabel);
+      if (paused) startAutoplay(block);
+      else stopAutoplay(block);
+    });
+  }
+
+  // pause on hover / keyboard focus, resume on leave
+  block.addEventListener('mouseenter', () => stopAutoplay(block));
+  block.addEventListener('mouseleave', () => startAutoplay(block));
+  block.addEventListener('focusin', () => stopAutoplay(block));
+  block.addEventListener('focusout', () => startAutoplay(block));
+
+  // pause when tab is not visible
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopAutoplay(block);
+    else startAutoplay(block);
+  });
+
+  startAutoplay(block);
 }
 
 function createSlide(row, slideIndex, carouselId) {
@@ -128,6 +176,17 @@ export default async function decorate(block) {
     `;
 
     container.append(slideNavButtons);
+
+    const pauseLabel = placeholders.pauseSlideshow || 'Pause Slideshow';
+    const playLabel = placeholders.playSlideshow || 'Play Slideshow';
+    const playPause = document.createElement('button');
+    playPause.type = 'button';
+    playPause.className = 'carousel-play-pause';
+    playPause.dataset.pauseLabel = pauseLabel;
+    playPause.dataset.playLabel = playLabel;
+    playPause.setAttribute('aria-label', pauseLabel);
+    playPause.setAttribute('aria-pressed', 'false');
+    slideIndicatorsNav.append(playPause);
   }
 
   rows.forEach((row, idx) => {
