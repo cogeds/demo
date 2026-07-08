@@ -206,8 +206,8 @@ main .section .carousel-wrapper {
 }
 
 .carousel .carousel-slide-indicator button {
-    width: 10px;
-    height: 10px;
+    width: 15px;
+    height: 15px;
     margin: 0;
     padding: 0;
     border: 0;
@@ -258,6 +258,7 @@ main .section .carousel-wrapper {
     .carousel .carousel-navigation-buttons button {
         width: 56px;
         height: 56px;
+        border: 0;
     }
 }
 
