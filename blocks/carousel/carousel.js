@@ -47,6 +47,13 @@ function showSlide(block, slideIndex = 0) {
 
 const AUTOPLAY_INTERVAL = 6000;
 
+const ICONS = {
+  prev: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.5 4.5 8 12l7.5 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  next: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8.5 4.5 16 12l-7.5 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  pause: '<svg class="carousel-icon-pause" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="6.5" y="5" width="3.5" height="14" rx="1" fill="currentColor"/><rect x="14" y="5" width="3.5" height="14" rx="1" fill="currentColor"/></svg>',
+  play: '<svg class="carousel-icon-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg>',
+};
+
 function stopAutoplay(block) {
   if (block.dataset.autoplayTimer) {
     clearInterval(Number(block.dataset.autoplayTimer));
@@ -171,8 +178,8 @@ export default async function decorate(block) {
     const slideNavButtons = document.createElement('div');
     slideNavButtons.classList.add('carousel-navigation-buttons');
     slideNavButtons.innerHTML = `
-      <button type="button" class= "slide-prev" aria-label="${placeholders.previousSlide || 'Previous Slide'}"></button>
-      <button type="button" class="slide-next" aria-label="${placeholders.nextSlide || 'Next Slide'}"></button>
+      <button type="button" class="slide-prev" aria-label="${placeholders.previousSlide || 'Previous Slide'}">${ICONS.prev}</button>
+      <button type="button" class="slide-next" aria-label="${placeholders.nextSlide || 'Next Slide'}">${ICONS.next}</button>
     `;
 
     container.append(slideNavButtons);
@@ -186,6 +193,7 @@ export default async function decorate(block) {
     playPause.dataset.playLabel = playLabel;
     playPause.setAttribute('aria-label', pauseLabel);
     playPause.setAttribute('aria-pressed', 'false');
+    playPause.innerHTML = `${ICONS.pause}${ICONS.play}`;
     slideIndicatorsNav.append(playPause);
   }
 
