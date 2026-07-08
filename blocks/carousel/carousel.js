@@ -2,15 +2,18 @@ import { fetchPlaceholders } from '../../scripts/placeholders.js';
 
 function updateActiveSlide(slide) {
   const block = slide.closest('.carousel');
+  // clones carry the same slide-index as the real slide they duplicate
   const slideIndex = parseInt(slide.dataset.slideIndex, 10);
   block.dataset.activeSlide = slideIndex;
 
   const slides = block.querySelectorAll('.carousel-slide');
 
-  slides.forEach((aSlide, idx) => {
-    aSlide.setAttribute('aria-hidden', idx !== slideIndex);
+  // mark the actually-centered element (real or clone) as visible, hide the rest
+  slides.forEach((aSlide) => {
+    const isActive = aSlide === slide;
+    aSlide.setAttribute('aria-hidden', !isActive);
     aSlide.querySelectorAll('a').forEach((link) => {
-      if (idx !== slideIndex) {
+      if (!isActive) {
         link.setAttribute('tabindex', '-1');
       } else {
         link.removeAttribute('tabindex');
@@ -31,18 +34,56 @@ function updateActiveSlide(slide) {
   });
 }
 
-function showSlide(block, slideIndex = 0) {
-  const slides = block.querySelectorAll('.carousel-slide');
-  let realSlideIndex = slideIndex < 0 ? slides.length - 1 : slideIndex;
-  if (slideIndex >= slides.length) realSlideIndex = 0;
-  const activeSlide = slides[realSlideIndex];
-
-  activeSlide.querySelectorAll('a').forEach((link) => link.removeAttribute('tabindex'));
+/**
+ * Scrolls the given slide position (DOM order, clones included) into view.
+ */
+function scrollToPosition(block, position, behavior = 'smooth') {
+  const target = block.querySelectorAll('.carousel-slide')[position];
+  if (!target) return;
   block.querySelector('.carousel-slides').scrollTo({
     top: 0,
-    left: activeSlide.offsetLeft,
-    behavior: 'smooth',
+    left: target.offsetLeft,
+    behavior,
   });
+}
+
+/**
+ * Runs a callback once the smooth scroll has settled (scrollend, with a
+ * timeout fallback for browsers/situations where scrollend doesn't fire).
+ */
+function afterScroll(block, cb) {
+  const slidesEl = block.querySelector('.carousel-slides');
+  let done = false;
+  const run = () => {
+    if (done) return;
+    done = true;
+    cb();
+  };
+  slidesEl.addEventListener('scrollend', run, { once: true });
+  window.setTimeout(run, 900);
+}
+
+/**
+ * Advances one slide in the given direction, looping seamlessly through a
+ * clone of the first slide so the motion is always continuous (no jump-back).
+ * DOM order is: [real 0 … real n-1, clone-of-first]. The active index tracked
+ * on the block is always the real index (0 … n-1).
+ */
+function advance(block, dir = 1) {
+  const realCount = Number(block.dataset.realCount);
+  const current = parseInt(block.dataset.activeSlide || 0, 10);
+
+  if (dir > 0 && current === realCount - 1) {
+    // glide one step onto the trailing clone, then snap back to the real first slide
+    scrollToPosition(block, realCount, 'smooth');
+    afterScroll(block, () => scrollToPosition(block, 0, 'instant'));
+  } else if (dir < 0 && current === 0) {
+    // jump onto the trailing clone (visually identical to slide 1), then glide to the last slide
+    scrollToPosition(block, realCount, 'instant');
+    window.setTimeout(() => scrollToPosition(block, realCount - 1, 'smooth'), 30);
+  } else {
+    scrollToPosition(block, current + dir, 'smooth');
+  }
 }
 
 const AUTOPLAY_INTERVAL = 6000;
@@ -68,7 +109,7 @@ function startAutoplay(block) {
   if (document.hidden) return;
   stopAutoplay(block);
   const timer = window.setInterval(() => {
-    showSlide(block, parseInt(block.dataset.activeSlide || 0, 10) + 1);
+    advance(block, 1);
   }, AUTOPLAY_INTERVAL);
   block.dataset.autoplayTimer = timer;
 }
@@ -80,15 +121,16 @@ function bindEvents(block) {
   slideIndicators.querySelectorAll('button').forEach((button) => {
     button.addEventListener('click', (e) => {
       const slideIndicator = e.currentTarget.parentElement;
-      showSlide(block, parseInt(slideIndicator.dataset.targetSlide, 10));
+      // indicators jump directly to a real slide (no wrap needed)
+      scrollToPosition(block, parseInt(slideIndicator.dataset.targetSlide, 10), 'smooth');
     });
   });
 
   block.querySelector('.slide-prev').addEventListener('click', () => {
-    showSlide(block, parseInt(block.dataset.activeSlide, 10) - 1);
+    advance(block, -1);
   });
   block.querySelector('.slide-next').addEventListener('click', () => {
-    showSlide(block, parseInt(block.dataset.activeSlide, 10) + 1);
+    advance(block, 1);
   });
 
   const slideObserver = new IntersectionObserver((entries) => {
@@ -147,6 +189,21 @@ function createSlide(row, slideIndex, carouselId) {
   return slide;
 }
 
+/**
+ * Builds a decorative duplicate of a slide used for the seamless loop.
+ * Keeps the original's data-slide-index (so it maps to the right indicator)
+ * but strips ids/labels to avoid duplicate-id issues.
+ */
+function cloneSlide(slide) {
+  const clone = slide.cloneNode(true);
+  clone.classList.add('carousel-slide-clone');
+  clone.removeAttribute('id');
+  clone.removeAttribute('aria-labelledby');
+  clone.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
+  clone.setAttribute('aria-hidden', 'true');
+  return clone;
+}
+
 let carouselId = 0;
 export default async function decorate(block) {
   carouselId += 1;
@@ -158,6 +215,7 @@ export default async function decorate(block) {
 
   block.setAttribute('role', 'region');
   block.setAttribute('aria-roledescription', placeholders.carousel || 'Carousel');
+  block.dataset.realCount = rows.length;
 
   const container = document.createElement('div');
   container.classList.add('carousel-slides-container');
@@ -197,8 +255,10 @@ export default async function decorate(block) {
     slideIndicatorsNav.append(playPause);
   }
 
+  const realSlides = [];
   rows.forEach((row, idx) => {
     const slide = createSlide(row, idx, carouselId);
+    realSlides.push(slide);
     slidesWrapper.append(slide);
 
     if (slideIndicators) {
@@ -211,10 +271,17 @@ export default async function decorate(block) {
     row.remove();
   });
 
+  // append a clone of the first slide so autoplay can loop continuously
+  if (!isSingleSlide) {
+    slidesWrapper.append(cloneSlide(realSlides[0]));
+  }
+
   container.append(slidesWrapper);
   block.prepend(container);
 
   if (!isSingleSlide) {
     bindEvents(block);
+    // establish the initial active slide (indicators, aria, content reveal)
+    updateActiveSlide(realSlides[0]);
   }
 }
