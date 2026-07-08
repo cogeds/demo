@@ -18,10 +18,25 @@
     scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
     overflow: scroll clip;
+    cursor: grab;
 }
 
 .carousel .carousel-slides::-webkit-scrollbar {
     display: none;
+}
+
+/* while dragging: follow the pointer instantly, snap once released */
+.carousel .carousel-slides.is-dragging {
+    scroll-behavior: auto;
+    scroll-snap-type: none;
+    cursor: grabbing;
+    user-select: none;
+}
+
+/* keep images from being selected or ghost-dragged during a drag */
+.carousel .carousel-slide-image img {
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
 .carousel .carousel-slide {
@@ -74,7 +89,11 @@
     transition: transform 8s ease-out;
 }
 
-.carousel[data-active-slide] .carousel-slide[aria-hidden="false"] .carousel-slide-image picture > img {
+.carousel[data-active-slide]
+    .carousel-slide[aria-hidden="false"]
+    .carousel-slide-image
+    picture
+    > img {
     transform: scale(1);
 }
 
@@ -103,7 +122,9 @@
     /* content eases in as its slide becomes active */
     opacity: 0;
     transform: translateY(-16px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    transition:
+        opacity 0.6s ease,
+        transform 0.6s ease;
     transition-delay: 0.15s;
 }
 
@@ -163,26 +184,24 @@
 
 /* --- base control styling (before any pseudo-class variants) --- */
 
-/* arrows and play/pause share the same glassy, circular treatment */
-.carousel .carousel-navigation-buttons button,
-.carousel .carousel-play-pause {
+/* glassy, circular arrow buttons */
+.carousel .carousel-navigation-buttons button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    width: 48px;
+    height: 48px;
     margin: 0;
     padding: 0;
     border-radius: 50%;
-    color: white;
-    background-color: rgb(19 19 19 / 35%);
+    color: black;
+    background: rgb(245 245 245 / 60%);
     backdrop-filter: blur(6px);
     cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.carousel .carousel-navigation-buttons button {
-    width: 48px;
-    height: 48px;
     pointer-events: auto;
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
 }
 
 .carousel .carousel-navigation-buttons button svg {
@@ -199,46 +218,15 @@
     border-radius: 20px;
     background-color: rgb(255 255 255 / 45%);
     box-shadow: 0 0 0 1px rgb(0 0 0 / 15%);
-    transition: width 0.3s ease, background-color 0.2s ease;
+    transition:
+        width 0.3s ease,
+        background-color 0.2s ease;
     cursor: pointer;
 }
 
-/* play/pause toggle, anchored bottom-right */
-.carousel .carousel-play-pause {
-    position: absolute;
-    right: 22px;
-    bottom: 14px;
-    z-index: 3;
-    width: 34px;
-    height: 34px;
-}
-
-/* stylelint-disable-next-line no-descending-specificity */
-.carousel .carousel-play-pause svg {
-    width: 16px;
-    height: 16px;
-}
-
-/* swap between pause (playing) and play (paused) icons */
-.carousel .carousel-play-pause .carousel-icon-play {
-    display: none;
-}
-
-.carousel .carousel-play-pause[aria-pressed="true"] .carousel-icon-pause {
-    display: none;
-}
-
-.carousel .carousel-play-pause[aria-pressed="true"] .carousel-icon-play {
-    display: block;
-}
-
 /* --- interaction & active states (after all base rules) --- */
-.carousel .carousel-navigation-buttons button:hover,
-.carousel .carousel-play-pause:hover {
-    background-color: rgb(19 19 19 / 70%);
-}
-
 .carousel .carousel-navigation-buttons button:hover {
+    background-color: white;
     transform: scale(1.06);
 }
 
@@ -254,7 +242,6 @@
 }
 
 .carousel .carousel-navigation-buttons button:focus-visible,
-.carousel .carousel-play-pause:focus-visible,
 .carousel .carousel-slide-indicator button:focus-visible {
     outline: 2px solid white;
     outline-offset: 3px;

@@ -91,9 +91,58 @@ const AUTOPLAY_INTERVAL = 6000;
 const ICONS = {
   prev: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.5 4.5 8 12l7.5 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   next: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8.5 4.5 16 12l-7.5 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  pause: '<svg class="carousel-icon-pause" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="6.5" y="5" width="3.5" height="14" rx="1" fill="currentColor"/><rect x="14" y="5" width="3.5" height="14" rx="1" fill="currentColor"/></svg>',
-  play: '<svg class="carousel-icon-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg>',
 };
+
+/**
+ * Enables click-and-drag scrolling with the mouse. Touch devices already get
+ * native swipe from the scroll container, so this is limited to mouse input.
+ */
+function enableDragScroll(block) {
+  const slidesEl = block.querySelector('.carousel-slides');
+  let isDown = false;
+  let startX = 0;
+  let startScroll = 0;
+  let moved = false;
+
+  slidesEl.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    isDown = true;
+    moved = false;
+    startX = e.pageX;
+    startScroll = slidesEl.scrollLeft;
+    slidesEl.setPointerCapture(e.pointerId);
+    slidesEl.classList.add('is-dragging');
+  });
+
+  slidesEl.addEventListener('pointermove', (e) => {
+    if (!isDown) return;
+    const dx = e.pageX - startX;
+    if (Math.abs(dx) > 4) moved = true;
+    slidesEl.scrollLeft = startScroll - dx;
+  });
+
+  const end = (e) => {
+    if (!isDown) return;
+    isDown = false;
+    slidesEl.classList.remove('is-dragging');
+    if (slidesEl.hasPointerCapture(e.pointerId)) {
+      slidesEl.releasePointerCapture(e.pointerId);
+    }
+  };
+  slidesEl.addEventListener('pointerup', end);
+  slidesEl.addEventListener('pointercancel', end);
+
+  // swallow the click that follows a drag so links/buttons don't fire
+  slidesEl.addEventListener('click', (e) => {
+    if (moved) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true);
+
+  // prevent the browser's native image ghost-drag
+  slidesEl.addEventListener('dragstart', (e) => e.preventDefault());
+}
 
 function stopAutoplay(block) {
   if (block.dataset.autoplayTimer) {
@@ -142,30 +191,14 @@ function bindEvents(block) {
     slideObserver.observe(slide);
   });
 
-  // play/pause toggle
-  const playPause = block.querySelector('.carousel-play-pause');
-  if (playPause) {
-    playPause.addEventListener('click', () => {
-      const paused = block.dataset.paused === 'true';
-      block.dataset.paused = (!paused).toString();
-      playPause.setAttribute('aria-pressed', (!paused).toString());
-      playPause.setAttribute('aria-label', paused ? playPause.dataset.pauseLabel : playPause.dataset.playLabel);
-      if (paused) startAutoplay(block);
-      else stopAutoplay(block);
-    });
-  }
+  // allow the user to drag the slides left/right with the mouse
+  enableDragScroll(block);
 
-  // pause on hover / keyboard focus, resume on leave
-  block.addEventListener('mouseenter', () => stopAutoplay(block));
-  block.addEventListener('mouseleave', () => startAutoplay(block));
-  block.addEventListener('focusin', () => stopAutoplay(block));
-  block.addEventListener('focusout', () => startAutoplay(block));
-
-  // pause when tab is not visible
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) stopAutoplay(block);
-    else startAutoplay(block);
-  });
+  // stop autoplay for good on the first interaction (control click, banner
+  // click/tap, drag, or keyboard) — it does not resume afterwards
+  const stopOnce = () => stopAutoplay(block);
+  block.addEventListener('pointerdown', stopOnce, { once: true });
+  block.addEventListener('keydown', stopOnce, { once: true });
 
   startAutoplay(block);
 }
@@ -241,18 +274,6 @@ export default async function decorate(block) {
     `;
 
     container.append(slideNavButtons);
-
-    const pauseLabel = placeholders.pauseSlideshow || 'Pause Slideshow';
-    const playLabel = placeholders.playSlideshow || 'Play Slideshow';
-    const playPause = document.createElement('button');
-    playPause.type = 'button';
-    playPause.className = 'carousel-play-pause';
-    playPause.dataset.pauseLabel = pauseLabel;
-    playPause.dataset.playLabel = playLabel;
-    playPause.setAttribute('aria-label', pauseLabel);
-    playPause.setAttribute('aria-pressed', 'false');
-    playPause.innerHTML = `${ICONS.pause}${ICONS.play}`;
-    slideIndicatorsNav.append(playPause);
   }
 
   const realSlides = [];
