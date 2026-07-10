@@ -238,7 +238,7 @@ header .header.block {
     min-height: 58px;
     width: 100%;
     padding: 0 24px;
-    font-size: 16px;
+    font-size: 22px;
     justify-content: flex-start;
 }
 
@@ -318,7 +318,7 @@ body.nav-open {
     }
 
     .menu-drawer {
-        width: 88vw;
+        width: 80vw;
     }
 
     .page-title h1 {
