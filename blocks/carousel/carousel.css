@@ -131,6 +131,7 @@ main .section .carousel-wrapper {
 
 .carousel .carousel-content .carousel-slide-content > * {
     margin: 0 0 12px;
+    font-size: 33px;
 }
 
 .carousel .carousel-content .carousel-slide-content > *:last-child {
