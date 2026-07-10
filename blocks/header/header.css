@@ -11,6 +11,7 @@ header .header.block {
 .toyota-mobility-header {
     --tm-header-bg: #fff;
     --tm-header-text: #101010;
+    --tm-header-menu-border: #b8b8b8;
     --tm-header-muted: #555;
     --tm-header-border: #e5e5e5;
     --tm-header-red: #eb0a1e;
@@ -164,6 +165,7 @@ header .header.block {
 .menu-drawer.is-open {
     transform: translateX(0);
     visibility: visible;
+    padding: 0 0 0 20px;
 }
 
 .menu-drawer::before {
@@ -223,11 +225,12 @@ header .header.block {
     align-items: stretch;
     gap: 0;
     width: 100%;
+    border-top: 2px solid var(--tm-header-menu-border);
 }
 
 .menu-drawer .global-site-header-link {
     width: 100%;
-    border-bottom: 1px solid var(--tm-header-border);
+    border-bottom: 2px solid var(--tm-header-menu-border);
 }
 
 .menu-drawer .global-site-header-link a {
