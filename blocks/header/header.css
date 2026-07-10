@@ -82,7 +82,7 @@ header .header.block {
     padding: 0;
 }
 
-.global-site-header-links > .global-site-header-link:not(:last-child)::after {
+.global-site-header-link:not(:last-of-type)::after {
     content: "";
     position: absolute;
     right: 0;
