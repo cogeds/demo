@@ -154,12 +154,12 @@ header .header.block {
     cursor: pointer;
 }
 
-.hamburger-button:hover,
+/* .hamburger-button:hover,
 .hamburger-button:focus-visible {
     color: var(--tm-header-red);
     outline: 2px solid var(--tm-header-red);
     outline-offset: 3px;
-}
+} */
 
 .menu-drawer {
     position: fixed;
@@ -224,12 +224,12 @@ header .header.block {
     margin-top: -25px;
 }
 
-.close-button:hover,
+/* .close-button:hover,
 .close-button:focus-visible {
     color: var(--tm-header-red);
     outline: 2px solid var(--tm-header-red);
     outline-offset: -4px;
-}
+} */
 
 .menu-drawer .global-site-header-links {
     display: flex;
