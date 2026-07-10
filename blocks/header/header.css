@@ -1,3 +1,13 @@
+:root {
+    --tm-header-bg: #fff;
+    --tm-header-text: #101010;
+    --tm-header-menu-border: #b8b8b8;
+    --tm-header-muted: #555;
+    --tm-header-border: #e5e5e5;
+    --tm-header-red: #eb0a1e;
+    --tm-header-shadow: 0 4px 18px rgb(0 0 0 / 8%);
+}
+
 header {
     position: relative;
     z-index: 1000;
@@ -9,14 +19,6 @@ header .header.block {
 }
 
 .toyota-mobility-header {
-    --tm-header-bg: #fff;
-    --tm-header-text: #101010;
-    --tm-header-menu-border: #b8b8b8;
-    --tm-header-muted: #555;
-    --tm-header-border: #e5e5e5;
-    --tm-header-red: #eb0a1e;
-    --tm-header-shadow: 0 4px 18px rgb(0 0 0 / 8%);
-
     width: 100%;
     background: var(--tm-header-bg);
     color: var(--tm-header-text);
@@ -173,7 +175,6 @@ header .header.block {
     position: fixed;
     inset: 0;
     right: min(88vw, 390px);
-    background: rgb(0 0 0 / 45%);
     opacity: 0;
     pointer-events: none;
     transition: opacity 240ms ease;
