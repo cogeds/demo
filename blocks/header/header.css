@@ -77,12 +77,11 @@ header .header.block {
     list-style: none;
     display: flex;
     align-items: center;
-    gap: 34px;
     margin: 0;
     padding: 0;
 }
-
-.global-site-header-link:not(:last-of-type)::after {
+.global-site-header-navigation
+    .global-site-header-link:not(:last-child)::after {
     content: "";
     position: absolute;
     right: 0;
@@ -91,6 +90,11 @@ header .header.block {
     width: 2px;
     height: 23px;
     background-color: #b8b8b8;
+}
+
+.global-site-header-navigation .global-site-header-link {
+    position: relative;
+    padding: 0 18px;
 }
 
 .global-site-header-link {
