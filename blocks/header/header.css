@@ -82,6 +82,17 @@ header .header.block {
     padding: 0;
 }
 
+.global-site-header-links > .global-site-header-link:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 23px;
+    background-color: #b8b8b8;
+}
+
 .global-site-header-link {
     margin: 0;
     padding: 0;
