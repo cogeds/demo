@@ -198,32 +198,30 @@ header .header.block {
 }
 
 .close-button {
-    width: 100%;
-    min-height: 68px;
-    padding: 0 24px;
-    border: 0;
-    border-bottom: 1px solid var(--tm-header-border);
-    background: var(--tm-header-bg);
-    color: var(--tm-header-text);
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    font-size: 15px;
-    font-weight: 700;
+    border-top: 1px solid #b8b8b8;
+    align-items: center;
+    border-right: 0;
+    background: 0;
+    color: #b8b8b8;
+    border: 0;
     cursor: pointer;
+    padding: 15px 20px;
+    width: 100%;
 }
 
 .close-button .text {
-    display: inline-flex;
+    font-size: 22px;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: left;
 }
 
 .close-button .icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 32px;
-    line-height: 1;
+    font-size: 50px;
+    line-height: 1em;
+    margin-top: -25px;
 }
 
 .close-button:hover,
