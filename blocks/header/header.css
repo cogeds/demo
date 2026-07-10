@@ -102,7 +102,7 @@ header .header.block {
 
 .global-site-header-link a:hover,
 .global-site-header-link a:focus-visible {
-    color: var(--tm-header-red);
+    color: var(--color-red-primary);
 }
 
 .global-site-header-link a::after {
