@@ -185,8 +185,8 @@ main .section .carousel-wrapper {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 33px;
+    height: 33px;
     margin: 0;
     padding: 0;
     border-radius: 50%;
@@ -198,6 +198,7 @@ main .section .carousel-wrapper {
     transition:
         background-color 0.2s ease,
         transform 0.2s ease;
+    border: none;
 }
 
 .carousel .carousel-navigation-buttons button svg {
@@ -257,7 +258,6 @@ main .section .carousel-wrapper {
     .carousel .carousel-navigation-buttons button {
         width: 56px;
         height: 56px;
-        border: 0;
     }
 }
 
