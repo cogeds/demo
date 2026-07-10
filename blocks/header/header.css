@@ -104,7 +104,7 @@ header .header.block {
 .global-site-header-link a:focus-visible {
     color: var(--tm-header-red);
 }
-
+/* 
 .global-site-header-link a::after {
     content: "";
     position: absolute;
@@ -121,7 +121,7 @@ header .header.block {
 .global-site-header-link a:hover::after,
 .global-site-header-link a:focus-visible::after {
     transform: scaleX(1);
-}
+} */
 
 .hamburger-button {
     display: none;
