@@ -164,6 +164,7 @@ header .header.block {
 .menu-drawer.is-open {
     transform: translateX(0);
     visibility: visible;
+    background-color: var(--tm-header-bg);
 }
 
 .menu-drawer::before {
