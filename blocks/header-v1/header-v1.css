@@ -78,3 +78,14 @@
 .dropdown-menu a:hover {
     background: #f5f5f5;
 }
+
+.dropdown-link {
+    display: block;
+    padding: 12px 16px;
+    color: #000;
+    text-decoration: none;
+}
+
+.dropdown-link:hover {
+    background: #f5f5f5;
+}

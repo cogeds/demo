@@ -156,7 +156,11 @@ export default function decorate(block) {
 
     document.addEventListener('click', (event) => {
         if (!header.contains(event.target)) {
-            dropdown.classList.remove('active');
+            header
+                .querySelectorAll('.dropdown-menu')
+                .forEach((menu) => {
+                    menu.classList.remove('active');
+                });
         }
     });
 }
