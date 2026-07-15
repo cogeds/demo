@@ -2,7 +2,7 @@ function createElement(tag, attributes = {}, children = []) {
     const el = document.createElement(tag);
 
     Object.entries(attributes).forEach(([key, value]) => {
-        if (key === 'class') {
+        if (key === "class") {
             el.className = value;
         } else {
             el.setAttribute(key, value);
@@ -10,7 +10,7 @@ function createElement(tag, attributes = {}, children = []) {
     });
 
     children.forEach((child) => {
-        if (typeof child === 'string') {
+        if (typeof child === "string") {
             el.append(document.createTextNode(child));
         } else {
             el.append(child);
@@ -21,111 +21,119 @@ function createElement(tag, attributes = {}, children = []) {
 }
 
 function buildLogo(block) {
-    const logoRow = [...block.children]
-        .find((row) => row.firstElementChild?.textContent?.trim() === 'Logo');
+    const logoRow = [...block.children].find(
+        (row) => row.firstElementChild?.textContent?.trim() === "Logo",
+    );
 
     if (!logoRow) {
-        return '';
+        return "";
     }
 
-    const link = logoRow.querySelector('a');
-    const image = logoRow.querySelector('img');
+    const link = logoRow.querySelector("a");
+    const image = logoRow.querySelector("img");
 
     return `
-    ${link?.href || '/'}
-      ${image?.outerHTML || ''}
+    ${link?.href || "/"}
+      ${image?.outerHTML || ""}
     </a>
   `;
 }
 
 function buildNavigation(block) {
-    const navRow = [...block.children]
-        .find((row) => row.firstElementChild?.textContent?.trim() === 'Primary Nav');
+    const navRow = [...block.children].find(
+        (row) => row.firstElementChild?.textContent?.trim() === "Primary Nav",
+    );
 
-    const navLinks = [...(navRow?.querySelectorAll('a') || [])];
+    const navLinks = [...(navRow?.querySelectorAll("a") || [])];
 
     return `
     <ul class="header-nav-list">
-      ${navLinks.map((link) => `
+      ${navLinks
+            .map(
+                (link) => `
         <li>
           ${link.href}
             ${link.textContent}
           </a>
         </li>
-      `).join('')}
+      `,
+            )
+            .join("")}
     </ul>
   `;
 }
 
 function buildUtilityNav(block) {
-    const utilityRow = [...block.children]
-        .find((row) => row.firstElementChild?.textContent?.trim() === 'Utility Nav');
+    const utilityRow = [...block.children].find(
+        (row) => row.firstElementChild?.textContent?.trim() === "Utility Nav",
+    );
 
-    const links = [...(utilityRow?.querySelectorAll('a') || [])];
+    const links = [...(utilityRow?.querySelectorAll("a") || [])];
 
     return `
     <ul class="header-utility-list">
-      ${links.map((link) => `
+      ${links
+            .map(
+                (link) => `
         <li>
           ${link.href}
         </li>
-      `).join('')}
+      `,
+            )
+            .join("")}
     </ul>
   `;
 }
 
 function initMobileMenu(header) {
-    const button = header.querySelector('.header-mobile-toggle');
-    const nav = header.querySelector('.header-navigation');
+    const button = header.querySelector(".header-mobile-toggle");
+    const nav = header.querySelector(".header-navigation");
 
-    button?.addEventListener('click', () => {
-        const expanded = button.getAttribute('aria-expanded') === 'true';
+    button?.addEventListener("click", () => {
+        const expanded = button.getAttribute("aria-expanded") === "true";
 
-        button.setAttribute('aria-expanded', !expanded);
-        header.classList.toggle('menu-open');
-        nav.classList.toggle('active');
+        button.setAttribute("aria-expanded", !expanded);
+        header.classList.toggle("menu-open");
+        nav.classList.toggle("active");
     });
 }
 
 function initVehiclesTrigger(header) {
     const trigger = header.querySelector('[data-menu="vehicles"]');
-    const panel = header.querySelector('.header-mega-menu');
+    const panel = header.querySelector(".header-mega-menu");
 
     if (!trigger || !panel) return;
 
-    trigger.addEventListener('mouseenter', () => {
-        panel.classList.add('active');
+    trigger.addEventListener("mouseenter", () => {
+        panel.classList.add("active");
     });
 
-    trigger.addEventListener('mouseleave', () => {
-        panel.classList.remove('active');
+    trigger.addEventListener("mouseleave", () => {
+        panel.classList.remove("active");
     });
 
-    panel.addEventListener('mouseenter', () => {
-        panel.classList.add('active');
+    panel.addEventListener("mouseenter", () => {
+        panel.classList.add("active");
     });
 
-    panel.addEventListener('mouseleave', () => {
-        panel.classList.remove('active');
+    panel.addEventListener("mouseleave", () => {
+        panel.classList.remove("active");
     });
 }
 
 function initAccountFlyout(header) {
-    const trigger = header.querySelector('.account-trigger');
-    const flyout = header.querySelector('.account-panel');
+    const trigger = header.querySelector(".account-trigger");
+    const flyout = header.querySelector(".account-panel");
 
     if (!trigger || !flyout) return;
 
-    trigger.addEventListener('click', () => {
-        flyout.classList.toggle('active');
+    trigger.addEventListener("click", () => {
+        flyout.classList.toggle("active");
     });
 
-    document.addEventListener('click', (event) => {
-        if (
-            !flyout.contains(event.target)
-            && !trigger.contains(event.target)
-        ) {
-            flyout.classList.remove('active');
+    document.addEventListener("click", (event) => {
+        if (!flyout.contains(event.target) && !trigger.contains(event.target)) {
+            flyout.classList.remove("active");
         }
     });
 }
@@ -135,10 +143,10 @@ export default async function decorate(block) {
     const navMarkup = buildNavigation(block);
     const utilityMarkup = buildUtilityNav(block);
 
-    block.innerHTML = '';
+    block.innerHTML = "";
 
-    const header = createElement('header', {
-        class: 'tmna-header',
+    const header = createElement("header", {
+        class: "tmna-header",
     });
 
     header.innerHTML = `
@@ -204,10 +212,10 @@ export default async function decorate(block) {
         for your Toyota in one place.
       </p>
 
-      /my-dashboard/
+      <a href="/my-dashboard/">My Dashboard</a>
 
     </div>
-  `;
+`;
 
     block.append(header);
 
