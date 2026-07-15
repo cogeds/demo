@@ -74,6 +74,9 @@ export default function decorate(block) {
       `).join('')}
 
     </div>
+
+
+</div>
 <div class="menu-group">
 
   <button
@@ -92,8 +95,6 @@ export default function decorate(block) {
     `).join('')}
 
   </div>
-
-</div>
   </div>
 
 </nav>
