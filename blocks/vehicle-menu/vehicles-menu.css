@@ -1,0 +1,111 @@
+.vehicles-menu {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 40px;
+}
+
+.vehicles-menu-sidebar {
+    border-right: 1px solid #ddd;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.vehicles-menu-sidebar button {
+    border: 0;
+    background: none;
+
+    text-align: left;
+
+    padding: 14px 20px;
+
+    cursor: pointer;
+
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.vehicles-menu-sidebar button:hover,
+.vehicles-menu-sidebar button.active {
+    color: #eb0a1e;
+}
+
+.vehicles-menu-content {
+    display: grid;
+
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+
+    gap: 24px;
+}
+
+.vehicle-card {
+    display: flex;
+    flex-direction: column;
+
+    background: #fff;
+}
+
+.vehicle-card-image img {
+    width: 100%;
+    display: block;
+}
+
+.vehicle-card-badge {
+    margin-top: 12px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    color: #eb0a1e;
+
+    text-transform: uppercase;
+}
+
+.vehicle-card-title {
+    margin: 8px 0;
+
+    font-size: 24px;
+}
+
+.vehicle-card-year {
+    font-size: 14px;
+    color: #666;
+}
+
+.vehicle-card-msrp {
+    margin-top: 4px;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.vehicle-card-actions {
+    margin-top: 20px;
+
+    display: flex;
+    gap: 16px;
+}
+
+.vehicle-card-actions a {
+    text-decoration: none;
+    font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+    .vehicles-menu {
+        grid-template-columns: 1fr;
+    }
+
+    .vehicles-menu-sidebar {
+        border-right: 0;
+        border-bottom: 1px solid #ddd;
+
+        flex-direction: row;
+
+        overflow-x: auto;
+    }
+
+    .vehicles-menu-content {
+        grid-template-columns: 1fr;
+    }
+}
