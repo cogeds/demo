@@ -54,10 +54,10 @@ export default function decorate(block) {
 
         <div class="dropdown-menu">
           ${vehicles.map((item) => `
-            #
-              ${item}
-            </a>
-          `).join('')}
+  #
+    ${item}
+  </a>
+`).join('')}
         </div>
       </div>
 
@@ -72,6 +72,8 @@ export default function decorate(block) {
         <div class="dropdown-menu">
           ${shopItems.map((item) => `
             #
+    ${item}
+  </a>
           `).join('')}
         </div>
       </div>
@@ -111,6 +113,8 @@ export default function decorate(block) {
 
           ${accountItems.map((item) => `
             #
+    ${item}
+  </a>
           `).join('')}
 
         </div>
