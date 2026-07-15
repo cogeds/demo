@@ -16,48 +16,85 @@ export default function decorate(block) {
         .split(',')
         .map((item) => item.trim());
 
+    const shopItems = getValue('Shop')
+        .split(',')
+        .map((item) => item.trim());
+
     block.innerHTML = '';
 
     const header = document.createElement('header');
     header.className = 'header-v1';
 
     header.innerHTML = `
-    <div class="header-v1-bar">
+    <nav class="header-v1-nav">
 
-      <div class="header-v1-logo">
-        ${logo}
-      </div>
+  <div class="menu-group">
 
-      <nav class="header-v1-nav">
+    <button
+      class="menu-trigger"
+      data-menu="vehicles"
+      type="button">
+      Vehicles
+    </button>
 
-        <button
-          class="menu-trigger"
-          type="button">
-          Vehicles
-        </button>
+    <div class="dropdown-menu">
 
-        <div class="dropdown-menu">
-
-          ${vehicles.map((vehicle) => `
-            #
-              ${vehicle}
-            </a>
-          `).join('')}
-
-        </div>
-
-      </nav>
+      ${vehicles.map((vehicle) => `
+        #
+      `).join('')}
 
     </div>
+
+  </div>
+
+  <div class="menu-group">
+
+    <button
+      class="menu-trigger"
+      data-menu="shop"
+      type="button">
+      Shop
+    </button>
+
+    <div class="dropdown-menu">
+
+      ${shopItems.map((item) => `
+        #
+          ${item}
+        </a>
+      `).join('')}
+
+    </div>
+
+  </div>
+
+</nav>
   `;
 
     block.append(header);
 
-    const trigger = header.querySelector('.menu-trigger');
-    const dropdown = header.querySelector('.dropdown-menu');
+    const triggers = header.querySelectorAll('.menu-trigger');
 
-    trigger.addEventListener('click', () => {
-        dropdown.classList.toggle('active');
+    triggers.forEach((trigger) => {
+        trigger.addEventListener('click', () => {
+
+            const menuGroup =
+                trigger.closest('.menu-group');
+
+            const dropdown =
+                menuGroup.querySelector('.dropdown-menu');
+
+            document
+                .querySelectorAll('.dropdown-menu.active')
+                .forEach((menu) => {
+                    if (menu !== dropdown) {
+                        menu.classList.remove('active');
+                    }
+                });
+
+            dropdown.classList.toggle('active');
+
+        });
     });
 
     document.addEventListener('click', (event) => {
