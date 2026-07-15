@@ -128,7 +128,28 @@
     font-weight: 600;
 }
 
+.mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.mobile-menu-toggle span {
+    width: 22px;
+    height: 2px;
+    background: #000;
+    display: block;
+}
+
 @media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: flex;
+        margin-left: auto;
+    }
+
     .header-v1-bar {
         display: flex;
         align-items: center;
@@ -136,12 +157,6 @@
 
     .header-v1-logo {
         flex: 1;
-    }
-
-    .mobile-menu-toggle {
-        order: 2;
-        margin-left: auto;
-        margin-right: 0;
     }
 
     .header-v1-nav,
