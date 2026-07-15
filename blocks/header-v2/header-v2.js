@@ -1,32 +1,33 @@
 export default async function decorate(block) {
     const rows = [...block.children];
 
-    const getValue = (name) => {
+    const getValue = (label) => {
         const row = rows.find(
             (r) =>
-                r.children[0]?.textContent
-                    ?.trim()
-                    .toLowerCase() === name.toLowerCase(),
+                r.children[0]?.textContent?.trim().toLowerCase() ===
+                label.toLowerCase(),
         );
 
-        return row?.children[1];
+        return row?.children[1]?.innerHTML || '';
     };
 
-    const logo = getValue('Logo')?.innerHTML || '';
-    const alert = getValue('Alert')?.innerHTML || '';
+    const logo = getValue('Logo');
+    const alert = getValue('Alert');
 
     block.innerHTML = `
     <header class="header-v2">
 
-      <a
-        href="#main-content"
-        class="header-v2__skip-link">
-        Skip to main content
-      </a-v2__main-bar">
+      <a class="header-v2__skip-link" hrefalert">
+        ${alert || ''}
+      </div>
+
+      <div class="header-v2__main-bar">
 
         <button
           class="header-v2__hamburger"
-          aria-label="Open navigation">
+          aria-label="Menu"
+          aria-expanded="false"
+          type="button">
 
           <span></span>
           <span></span>
@@ -35,26 +36,29 @@ export default async function decorate(block) {
         </button>
 
         <div class="header-v2__logo">
-          ${logo}
+          ${logo || '/'}
         </div>
 
         <nav
           class="header-v2__nav"
-          aria-label="Primary">
+          aria-label="Primary Navigation">
 
           <button
+            type="button"
             class="header-v2__nav-trigger"
             data-menu="vehicles">
             Vehicles
           </button>
 
           <button
+            type="button"
             class="header-v2__nav-trigger"
             data-menu="shop">
             Shop
           </button>
 
           <button
+            type="button"
             class="header-v2__nav-trigger"
             data-menu="support">
             Support & Service
@@ -65,15 +69,17 @@ export default async function decorate(block) {
         <div class="header-v2__actions">
 
           <button
+            type="button"
             class="header-v2__icon search-trigger">
             Search
           </button>
 
-          <a
-            href="/ Saves
+          /saves/
+            My Saves
           </a>
 
           <button
+            type="button"
             class="header-v2__icon account-trigger">
             Account
           </button>
@@ -89,7 +95,11 @@ export default async function decorate(block) {
         data-panel="vehicles">
 
         <div class="header-v2__mega-content">
-          <div id="vehicles-menu-container"></div>
+
+          <div id="vehicles-menu-container">
+            Vehicles Fragment Loading Area
+          </div>
+
         </div>
 
       </div>
@@ -99,7 +109,11 @@ export default async function decorate(block) {
         data-panel="shop">
 
         <div class="header-v2__mega-content">
-          <div id="shopping-tools-container"></div>
+
+          <div id="shopping-tools-container">
+            Shopping Tools Fragment Loading Area
+          </div>
+
         </div>
 
       </div>
@@ -109,7 +123,11 @@ export default async function decorate(block) {
         data-panel="support">
 
         <div class="header-v2__mega-content">
-          <div id="support-container"></div>
+
+          <div id="support-container">
+            Support Fragment Loading Area
+          </div>
+
         </div>
 
       </div>
@@ -121,11 +139,11 @@ export default async function decorate(block) {
         </h3>
 
         <p>
-          Create an account or sign in to access
-          all the tools for your Toyota in one place.
+          Create an account or sign in to access all the
+          tools for your Toyota in one place.
         </p>
 
-        /my-dashboard/="header-v2__button">
+        /my-dashboard/
 
           Create Account Or Sign In
 
@@ -135,25 +153,10 @@ export default async function decorate(block) {
 
       <div class="header-v2__mobile-drawer">
 
-        <button
-          data-mobile="vehicles">
-          Vehicles
-        </button>
-
-        <button
-          data-mobile="shop">
-          Shop
-        </button>
-
-        <button
-          data-mobile="support">
-          Support & Service
-        </button>
-
-        <button
-          data-mobile="account">
-          My Toyota
-        </button>
+        <button type="button">Vehicles</button>
+        <button type="button">Shop</button>
+        <button type="button">Support & Service</button>
+        <button type="button">My Toyota</button>
 
       </div>
 
@@ -161,74 +164,83 @@ export default async function decorate(block) {
   `;
 
     const header = block.querySelector('.header-v2');
-    const overlay = block.querySelector('.header-v2__overlay');
+    const overlay = header.querySelector('.header-v2__overlay');
+    const accountButton = header.querySelector('.account-trigger');
+    const accountPanel = header.querySelector('.header-v2__account-panel');
+    const hamburger = header.querySelector('.header-v2__hamburger');
+
+    const navButtons = [
+        ...header.querySelectorAll('.header-v2__nav-trigger'),
+    ];
 
     function closeAll() {
         header
             .querySelectorAll('.header-v2__mega-menu')
-            .forEach((panel) => panel.classList.remove('active'));
+            .forEach((panel) => {
+                panel.classList.remove('active');
+            });
 
-        header
-            .querySelector('.header-v2__account-panel')
-            .classList.remove('active');
-
-        overlay.classList.remove('active');
+        accountPanel?.classList.remove('active');
+        overlay?.classList.remove('active');
     }
 
-    header
-        .querySelectorAll('.header-v2__nav-trigger')
-        .forEach((button) => {
-            button.addEventListener('click', () => {
-                const panel = button.dataset.menu;
+    navButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const panelName = button.dataset.menu;
 
-                const target =
-                    header.querySelector(
-                        `.header-v2__mega-menu[data-panel="${panel}"]`,
-                    );
+            const targetPanel = header.querySelector(
+                `.header-v2__mega-menu[data-panel="${panelName}"]`,
+            );
 
-                const open =
-                    target.classList.contains('active');
+            if (!targetPanel) {
+                return;
+            }
 
-                closeAll();
+            const isOpen =
+                targetPanel.classList.contains('active');
 
-                if (!open) {
-                    target.classList.add('active');
-                    overlay.classList.add('active');
-                }
-            });
+            closeAll();
+
+            if (!isOpen) {
+                targetPanel.classList.add('active');
+                overlay?.classList.add('active');
+            }
         });
-
-    const account =
-        header.querySelector('.account-trigger');
-
-    account.addEventListener('click', () => {
-        const panel = header.querySelector(
-            '.header-v2__account-panel',
-        );
-
-        const open =
-            panel.classList.contains('active');
-
-        closeAll();
-
-        if (!open) {
-            panel.classList.add('active');
-            overlay.classList.add('active');
-        }
     });
 
-    overlay.addEventListener('click', closeAll);
+    if (accountButton && accountPanel) {
+        accountButton.addEventListener('click', () => {
+            const isOpen =
+                accountPanel.classList.contains('active');
+
+            closeAll();
+
+            if (!isOpen) {
+                accountPanel.classList.add('active');
+                overlay?.classList.add('active');
+            }
+        });
+    }
+
+    overlay?.addEventListener('click', () => {
+        closeAll();
+    });
+
+    hamburger?.addEventListener('click', () => {
+        const expanded =
+            hamburger.getAttribute('aria-expanded') === 'true';
+
+        hamburger.setAttribute(
+            'aria-expanded',
+            String(!expanded),
+        );
+
+        header.classList.toggle('mobile-open');
+    });
 
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             closeAll();
         }
-    });
-
-    const hamburger =
-        header.querySelector('.header-v2__hamburger');
-
-    hamburger.addEventListener('click', () => {
-        header.classList.toggle('mobile-open');
     });
 }
