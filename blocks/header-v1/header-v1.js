@@ -40,7 +40,9 @@ export default function decorate(block) {
     <div class="dropdown-menu">
 
       ${vehicles.map((vehicle) => `
-        #
+        <a href="#">
+          ${vehicle}
+        </a>
       `).join('')}
 
     </div>
@@ -59,7 +61,7 @@ export default function decorate(block) {
     <div class="dropdown-menu">
 
       ${shopItems.map((item) => `
-        #
+        <a href="#">
           ${item}
         </a>
       `).join('')}
