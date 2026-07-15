@@ -53,8 +53,8 @@ export default function decorate(block) {
         </button>
 
         <div class="dropdown-menu">
-          ${vehicles.map((item) => `
-  #
+         ${vehicles.map((item) => `
+  <a href="#" class="dropdown-item">
     ${item}
   </a>
 `).join('')}
@@ -71,7 +71,7 @@ export default function decorate(block) {
 
         <div class="dropdown-menu">
           ${shopItems.map((item) => `
-            #
+            <a href="#" class="dropdown-item">
     ${item}
   </a>
           `).join('')}
@@ -88,7 +88,7 @@ export default function decorate(block) {
 
         <div class="dropdown-menu">
           ${supportItems.map((item) => `
-            #
+            <a href="#" class="dropdown-item">
               ${item}
             </a>
           `).join('')}
