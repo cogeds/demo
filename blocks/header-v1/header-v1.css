@@ -89,3 +89,63 @@
 .dropdown-link:hover {
     background: #f5f5f5;
 }
+
+/* ==========================================
+   Mobile Navigation
+   ========================================== */
+
+.mobile-menu-toggle {
+    display: none;
+}
+
+.mobile-menu {
+    display: none;
+}
+
+.mobile-submenu {
+    display: none;
+}
+
+.mobile-submenu.active {
+    display: block;
+}
+
+.mobile-submenu-item {
+    display: block;
+    padding: 12px 20px;
+    color: #000;
+    text-decoration: none;
+}
+
+.mobile-menu-trigger {
+    width: 100%;
+    padding: 16px;
+    text-align: left;
+    background: #fff;
+    border: 0;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: block;
+        border: 0;
+        background: none;
+        font-size: 24px;
+        cursor: pointer;
+        margin-right: 16px;
+    }
+
+    .header-v1-nav,
+    .header-v1-account {
+        display: none;
+    }
+
+    .mobile-menu.active {
+        display: block;
+        background: #fff;
+        border-top: 1px solid #ddd;
+    }
+}
