@@ -26,6 +26,9 @@ export default function decorate(block) {
     header.className = 'header-v1';
 
     header.innerHTML = `
+    <div class="header-v1-logo">
+      ${logo || 'Toyota'}
+    </div>
     <nav class="header-v1-nav">
 
   <div class="menu-group">
