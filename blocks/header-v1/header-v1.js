@@ -179,7 +179,9 @@ export default function decorate(block) {
                     }
                 });
 
-            dropdown.classList.toggle('active');
+            requestAnimationFrame(() => {
+                dropdown.classList.toggle('active');
+            });
         });
     });
 
