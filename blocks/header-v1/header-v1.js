@@ -24,80 +24,104 @@ export default function decorate(block) {
         .split(',')
         .map((item) => item.trim());
 
+    const accountItems = getValue('Account')
+        .split(',')
+        .map((item) => item.trim());
+
     block.innerHTML = '';
 
     const header = document.createElement('header');
     header.className = 'header-v1';
 
     header.innerHTML = `
+    <header class="header-v1">
+
+  <div class="header-v1-bar">
+
     <div class="header-v1-logo">
-      ${logo || 'Toyota'}
+      ${logo}
     </div>
+
     <nav class="header-v1-nav">
 
-  <div class="menu-group">
+      <!-- Vehicles -->
+      <div class="menu-group">
+        <button
+          class="menu-trigger"
+          type="button">
+          Vehicles
+        </button>
 
-    <button
-      class="menu-trigger"
-      data-menu="vehicles"
-      type="button">
-      Vehicles
-    </button>
+        <div class="dropdown-menu">
+          ${vehicles.map((item) => `
+            #
+              ${item}
+            </a>
+          `).join('')}
+        </div>
+      </div>
 
-    <div class="dropdown-menu">
+      <!-- Shop -->
+      <div class="menu-group">
+        <button
+          class="menu-trigger"
+          type="button">
+          Shop
+        </button>
 
-      ${vehicles.map((vehicle) => `
-        <a href="#">
-          ${vehicle}
-        </a>
-      `).join('')}
+        <div class="dropdown-menu">
+          ${shopItems.map((item) => `
+            #
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- Support -->
+      <div class="menu-group">
+        <button
+          class="menu-trigger"
+          type="button">
+          Support
+        </button>
+
+        <div class="dropdown-menu">
+          ${supportItems.map((item) => `
+            #
+              ${item}
+            </a>
+          `).join('')}
+        </div>
+      </div>
+
+    </nav>
+
+    <!-- Right Side Account -->
+
+    <div class="header-v1-account">
+
+      <div class="menu-group">
+
+        <button
+          class="menu-trigger"
+          type="button">
+          Account
+        </button>
+
+        <div class="dropdown-menu account-menu">
+
+          ${accountItems.map((item) => `
+            #
+          `).join('')}
+
+        </div>
+
+      </div>
 
     </div>
 
   </div>
 
-  <div class="menu-group">
-
-    <button
-      class="menu-trigger"
-      data-menu="shop"
-      type="button">
-      Shop
-    </button>
-
-    <div class="dropdown-menu">
-
-      ${shopItems.map((item) => `
-        <a href="#">
-          ${item}
-        </a>
-      `).join('')}
-
-    </div>
-
-
-</div>
-<div class="menu-group">
-
-  <button
-    class="menu-trigger"
-    data-menu="support"
-    type="button">
-    Support
-  </button>
-
-  <div class="dropdown-menu">
-
-    ${supportItems.map((item) => `
-        <a href="#">
-          ${item}
-        </a>
-    `).join('')}
-
-  </div>
-  </div>
-
-</nav>
+</header>
   `;
 
     block.append(header);

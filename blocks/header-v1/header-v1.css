@@ -26,8 +26,19 @@
 }
 
 .header-v1-nav {
+    display: flex;
+    gap: 24px;
     margin-left: 40px;
-    position: relative;
+}
+
+.header-v1-account {
+    margin-left: auto;
+}
+
+.account-menu {
+    right: 0;
+    left: auto;
+    min-width: 220px;
 }
 
 .menu-trigger {
