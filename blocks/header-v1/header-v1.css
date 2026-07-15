@@ -34,7 +34,6 @@
     display: flex;
     align-items: center;
     gap: 24px;
-
     list-style: none;
     margin: 0;
     padding: 0;
@@ -60,7 +59,6 @@
     display: flex;
     align-items: center;
     gap: 16px;
-
     list-style: none;
     margin: 0;
     padding: 0;
@@ -80,14 +78,12 @@
 
 .header-mega-menu {
     display: none;
-
     position: absolute;
     left: 0;
     right: 0;
-
     background: #fff;
     border-top: 1px solid #ddd;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 10px 25px rgb(0 0 0 / 12%);
 }
 
 .header-mega-menu.active {
@@ -97,9 +93,7 @@
 .mega-menu-content {
     max-width: 1440px;
     margin: 0 auto;
-
     padding: 32px;
-
     display: grid;
     grid-template-columns: 1fr 320px;
     gap: 40px;
@@ -112,18 +106,13 @@
 
 .account-panel {
     display: none;
-
     position: absolute;
     right: 32px;
     top: 100%;
-
     width: 400px;
-
     background: #fff;
-
     padding: 24px;
-
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 10px 25px rgb(0 0 0 / 18%);
 }
 
 .account-panel.active {
@@ -141,30 +130,22 @@
 
 .account-cta {
     display: inline-flex;
-
     padding: 12px 24px;
-
     background: #eb0a1e;
     color: #fff;
-
     border-radius: 999px;
-
     text-decoration: none;
 }
 
 .header-mobile-toggle {
     display: none;
-
     width: 40px;
     height: 40px;
-
     border: none;
     background: transparent;
-
     flex-direction: column;
     justify-content: center;
     gap: 5px;
-
     cursor: pointer;
 }
 
@@ -175,19 +156,17 @@
     display: block;
 }
 
-@media (max-width: 991px) {
+@media (width <= 991px) {
     .header-mobile-toggle {
         display: flex;
     }
 
     .header-navigation {
         display: none;
-
         position: absolute;
         left: 0;
         right: 0;
         top: 100%;
-
         background: #fff;
     }
 
@@ -208,7 +187,6 @@
     .menu-open .header-utility {
         display: flex;
         flex-direction: column;
-
         padding: 24px;
     }
 
