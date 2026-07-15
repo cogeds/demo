@@ -20,6 +20,10 @@ export default function decorate(block) {
         .split(',')
         .map((item) => item.trim());
 
+    const supportItems = getValue('Support')
+        .split(',')
+        .map((item) => item.trim());
+
     block.innerHTML = '';
 
     const header = document.createElement('header');
@@ -70,7 +74,26 @@ export default function decorate(block) {
       `).join('')}
 
     </div>
+<div class="menu-group">
 
+  <button
+    class="menu-trigger"
+    data-menu="support"
+    type="button">
+    Support
+  </button>
+
+  <div class="dropdown-menu">
+
+    ${supportItems.map((item) => `
+        <a href="#">
+          ${item}
+        </a>
+    `).join('')}
+
+  </div>
+
+</div>
   </div>
 
 </nav>
