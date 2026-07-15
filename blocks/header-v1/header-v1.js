@@ -69,10 +69,7 @@ export default function decorate(block) {
           class="mobile-menu-toggle"
           type="button"
           aria-label="Open Menu">
-          <span></span>
-<span></span>
-<span></span>
-
+          ☰
       </button>
 
       <nav class="header-v1-nav">
