@@ -1,10 +1,25 @@
+.mega-sidebar {
+    background: #f7f7f7;
+    padding: 24px;
+}
+
+.mega-content {
+    padding: 24px;
+}
+
+.vehicle-card {
+    border-radius: 8px;
+}
+
 .header-v1-nav {
     display: flex;
-    gap: 24px;
+    align-items: center;
+    gap: 32px;
+    margin-left: 48px;
 }
 
 .menu-group {
-    position: relative;
+    position: static;
 }
 
 .header-v1 {
@@ -47,6 +62,11 @@
     cursor: pointer;
     font-size: 16px;
     font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.menu-trigger:hover {
+    color: #eb0a1e;
 }
 
 .dropdown-menu {
@@ -72,6 +92,8 @@
 .dropdown-menu.active {
     display: grid;
     grid-template-columns: 280px 1fr;
+    opacity: 1;
+    visibility: visible;
     transform: translateY(0);
 }
 
@@ -82,8 +104,17 @@
     text-decoration: none;
 }
 
+.dropdown-menu a {
+    display: block;
+    padding: 12px 16px;
+    color: #111;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
 .dropdown-menu a:hover {
     background: #f5f5f5;
+    color: #eb0a1e;
 }
 
 .dropdown-link {
@@ -97,6 +128,12 @@
     background: #f5f5f5;
 }
 
+.account-menu {
+    width: 220px;
+    min-width: 220px;
+    right: 0;
+    left: auto;
+}
 /* ==========================================
    Mobile Navigation
    ========================================== */
@@ -107,6 +144,7 @@
 
 .mobile-menu {
     display: none;
+    border-top: 1px solid #ddd;
 }
 
 .mobile-submenu {
