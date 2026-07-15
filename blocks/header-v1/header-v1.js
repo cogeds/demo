@@ -61,16 +61,16 @@ export default function decorate(block) {
     header.innerHTML = `
     <div class="header-v1-bar">
 
-      <button
-        class="mobile-menu-toggle"
-        type="button"
-        aria-label="Open Menu">
-        ☰
-      </button>
-
       <div class="header-v1-logo">
         ${logo}
       </div>
+
+      <button
+          class="mobile-menu-toggle"
+          type="button"
+          aria-label="Open Menu">
+          ☰
+      </button>
 
       <nav class="header-v1-nav">
 
