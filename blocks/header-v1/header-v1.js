@@ -1,5 +1,36 @@
-export default function decorate(block) {
+export default async function decorate(block) {
     const rows = [...block.children];
+
+    const getLinkValue = (label) => {
+        const row = rows.find(
+            (r) => r.children[0]?.textContent.trim().toLowerCase() === label.toLowerCase(),
+        );
+
+        const link = row?.children[1]?.querySelector('a');
+
+        return link?.getAttribute('href')
+            || row?.children[1]?.textContent?.trim()
+            || '';
+    };
+
+    async function loadFragment(path) {
+        if (!path) {
+            return '';
+        }
+
+        try {
+            const response = await fetch(`${path}.plain.html`);
+
+            if (!response.ok) {
+                return '';
+            }
+
+            return await response.text();
+        } catch (error) {
+            console.error('Fragment load failed', error);
+            return '';
+        }
+    }
 
     const getValue = (label) => {
         const row = rows.find(
@@ -26,10 +57,9 @@ export default function decorate(block) {
         .map((item) => item.trim())
         .filter(Boolean);
 
-    const accountItems = getValue('Account')
-        .split(',')
-        .map((item) => item.trim())
-        .filter(Boolean);
+    const accountItems = getValue('Account');
+    const supportFragment = getLinkValue('Support Fragment');
+    const supportHTML = await loadFragment(supportFragment);
 
     const buildMobileSection = (title, items) => `
     <div class="mobile-menu-group">
@@ -106,21 +136,27 @@ export default function decorate(block) {
 
         </div>
 
-        <div class="menu-group">
+       <div class="menu-group">
 
-          <button class="menu-trigger" type="button">
-            Support
-          </button>
+  <button class="menu-trigger" type="button">
+    Support
+  </button>
 
-          <div class="dropdown-menu">
-            ${supportItems.map((item) => `
-               <
-                ${item}
-              </a>
-            `).join('')}
-          </div>
+  <div class="dropdown-menu support-menu-wrapper">
 
-        </div>
+    ${supportHTML
+        || `
+        ${supportItems.map((item) => `
+          #dropdown-item">
+            ${item}
+          </a>
+        `).join('')}
+      `
+        }
+
+  </div>
+
+</div>
 
       </nav>
 
