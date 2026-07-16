@@ -71,7 +71,9 @@ export default async function decorate(block) {
     getLinkValue('Support Fragment');
 
   const supportFragmentHtml =
-    await loadFragment(supportFragmentPath);
+    `<div style="padding:20px;color:red">
+      TEST FRAGMENT LOADED
+   </div>`;
   console.log('supportFragmentPath', supportFragmentPath);
   console.log('supportFragmentHtml', supportFragmentHtml);
 
