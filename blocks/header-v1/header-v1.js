@@ -21,19 +21,7 @@ export default function decorate(block) {
         .map((item) => item.trim())
         .filter(Boolean);
 
-    const getLinkValue = (label) => {
-        const row = rows.find(
-            (r) =>
-                r.children[0]?.textContent.trim().toLowerCase() ===
-                label.toLowerCase(),
-        );
-
-        const link = row?.children[1]?.querySelector('a');
-
-        return link?.getAttribute('href') || '';
-    };
-
-    const supportFragment = getLinkValue('Support Fragment');
+    const supportFragment = getValue('Support Fragment');
 
     const accountItems = getValue('Account')
         .split(',')
@@ -115,39 +103,21 @@ export default function decorate(block) {
 
         </div>
 
-        // <div class="menu-group">
-
-        //   <button class="menu-trigger" type="button">
-        //     Support
-        //   </button>
-
-        //   <div class="dropdown-menu">
-        //     ${supportItems.map((item) => `
-        //        <
-        //         ${item}
-        //       </a>
-        //     `).join('')}
-        //   </div>
-
-        // </div>
         <div class="menu-group">
 
-  <button
-    class="menu-trigger"
-    type="button">
-    Support
-  </button>
+          <button class="menu-trigger" type="button">
+            Support
+          </button>
 
-  <div class="dropdown-menu support-menu-wrapper">
+          <div class="dropdown-menu">
+            ${supportItems.map((item) => `
+               <
+                ${item}
+              </a>
+            `).join('')}
+          </div>
 
-    <div
-      id="support-menu-container"
-      data-fragment="${supportFragment}">
-    </div>
-
-  </div>
-
-</div>
+        </div>
 
       </nav>
 
