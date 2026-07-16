@@ -21,7 +21,10 @@ export default function decorate(block) {
         .map((item) => item.trim())
         .filter(Boolean);
 
-    const supportFragment = getValue('Support Fragment');
+    const supportItems = getValue('Support')
+        .split(',')
+        .map((item) => item.trim())
+        .filter(Boolean);
 
     const accountItems = getValue('Account')
         .split(',')
