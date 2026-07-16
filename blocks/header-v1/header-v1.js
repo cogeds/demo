@@ -21,7 +21,19 @@ export default function decorate(block) {
         .map((item) => item.trim())
         .filter(Boolean);
 
-    const supportFragment = getValue('Support Fragment');
+    const getLinkValue = (label) => {
+        const row = rows.find(
+            (r) =>
+                r.children[0]?.textContent.trim().toLowerCase() ===
+                label.toLowerCase(),
+        );
+
+        const link = row?.children[1]?.querySelector('a');
+
+        return link?.getAttribute('href') || '';
+    };
+
+    const supportFragment = getLinkValue('Support Fragment');
 
     const accountItems = getValue('Account')
         .split(',')
