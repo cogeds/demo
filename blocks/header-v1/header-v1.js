@@ -1,37 +1,79 @@
-export default function decorate(block) {
-    const rows = [...block.children];
+export default async function decorate(block) {
+  const rows = [...block.children];
 
-    const getValue = (label) => {
-        const row = rows.find(
-            (r) => r.children[0]?.textContent.trim().toLowerCase() === label.toLowerCase(),
-        );
+  const getValue = (label) => {
+    const row = rows.find(
+      (r) =>
+        r.children[0]?.textContent.trim().toLowerCase()
+        === label.toLowerCase(),
+    );
 
-        return row?.children[1]?.textContent.trim() || '';
-    };
+    return row?.children[1]?.textContent.trim() || '';
+  };
 
-    const logo = getValue('Logo');
+  const getLinkValue = (label) => {
+    const row = rows.find(
+      (r) =>
+        r.children[0]?.textContent.trim().toLowerCase()
+        === label.toLowerCase(),
+    );
 
-    const vehicles = getValue('Vehicles')
-        .split(',')
-        .map((item) => item.trim())
-        .filter(Boolean);
+    const link = row?.children[1]?.querySelector('a');
 
-    const shopItems = getValue('Shop')
-        .split(',')
-        .map((item) => item.trim())
-        .filter(Boolean);
+    return (
+      link?.getAttribute('href')
+      || row?.children[1]?.textContent.trim()
+      || ''
+    );
+  };
 
-    const supportItems = getValue('Support')
-        .split(',')
-        .map((item) => item.trim())
-        .filter(Boolean);
+  async function loadFragment(path) {
+    if (!path) return '';
 
-    const accountItems = getValue('Account')
-        .split(',')
-        .map((item) => item.trim())
-        .filter(Boolean);
+    try {
+      const response = await fetch(`${path}.plain.html`);
 
-    const buildMobileSection = (title, items) => `
+      if (!response.ok) {
+        return '';
+      }
+
+      return await response.text();
+    } catch (error) {
+      console.error('Failed to load fragment:', error);
+
+      return '';
+    }
+  }
+
+  const logo = getValue('Logo');
+
+  const vehicles = getValue('Vehicles')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  const shopItems = getValue('Shop')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  const supportItems = getValue('Support')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  const accountItems = getValue('Account')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  const supportFragmentPath =
+    getLinkValue('Support Fragment');
+
+  const supportFragmentHtml =
+    await loadFragment(supportFragmentPath);
+
+  const buildMobileSection = (title, items) => `
     <div class="mobile-menu-group">
 
       <button
@@ -43,7 +85,7 @@ export default function decorate(block) {
       <div class="mobile-submenu">
 
         ${items.map((item) => `
-          #
+          #">
             ${item}
           </a>
         `).join('')}
@@ -53,12 +95,13 @@ export default function decorate(block) {
     </div>
   `;
 
-    block.innerHTML = '';
+  block.innerHTML = '';
 
-    const header = document.createElement('header');
-    header.className = 'header-v1';
+  const header = document.createElement('header');
 
-    header.innerHTML = `
+  header.className = 'header-v1';
+
+  header.innerHTML = `
     <div class="header-v1-bar">
 
       <div class="header-v1-logo">
@@ -66,10 +109,10 @@ export default function decorate(block) {
       </div>
 
       <button
-          class="mobile-menu-toggle"
-          type="button"
-          aria-label="Open Menu">
-          ☰
+        class="mobile-menu-toggle"
+        type="button"
+        aria-label="Open Menu">
+        ☰
       </button>
 
       <nav class="header-v1-nav">
@@ -81,11 +124,11 @@ export default function decorate(block) {
           </button>
 
           <div class="dropdown-menu">
+
             ${vehicles.map((item) => `
-               <
-                ${item}
-              </a>
+              #
             `).join('')}
+
           </div>
 
         </div>
@@ -97,11 +140,11 @@ export default function decorate(block) {
           </button>
 
           <div class="dropdown-menu">
+
             ${shopItems.map((item) => `
-               <
-                ${item}
-              </a>
+              #
             `).join('')}
+
           </div>
 
         </div>
@@ -112,12 +155,14 @@ export default function decorate(block) {
             Support
           </button>
 
-          <div class="dropdown-menu">
-            ${supportItems.map((item) => `
-               <
-                ${item}
-              </a>
-            `).join('')}
+          <div class="dropdown-menu support-menu-wrapper">
+
+            ${supportFragmentHtml
+    || supportItems.map((item) => `
+                #>
+              `).join('')
+    }
+
           </div>
 
         </div>
@@ -133,11 +178,13 @@ export default function decorate(block) {
           </button>
 
           <div class="dropdown-menu account-menu">
+
             ${accountItems.map((item) => `
-              <a href="#">
+              #">
                 ${item}
               </a>
             `).join('')}
+
           </div>
 
         </div>
@@ -159,76 +206,74 @@ export default function decorate(block) {
     </div>
   `;
 
-    block.append(header);
+  block.append(header);
 
-    // Desktop Menus
+  // Desktop Menu
 
-    const triggers = header.querySelectorAll('.menu-trigger');
+  const triggers =
+    header.querySelectorAll('.menu-trigger');
 
-    triggers.forEach((trigger) => {
-        trigger.addEventListener('click', () => {
-            const dropdown = trigger
-                .closest('.menu-group')
-                .querySelector('.dropdown-menu');
+  triggers.forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      const dropdown = trigger
+        .closest('.menu-group')
+        .querySelector('.dropdown-menu');
 
-            header
-                .querySelectorAll('.dropdown-menu.active')
-                .forEach((menu) => {
-                    if (menu !== dropdown) {
-                        menu.classList.remove('active');
-                    }
-                });
-
-            requestAnimationFrame(() => {
-                dropdown.classList.toggle('active');
-            });
+      header
+        .querySelectorAll('.dropdown-menu.active')
+        .forEach((menu) => {
+          if (menu !== dropdown) {
+            menu.classList.remove('active');
+          }
         });
+
+      requestAnimationFrame(() => {
+        dropdown.classList.toggle('active');
+      });
+    });
+  });
+
+  // Mobile Menu
+
+  const mobileToggle =
+    header.querySelector('.mobile-menu-toggle');
+
+  const mobileMenu =
+    header.querySelector('.mobile-menu');
+
+  mobileToggle?.addEventListener('click', () => {
+    mobileMenu.classList.toggle('active');
+  });
+
+  // Mobile Submenus
+
+  header
+    .querySelectorAll('.mobile-menu-trigger')
+    .forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        trigger.nextElementSibling?.classList.toggle(
+          'active',
+        );
+      });
     });
 
-    // Mobile Hamburger
+  // Click Outside
 
-    const mobileToggle =
-        header.querySelector('.mobile-menu-toggle');
-
-    const mobileMenu =
-        header.querySelector('.mobile-menu');
-
-    mobileToggle?.addEventListener('click', () => {
-        mobileMenu.classList.toggle('active');
-    });
-
-    // Mobile Sections
-
-    const mobileTriggers =
-        header.querySelectorAll('.mobile-menu-trigger');
-
-    mobileTriggers.forEach((trigger) => {
-        trigger.addEventListener('click', () => {
-            const submenu =
-                trigger.nextElementSibling;
-
-            submenu.classList.toggle('active');
+  document.addEventListener('click', (event) => {
+    if (!header.contains(event.target)) {
+      header
+        .querySelectorAll('.dropdown-menu')
+        .forEach((menu) => {
+          menu.classList.remove('active');
         });
-    });
 
-    // Click Outside
+      mobileMenu?.classList.remove('active');
 
-    document.addEventListener('click', (event) => {
-        if (!header.contains(event.target)) {
-
-            header
-                .querySelectorAll('.dropdown-menu')
-                .forEach((menu) => {
-                    menu.classList.remove('active');
-                });
-
-            mobileMenu?.classList.remove('active');
-
-            header
-                .querySelectorAll('.mobile-submenu')
-                .forEach((submenu) => {
-                    submenu.classList.remove('active');
-                });
-        }
-    });
+      header
+        .querySelectorAll('.mobile-submenu')
+        .forEach((submenu) => {
+          submenu.classList.remove('active');
+        });
+    }
+  });
 }
