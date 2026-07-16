@@ -72,6 +72,8 @@ export default async function decorate(block) {
 
   const supportFragmentHtml =
     await loadFragment(supportFragmentPath);
+  console.log('supportFragmentPath', supportFragmentPath);
+  console.log('supportFragmentHtml', supportFragmentHtml);
 
   const buildMobileSection = (title, items) => `
     <div class="mobile-menu-group">
