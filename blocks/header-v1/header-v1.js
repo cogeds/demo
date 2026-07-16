@@ -1,5 +1,4 @@
 export default function decorate(block) {
-    const supportFragment = getValue('Support Fragment');
     const rows = [...block.children];
 
     const getValue = (label) => {
@@ -122,7 +121,6 @@ export default function decorate(block) {
           </div>
 
         </div>
-        
 
       </nav>
 
