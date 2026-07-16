@@ -1,4 +1,5 @@
 export default function decorate(block) {
+    const supportFragment = getValue('Support Fragment');
     const rows = [...block.children];
 
     const getValue = (label) => {
@@ -121,6 +122,25 @@ export default function decorate(block) {
           </div>
 
         </div>
+
+        <div class="menu-group">
+
+  <button
+    class="menu-trigger"
+    type="button">
+    Support
+  </button>
+
+  <div class="dropdown-menu support-menu-wrapper">
+
+    <div
+      id="support-menu-container"
+      data-fragment="${supportFragment}">
+    </div>
+
+  </div>
+
+</div>
 
       </nav>
 
