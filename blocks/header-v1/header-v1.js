@@ -134,7 +134,7 @@ export default function decorate(block) {
 
           <div class="dropdown-menu account-menu">
             ${accountItems.map((item) => `
-              <
+              <a href="#">
                 ${item}
               </a>
             `).join('')}
