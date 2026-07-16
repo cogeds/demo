@@ -21,10 +21,7 @@ export default function decorate(block) {
         .map((item) => item.trim())
         .filter(Boolean);
 
-    const supportItems = getValue('Support')
-        .split(',')
-        .map((item) => item.trim())
-        .filter(Boolean);
+    const supportFragment = getValue('Support Fragment');
 
     const accountItems = getValue('Account')
         .split(',')
@@ -106,21 +103,39 @@ export default function decorate(block) {
 
         </div>
 
+        // <div class="menu-group">
+
+        //   <button class="menu-trigger" type="button">
+        //     Support
+        //   </button>
+
+        //   <div class="dropdown-menu">
+        //     ${supportItems.map((item) => `
+        //        <
+        //         ${item}
+        //       </a>
+        //     `).join('')}
+        //   </div>
+
+        // </div>
         <div class="menu-group">
 
-          <button class="menu-trigger" type="button">
-            Support
-          </button>
+  <button
+    class="menu-trigger"
+    type="button">
+    Support
+  </button>
 
-          <div class="dropdown-menu">
-            ${supportItems.map((item) => `
-               <
-                ${item}
-              </a>
-            `).join('')}
-          </div>
+  <div class="dropdown-menu support-menu-wrapper">
 
-        </div>
+    <div
+      id="support-menu-container"
+      data-fragment="${supportFragment}">
+    </div>
+
+  </div>
+
+</div>
 
       </nav>
 
