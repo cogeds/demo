@@ -162,10 +162,9 @@ export default async function decorate(block) {
     await loadFragment(supportFragmentPath);
 
   const supportMenu =
-    buildSupportMenu(supportFragmentHtml);
-
-  console.log('supportFragmentPath', supportFragmentPath);
+    supportFragmentHtml;
   console.log('supportFragmentHtml', supportFragmentHtml);
+  console.log('supportMenu', supportMenu);;
   block.innerHTML = '';
 
   const header = document.createElement('header');

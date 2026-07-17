@@ -67,3 +67,13 @@
         transform: translateY(0);
     }
 }
+
+.support-menu-wrapper {
+    width: 1000px;
+    padding: 24px;
+    display: block !important;
+}
+
+.support-menu-wrapper * {
+    color: #111;
+}
