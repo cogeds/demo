@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>nav</title>
+  <!--
+    ================================================================
+    header-v1 navigation document  (authoring source for da.live)
+    ================================================================
+    Create/replace the "/nav" document in da.live with the content
+    inside <main> below.
+
+    STRUCTURE (each top-level <div> = one section, separated in the
+    da.live editor by a horizontal rule "---"):
+
+      SECTION 1 - Brand
+        A single image = the logo. Wrap it in a link to "/" so the
+        logo is clickable.
+
+      SECTION 2 - Navigation (one bulleted list, indentation = depth)
+        Level 1 bullet ............ a PRIMARY nav item
+          Level 2 bullet .......... a mega-menu COLUMN heading
+            Level 3 bullet ........ a LINK inside that column
+        A Level 1 bullet with NO children renders as a plain link
+        (no mega-menu) - e.g. "News and Events" below.
+
+    Everything is driven by list nesting only - no tables, no
+    special blocks. This is exactly what the da.live bullet-list
+    tool produces when you press Tab to indent.
+    ================================================================
+  -->
+</head>
+<body>
+  <header></header>
+  <main>
+
+    <!-- SECTION 1 : Brand / logo -->
+    <div>
+      <p>
+        <a href="/">
+          <img src="/path/to/logo.svg" alt="Toyota Mobility Logo">
+        </a>
+      </p>
+    </div>
+
+    <!-- SECTION 2 : Navigation -->
+    <div>
+      <ul>
+        <li>Vehicles
+          <ul>
+            <li>Cars &amp; Minivan
+              <ul>
+                <li><a href="/vehicles/corolla">Corolla</a></li>
+                <li><a href="/vehicles/camry">Camry</a></li>
+                <li><a href="/vehicles/prius">Prius</a></li>
+                <li><a href="/vehicles/sienna">Sienna</a></li>
+              </ul>
+            </li>
+            <li>Crossovers &amp; SUVs
+              <ul>
+                <li><a href="/vehicles/rav4">RAV4</a></li>
+                <li><a href="/vehicles/highlander">Highlander</a></li>
+                <li><a href="/vehicles/4runner">4Runner</a></li>
+                <li><a href="/vehicles/grand-highlander">Grand Highlander</a></li>
+              </ul>
+            </li>
+            <li>Trucks
+              <ul>
+                <li><a href="/vehicles/tacoma">Tacoma</a></li>
+                <li><a href="/vehicles/tundra">Tundra</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+
+        <li>Shop
+          <ul>
+            <li>Shopping Tools
+              <ul>
+                <li><a href="/shop/build">Build &amp; Price</a></li>
+                <li><a href="/shop/inventory">Search Inventory</a></li>
+                <li><a href="/shop/offers">Local Specials &amp; Offers</a></li>
+                <li><a href="/shop/estimator">Estimate Payments</a></li>
+              </ul>
+            </li>
+            <li>Value Your Trade
+              <ul>
+                <li><a href="/shop/trade">Trade-In Value</a></li>
+                <li><a href="/shop/certified">Certified Used Vehicles</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+
+        <li>Support &amp; Service
+          <ul>
+            <li>Learn About Your Toyota
+              <ul>
+                <li><a href="/support/owners">Owners</a></li>
+                <li><a href="/support/warranty">Warranty</a></li>
+                <li><a href="/support/manuals">Manuals &amp; Warranties</a></li>
+              </ul>
+            </li>
+            <li>Maintain Your Toyota
+              <ul>
+                <li><a href="/support/service">Service &amp; Maintenance</a></li>
+                <li><a href="/support/parts">Genuine Parts</a></li>
+                <li><a href="/support/recalls">Safety Recalls</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+
+        <li><a href="/news">News and Events</a></li>
+      </ul>
+    </div>
+
+  </main>
+  <footer></footer>
+</body>
+</html>
