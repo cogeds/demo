@@ -168,7 +168,7 @@ export default async function decorate(block) {
   `;
   const supportFragmentPath =
     getLinkValue('Support Fragment');
-  console.log('supportFragmentPath', supportFragmentPath);)
+  console.log('supportFragmentPath', supportFragmentPath);
 
   const supportFragmentHtml =
     await loadFragment(supportFragmentPath);
