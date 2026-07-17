@@ -18,20 +18,28 @@ function childItems(list) {
   return [...list.children].filter((el) => el.tagName === 'LI');
 }
 
-/** the link inside an <li>, if the label was authored as a link */
+/**
+ * The label anchor of an <li> (the link the author put on the label itself),
+ * ignoring any anchors that belong to the nested sub-list.
+ */
 function itemLink(li) {
-  return li.querySelector(':scope > a');
+  const sublist = getFlyoutList(li);
+  const anchor = li.querySelector('a');
+  if (anchor && (!sublist || !sublist.contains(anchor))) return anchor;
+  return null;
 }
 
-/** the text label of an <li>, ignoring any nested list */
+/**
+ * The text label of an <li>, ignoring its nested list. Document authoring often
+ * wraps the label in a <p> (e.g. `<li><p>Vehicles</p><ul>…</ul></li>`), so read
+ * the item's text with any nested list removed rather than direct text nodes.
+ */
 function itemLabel(li) {
   const link = itemLink(li);
   if (link) return link.textContent.trim();
-  return [...li.childNodes]
-    .filter((n) => n.nodeType === Node.TEXT_NODE)
-    .map((n) => n.textContent)
-    .join(' ')
-    .trim();
+  const clone = li.cloneNode(true);
+  clone.querySelectorAll('ul, ol').forEach((sub) => sub.remove());
+  return clone.textContent.replace(/\s+/g, ' ').trim();
 }
 
 /** builds a single anchor, preserving the authored href */
@@ -153,6 +161,7 @@ function setupInteractions(header) {
   items.forEach((item) => {
     const trigger = item.querySelector('.header-v1-trigger');
 
+    // open/close strictly on click (no hover)
     trigger.addEventListener('click', () => {
       const isOpen = item.classList.contains('open');
       if (isOpen) {
@@ -160,14 +169,6 @@ function setupInteractions(header) {
       } else {
         openItem(item);
       }
-    });
-
-    // hover intent for pointer devices on desktop only
-    item.addEventListener('mouseenter', () => {
-      if (isDesktop.matches) openItem(item);
-    });
-    item.addEventListener('mouseleave', () => {
-      if (isDesktop.matches) closeAll();
     });
   });
 
