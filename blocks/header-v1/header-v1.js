@@ -143,6 +143,54 @@ const ICON_BELL = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" s
 const ICON_CHEVRON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>';
 const ICON_HEART = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9.2"/><path d="M12 16.4s-3.7-2.2-3.7-4.8a2 2 0 0 1 3.7-1.1 2 2 0 0 1 3.7 1.1c0 2.6-3.7 4.8-3.7 4.8Z"/></svg>';
 const ICON_GEAR = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.6l1.5 2.6a7.4 7.4 0 0 1 2.1.9l3-.8 1.6 2.7-2 2.3a7.4 7.4 0 0 1 0 2.3l2 2.3-1.6 2.7-3-.8a7.4 7.4 0 0 1-2.1.9L12 21.4l-1.5-2.6a7.4 7.4 0 0 1-2.1-.9l-3 .8-1.6-2.7 2-2.3a7.4 7.4 0 0 1 0-2.3l-2-2.3 1.6-2.7 3 .8a7.4 7.4 0 0 1 2.1-.9Z"/></svg>';
+const ICON_DOT = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/></svg>';
+
+/** picks a row icon from the label text */
+function accountRowIcon(label) {
+  const key = label.toLowerCase();
+  if (key.includes('notif')) return ICON_BELL;
+  if (key.includes('save')) return ICON_HEART;
+  if (key.includes('setting')) return ICON_GEAR;
+  return ICON_DOT;
+}
+
+/** builds one account link row; rows with nested bullets become expandable notes */
+function accountRowHtml(li) {
+  const rawLabel = itemLabel(li);
+  const href = itemLink(li)?.getAttribute('href') || '#';
+  const notesList = getFlyoutList(li);
+  const notes = notesList ? childItems(notesList).map((n) => itemLabel(n)) : [];
+
+  const countMatch = rawLabel.match(/\((\d+)\)\s*$/);
+  const count = countMatch ? countMatch[1] : '';
+  const label = rawLabel.replace(/\s*\(\d+\)\s*$/, '');
+  const icon = accountRowIcon(label);
+
+  const meta = count
+    ? `<span class="count">(${count})</span><span class="dot" aria-hidden="true"></span>`
+    : '';
+
+  if (notes.length) {
+    return `
+      <div class="link link-notifications has-notifications" data-count="${count}">
+        <button type="button" class="link-notifications-content" aria-expanded="false">
+          <span class="icon" aria-hidden="true">${icon}</span>
+          <span class="label">${label}${meta}</span>
+          <span class="chevron" aria-hidden="true">${ICON_CHEVRON}</span>
+        </button>
+        <div class="notifications">
+          ${notes.map((n) => `<p class="note">${n}</p>`).join('')}
+          <a class="clear-btn" href="#">Clear All</a>
+        </div>
+      </div>`;
+  }
+
+  return `
+    <a class="link" href="${href}">
+      <span class="icon" aria-hidden="true">${icon}</span>
+      <span class="label">${label}${meta}</span>
+    </a>`;
+}
 
 /**
  * Builds the right-aligned Account (My Toyota) control: a trigger plus a
@@ -153,48 +201,47 @@ const ICON_GEAR = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" s
  * @returns {Element}
  */
 function buildAccount(accountLi) {
-  const label = (accountLi && itemLabel(accountLi)) || 'Account';
-  const links = accountLi ? [...accountLi.querySelectorAll('a')] : [];
-  const hrefFor = (re, fallback) => links.find((a) => re.test(a.textContent))?.getAttribute('href') || fallback;
+  const triggerLabel = itemLabel(accountLi) || 'Account';
+
+  // split the authored Account children: plain-text bullets carry the title /
+  // description, link bullets carry the CTA (first) and the action rows (rest).
+  const list = getFlyoutList(accountLi);
+  const children = list ? childItems(list) : [];
+  const textItems = children.filter((li) => !itemLink(li));
+  const linkItems = children.filter((li) => itemLink(li));
+
+  const title = textItems[0] ? itemLabel(textItems[0]) : 'Personalize Your Toyota Experience';
+  const descriptions = textItems.slice(1).map((li) => itemLabel(li));
+  if (!descriptions.length) {
+    descriptions.push('Create an account or sign in to access all the tools for your Toyota in one place.');
+  }
+
+  const ctaItem = linkItems[0];
+  const cta = {
+    label: ctaItem ? itemLabel(ctaItem) : 'Create Account Or Sign In',
+    href: ctaItem?.querySelector('a')?.getAttribute('href') || '#',
+  };
+  const rows = linkItems.slice(1);
 
   const wrap = document.createElement('div');
   wrap.className = 'header-v1-account';
   wrap.innerHTML = `
     <button type="button" class="header-v1-account-trigger" aria-expanded="false" aria-haspopup="true">
       <span class="header-v1-account-icon" aria-hidden="true">${ICON_USER}</span>
-      <span class="header-v1-account-label">${label}</span>
+      <span class="header-v1-account-label">${triggerLabel}</span>
     </button>
     <div class="header-v1-account-panel my-toyota-view" data-wrapper="mytoyota">
       <div class="account-logged-out-block">
-        <div class="account-title">Personalize Your Toyota Experience</div>
-        <p>Create an account or sign in to access all the tools for your Toyota in one place.</p>
+        <div class="account-title">${title}</div>
+        ${descriptions.map((d) => `<p>${d}</p>`).join('')}
         <div class="ctas">
-          <a class="button primary sign-in-btn" href="${hrefFor(/sign|log|account|register/i, '#')}">
-            <span class="link-text btn-text">Create Account Or Sign In<span class="arrow" aria-hidden="true">${ICON_ARROW}</span></span>
+          <a class="button primary sign-in-btn" href="${cta.href}">
+            <span class="link-text btn-text">${cta.label}<span class="arrow" aria-hidden="true">${ICON_ARROW}</span></span>
           </a>
         </div>
       </div>
       <div class="links">
-        <div class="link link-notifications has-notifications" data-count="1">
-          <button type="button" class="link-notifications-content" aria-expanded="false">
-            <span class="icon" aria-hidden="true">${ICON_BELL}</span>
-            <span class="label">Notifications<span class="count">(1)</span><span class="dot" aria-hidden="true"></span></span>
-            <span class="chevron" aria-hidden="true">${ICON_CHEVRON}</span>
-          </button>
-          <div class="notifications">
-            <p class="note">For security purposes, you&#39;ve been logged out of your account.</p>
-            <p class="note">Log in again to view your saves or manage your account.</p>
-            <a class="clear-btn" href="#">Clear All</a>
-          </div>
-        </div>
-        <a class="link link-saves" href="${hrefFor(/save/i, '/saves/')}">
-          <span class="icon" aria-hidden="true">${ICON_HEART}</span>
-          <span class="label">My Saves</span>
-        </a>
-        <a class="link link-settings" href="${hrefFor(/setting|dashboard|profile/i, '/my-dashboard/personal-information/')}">
-          <span class="icon" aria-hidden="true">${ICON_GEAR}</span>
-          <span class="label">Settings</span>
-        </a>
+        ${rows.map((li) => accountRowHtml(li)).join('')}
       </div>
     </div>
   `;

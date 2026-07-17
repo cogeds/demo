@@ -24,6 +24,21 @@
         A Level 1 bullet with NO children renders as a plain link
         (no mega-menu) - e.g. "News and Events" below.
 
+    ACCOUNT PANEL (special)
+        A Level 1 bullet named "Account" (or "My Toyota") is pinned
+        to the RIGHT of the header and opens the account panel.
+        Its children are read IN ORDER:
+          - plain-text bullets .... 1st = panel TITLE,
+                                     others = description paragraphs
+          - link bullets .......... 1st link = the CTA button,
+                                     remaining links = rows
+                                     (My Saves, Settings, ...)
+          - a row bullet that itself has children -> those children
+            become expandable NOTES (Notifications style). Add a
+            trailing "(1)" to the row label for a count + red dot.
+        Row icons are chosen from the label text (notifications ->
+        bell, saves -> heart, settings -> gear).
+
     Everything is driven by list nesting only - no tables, no
     special blocks. This is exactly what the da.live bullet-list
     tool produces when you press Tab to indent.
@@ -112,6 +127,23 @@
         </li>
 
         <li><a href="/news">News and Events</a></li>
+
+        <!-- Account : pinned right, opens the account panel -->
+        <li>Account
+          <ul>
+            <li>Personalize Your Toyota Experience</li>
+            <li>Create an account or sign in to access all the tools for your Toyota in one place.</li>
+            <li><a href="/signin">Create Account Or Sign In</a></li>
+            <li><a href="/notifications">Notifications (1)</a>
+              <ul>
+                <li>For security purposes, you&#39;ve been logged out of your account.</li>
+                <li>Log in again to view your saves or manage your account.</li>
+              </ul>
+            </li>
+            <li><a href="/saves/">My Saves</a></li>
+            <li><a href="/my-dashboard/personal-information/">Settings</a></li>
+          </ul>
+        </li>
       </ul>
     </div>
 
