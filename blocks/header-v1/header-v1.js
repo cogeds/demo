@@ -67,11 +67,90 @@ export default async function decorate(block) {
     .map((item) => item.trim())
     .filter(Boolean);
 
+  async function loadFragment(path) {
+    if (!path) return '';
+
+    const response = await fetch(`${path}.plain.html`);
+
+    if (!response.ok) {
+      return '';
+    }
+
+    return response.text();
+  }
+
+  function buildSupportMenu(fragmentHtml) {
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = fragmentHtml;
+
+    const content = wrapper.textContent;
+
+    const extract = (key) => {
+      const regex = new RegExp(`${key}\\s*\\|\\s*([^|]+)`);
+      const match = content.match(regex);
+
+      return match ? match[1].trim() : '';
+    };
+
+    const learn = extract('Learn About Your Toyota')
+      .split(',')
+      .map((item) => item.trim());
+
+    const maintain = extract('Maintain Your Toyota')
+      .split(',')
+      .map((item) => item.trim());
+
+    const title = extract('My Toyota Title');
+
+    const description = extract('My Toyota Description');
+
+    const cta = extract('My Toyota CTA');
+
+    return `
+    <div class="support-menu">
+
+      <div class="support-column">
+
+        <h3>Learn About Your Toyota</h3>
+
+        ${learn.map((item) => `
+          #
+        `).join('')}
+
+      </div>
+
+      <div class="support-column">
+
+        <h3>Maintain Your Toyota</h3>
+
+        ${maintain.map((item) => `
+          #
+        `).join('')}
+
+      </div>
+
+      <div class="support-callout">
+
+        <h3>${title}</h3>
+
+        <p>${description}</p>
+
+        #
+
+      </div>
+
+    </div>
+  `;
+  }
   const supportFragmentPath =
     getLinkValue('Support Fragment');
 
-  const supportFragmentHtml =
+  const supportHtml =
     await loadFragment(supportFragmentPath);
+
+  const supportMenu =
+    buildSupportMenu(await supportHtml);
+
   console.log('supportFragmentPath', supportFragmentPath);
   console.log('supportFragmentHtml', supportFragmentHtml);
 
@@ -102,6 +181,14 @@ export default async function decorate(block) {
   const header = document.createElement('header');
 
   header.className = 'header-v1';
+  const supportFragmentPath =
+    getLinkValue('Support Fragment');
+
+  const supportFragmentHtml =
+    await loadFragment(supportFragmentPath);
+
+  const supportMenu =
+    buildSupportMenu(supportFragmentHtml);
 
   header.innerHTML = `
     <div class="header-v1-bar">
@@ -153,21 +240,23 @@ export default async function decorate(block) {
 
         <div class="menu-group">
 
-          <button class="menu-trigger" type="button">
-            Support
-          </button>
+  <button class="menu-trigger" type="button">
+    Support
+  </button>
 
-          <div class="dropdown-menu support-menu-wrapper">
+  <div class="dropdown-menu support-menu-wrapper">
 
-            ${supportFragmentHtml
+    ${supportMenu
     || supportItems.map((item) => `
-                #>
-              `).join('')
+        #="dropdown-item">
+          ${item}
+        </a>
+      `).join('')
     }
 
-          </div>
+  </div>
 
-        </div>
+</div>
 
       </nav>
 

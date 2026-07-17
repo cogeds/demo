@@ -1,90 +1,55 @@
 .support-menu {
-    width: 100%;
-
     display: grid;
-
-    grid-template-columns:
-        1fr
-        1fr
-        360px;
-
-    gap: 48px;
-
+    grid-template-columns: 1fr 1fr 320px;
+    gap: 40px;
     padding: 40px;
+    width: 1000px;
 }
 
 .support-column h3,
 .support-callout h3 {
     margin: 0 0 20px;
-
     font-size: 22px;
     font-weight: 700;
-
-    color: #111;
 }
 
 .support-column a {
     display: block;
-
     padding: 10px 0;
-
     color: #333;
-
     text-decoration: none;
-
-    transition:
-        color 0.2s ease,
-        transform 0.2s ease;
+    transition: 0.2s ease;
 }
 
 .support-column a:hover {
     color: #eb0a1e;
-
     transform: translateX(6px);
 }
 
 .support-callout {
     padding-left: 32px;
-
     border-left: 1px solid #e5e5e5;
 }
 
 .support-callout p {
     margin: 16px 0 24px;
-
-    line-height: 1.6;
-
     color: #666;
+    line-height: 1.6;
 }
 
 .support-cta {
     display: inline-flex;
-
     align-items: center;
     justify-content: center;
-
-    height: 48px;
-
-    padding: 0 24px;
-
+    padding: 12px 24px;
     background: #eb0a1e;
-
     color: #fff;
     text-decoration: none;
-
     border-radius: 999px;
-
-    font-weight: 600;
-
-    transition:
-        background 0.2s ease,
-        transform 0.2s ease;
 }
 
 .support-cta:hover {
-    background: #c80018;
-
-    transform: translateY(-2px);
+    background: #c80718;
 }
 
 .support-menu {
