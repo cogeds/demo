@@ -136,18 +136,92 @@ function buildNavItem(li) {
   return item;
 }
 
+/* inline icons for the account (My Toyota) panel */
+const ICON_USER = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9.2"/><circle cx="12" cy="10" r="3"/><path d="M6.4 18.6a5.7 5.7 0 0 1 11.2 0"/></svg>';
+const ICON_ARROW = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h13M12 6l6 6-6 6"/></svg>';
+const ICON_BELL = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>';
+const ICON_CHEVRON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>';
+const ICON_HEART = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9.2"/><path d="M12 16.4s-3.7-2.2-3.7-4.8a2 2 0 0 1 3.7-1.1 2 2 0 0 1 3.7 1.1c0 2.6-3.7 4.8-3.7 4.8Z"/></svg>';
+const ICON_GEAR = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.6l1.5 2.6a7.4 7.4 0 0 1 2.1.9l3-.8 1.6 2.7-2 2.3a7.4 7.4 0 0 1 0 2.3l2 2.3-1.6 2.7-3-.8a7.4 7.4 0 0 1-2.1.9L12 21.4l-1.5-2.6a7.4 7.4 0 0 1-2.1-.9l-3 .8-1.6-2.7 2-2.3a7.4 7.4 0 0 1 0-2.3l-2-2.3 1.6-2.7 3 .8a7.4 7.4 0 0 1 2.1-.9Z"/></svg>';
+
 /**
- * Wires the desktop mega-menu (hover + click) and mobile accordion behaviour.
+ * Builds the right-aligned Account (My Toyota) control: a trigger plus a
+ * logged-out panel (title, description, sign-in CTA) and Notifications /
+ * My Saves / Settings rows. Hrefs are taken from the authored account item's
+ * links where they match, otherwise sensible defaults are used.
+ * @param {Element} [accountLi] the source "Account" nav item, if authored
+ * @returns {Element}
+ */
+function buildAccount(accountLi) {
+  const label = (accountLi && itemLabel(accountLi)) || 'Account';
+  const links = accountLi ? [...accountLi.querySelectorAll('a')] : [];
+  const hrefFor = (re, fallback) => links.find((a) => re.test(a.textContent))?.getAttribute('href') || fallback;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'header-v1-account';
+  wrap.innerHTML = `
+    <button type="button" class="header-v1-account-trigger" aria-expanded="false" aria-haspopup="true">
+      <span class="header-v1-account-icon" aria-hidden="true">${ICON_USER}</span>
+      <span class="header-v1-account-label">${label}</span>
+    </button>
+    <div class="header-v1-account-panel my-toyota-view" data-wrapper="mytoyota">
+      <div class="account-logged-out-block">
+        <div class="account-title">Personalize Your Toyota Experience</div>
+        <p>Create an account or sign in to access all the tools for your Toyota in one place.</p>
+        <div class="ctas">
+          <a class="button primary sign-in-btn" href="${hrefFor(/sign|log|account|register/i, '#')}">
+            <span class="link-text btn-text">Create Account Or Sign In<span class="arrow" aria-hidden="true">${ICON_ARROW}</span></span>
+          </a>
+        </div>
+      </div>
+      <div class="links">
+        <div class="link link-notifications has-notifications" data-count="1">
+          <button type="button" class="link-notifications-content" aria-expanded="false">
+            <span class="icon" aria-hidden="true">${ICON_BELL}</span>
+            <span class="label">Notifications<span class="count">(1)</span><span class="dot" aria-hidden="true"></span></span>
+            <span class="chevron" aria-hidden="true">${ICON_CHEVRON}</span>
+          </button>
+          <div class="notifications">
+            <p class="note">For security purposes, you&#39;ve been logged out of your account.</p>
+            <p class="note">Log in again to view your saves or manage your account.</p>
+            <a class="clear-btn" href="#">Clear All</a>
+          </div>
+        </div>
+        <a class="link link-saves" href="${hrefFor(/save/i, '/saves/')}">
+          <span class="icon" aria-hidden="true">${ICON_HEART}</span>
+          <span class="label">My Saves</span>
+        </a>
+        <a class="link link-settings" href="${hrefFor(/setting|dashboard|profile/i, '/my-dashboard/personal-information/')}">
+          <span class="icon" aria-hidden="true">${ICON_GEAR}</span>
+          <span class="label">Settings</span>
+        </a>
+      </div>
+    </div>
+  `;
+  return wrap;
+}
+
+/**
+ * Wires the desktop mega-menu, the right-aligned account panel, and the
+ * mobile drawer behaviour.
  * @param {Element} header
  */
 function setupInteractions(header) {
   const nav = header.querySelector('.header-v1-nav');
   const overlay = header.querySelector('.header-v1-overlay');
   const hamburger = header.querySelector('.header-v1-hamburger');
+  const account = header.querySelector('.header-v1-account');
+  const accountTrigger = account?.querySelector('.header-v1-account-trigger');
   const items = [...header.querySelectorAll('.header-v1-item.has-flyout')];
+
+  const closeAccount = () => {
+    account?.classList.remove('open');
+    accountTrigger?.setAttribute('aria-expanded', 'false');
+  };
 
   const openItem = (item) => {
     closeFlyouts(nav, item);
+    closeAccount();
     item.classList.add('open');
     item.querySelector('.header-v1-trigger')?.setAttribute('aria-expanded', 'true');
     overlay?.classList.add('active');
@@ -155,8 +229,29 @@ function setupInteractions(header) {
 
   const closeAll = () => {
     closeFlyouts(nav);
+    closeAccount();
     overlay?.classList.remove('active');
   };
+
+  // account panel (right side) — click to toggle
+  accountTrigger?.addEventListener('click', () => {
+    const isOpen = account.classList.contains('open');
+    closeAll();
+    if (!isOpen) {
+      account.classList.add('open');
+      accountTrigger.setAttribute('aria-expanded', 'true');
+      overlay?.classList.add('active');
+    }
+  });
+
+  // notifications expand/collapse inside the account panel
+  const notif = account?.querySelector('.link-notifications-content');
+  notif?.addEventListener('click', () => {
+    const row = notif.closest('.link-notifications');
+    const expanded = notif.getAttribute('aria-expanded') === 'true';
+    notif.setAttribute('aria-expanded', String(!expanded));
+    row.classList.toggle('expanded', !expanded);
+  });
 
   items.forEach((item) => {
     const trigger = item.querySelector('.header-v1-trigger');
@@ -228,6 +323,11 @@ export default async function decorate(block) {
     .filter((ul) => !ul.closest('li')) // only top-level lists, not nested ones
     .flatMap((ul) => [...ul.children].filter((li) => li.tagName === 'LI'));
 
+  // the "Account" / "My Toyota" item is pulled out and pinned to the right
+  const isAccountItem = (li) => /^(account|my\s*toyota)$/i.test(itemLabel(li));
+  const accountLi = sourceItems.find(isAccountItem);
+  const primaryItems = sourceItems.filter((li) => li !== accountLi);
+
   const header = document.createElement('header');
   header.className = 'header-v1';
   header.innerHTML = `
@@ -252,7 +352,9 @@ export default async function decorate(block) {
   header.querySelector('.header-v1-overlay').removeAttribute('hidden');
 
   const sections = header.querySelector('.header-v1-sections');
-  sourceItems.forEach((li) => sections.append(buildNavItem(li)));
+  primaryItems.forEach((li) => sections.append(buildNavItem(li)));
+
+  if (accountLi) header.querySelector('.header-v1-bar').append(buildAccount(accountLi));
 
   setupInteractions(header);
 

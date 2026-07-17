@@ -258,6 +258,208 @@
     overflow: hidden;
 }
 
+/* account (My Toyota) — pinned right ----------------------------------- */
+.header-v1-account {
+    position: relative;
+    flex: 0 0 auto;
+    margin-left: 8px;
+}
+
+.header-v1-account-trigger {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: var(--hv1-bar-height);
+    padding: 0 8px;
+    border: 0;
+    background: none;
+    color: var(--hv1-text);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.header-v1-account-icon {
+    display: inline-flex;
+}
+
+.header-v1-account-trigger:hover {
+    color: var(--hv1-red);
+}
+
+.header-v1-account.open .header-v1-account-trigger {
+    color: var(--hv1-text);
+}
+
+.header-v1-account.open .header-v1-account-trigger::after {
+    content: "";
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 0;
+    height: 2px;
+    background: var(--hv1-red);
+}
+
+.header-v1-account-panel {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 95;
+    width: min(420px, 92vw);
+    background: var(--hv1-bg);
+    border: 1px solid var(--hv1-border);
+    box-shadow: var(--hv1-shadow);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(12px);
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        visibility 0.2s ease;
+}
+
+.header-v1-account.open .header-v1-account-panel {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.account-logged-out-block {
+    padding: 32px 28px 4px;
+}
+
+.account-title {
+    margin-bottom: 14px;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+}
+
+.account-logged-out-block p {
+    margin: 0 0 22px;
+    color: var(--hv1-muted);
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.sign-in-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 26px;
+    border: 0;
+    border-radius: 26px;
+    background: var(--hv1-red);
+    color: #fff;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.sign-in-btn .btn-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* account link rows */
+.links {
+    padding: 8px 0;
+}
+
+.link {
+    display: block;
+    border-top: 1px solid var(--hv1-border);
+}
+
+.link-notifications-content,
+a.link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 18px 28px;
+    border: 0;
+    background: none;
+    color: var(--hv1-text);
+    font-family: inherit;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.link .icon {
+    display: inline-flex;
+    flex: 0 0 auto;
+    color: #b0b0b0;
+}
+
+.link .label {
+    flex: 1 1 auto;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.link .count {
+    margin-left: 6px;
+    color: var(--hv1-muted);
+    font-weight: 600;
+}
+
+.link .dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-left: 6px;
+    border-radius: 50%;
+    background: var(--hv1-red);
+    vertical-align: middle;
+}
+
+.link .chevron {
+    display: inline-flex;
+    flex: 0 0 auto;
+    color: var(--hv1-muted);
+    transition: transform 0.2s ease;
+}
+
+.link-notifications.expanded .chevron {
+    transform: rotate(180deg);
+}
+
+.link-notifications .notifications {
+    max-height: 0;
+    padding: 0 28px 0 68px;
+    overflow: hidden;
+    transition: max-height 0.28s ease;
+}
+
+.link-notifications.expanded .notifications {
+    max-height: 320px;
+    padding-bottom: 16px;
+}
+
+.link-notifications .note {
+    margin: 0 0 12px;
+    color: var(--hv1-muted);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.link-notifications .clear-btn {
+    display: inline-block;
+    color: var(--hv1-text);
+    font-weight: 700;
+    text-decoration: none;
+}
+
 /* mobile drawer (< 900px) ---------------------------------------------- */
 @media (width <= 899px) {
     .header-v1-hamburger {
