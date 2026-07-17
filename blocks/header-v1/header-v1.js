@@ -67,92 +67,83 @@ export default async function decorate(block) {
     .map((item) => item.trim())
     .filter(Boolean);
 
-  async function loadFragment(path) {
-    if (!path) return '';
+  // function buildSupportMenu(fragmentHtml) {
+  //   const wrapper = document.createElement('div');
+  //   wrapper.innerHTML = fragmentHtml;
 
-    const response = await fetch(`${path}.plain.html`);
+  //   const content = wrapper.textContent;
 
-    if (!response.ok) {
+  //   const extract = (key) => {
+  //     const regex = new RegExp(`${key}\\s*\\|\\s*([^|]+)`);
+  //     const match = content.match(regex);
+
+  //     return match ? match[1].trim() : '';
+  //   };
+
+  //   const learn = extract('Learn About Your Toyota')
+  //     .split(',')
+  //     .map((item) => item.trim());
+
+  //   const maintain = extract('Maintain Your Toyota')
+  //     .split(',')
+  //     .map((item) => item.trim());
+
+  //   const title = extract('My Toyota Title');
+
+  //   const description = extract('My Toyota Description');
+
+  //   const cta = extract('My Toyota CTA');
+
+  //   return `
+  //   <div class="support-menu">
+
+  //     <div class="support-column">
+
+  //       <h3>Learn About Your Toyota</h3>
+
+  //       ${learn.map((item) => `
+  //         #
+  //       `).join('')}
+
+  //     </div>
+
+  //     <div class="support-column">
+
+  //       <h3>Maintain Your Toyota</h3>
+
+  //       ${maintain.map((item) => `
+  //         #
+  //       `).join('')}
+
+  //     </div>
+
+  //     <div class="support-callout">
+
+  //       <h3>${title}</h3>
+
+  //       <p>${description}</p>
+
+  //       #
+
+  //     </div>
+
+  //   </div>
+  // `;
+  // }
+  function buildSupportMenu(fragmentHtml) {
+    if (!fragmentHtml) {
       return '';
     }
 
-    return response.text();
-  }
-
-  function buildSupportMenu(fragmentHtml) {
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = fragmentHtml;
-
-    const content = wrapper.textContent;
-
-    const extract = (key) => {
-      const regex = new RegExp(`${key}\\s*\\|\\s*([^|]+)`);
-      const match = content.match(regex);
-
-      return match ? match[1].trim() : '';
-    };
-
-    const learn = extract('Learn About Your Toyota')
-      .split(',')
-      .map((item) => item.trim());
-
-    const maintain = extract('Maintain Your Toyota')
-      .split(',')
-      .map((item) => item.trim());
-
-    const title = extract('My Toyota Title');
-
-    const description = extract('My Toyota Description');
-
-    const cta = extract('My Toyota CTA');
-
     return `
-    <div class="support-menu">
-
-      <div class="support-column">
-
-        <h3>Learn About Your Toyota</h3>
-
-        ${learn.map((item) => `
-          #
-        `).join('')}
-
-      </div>
-
-      <div class="support-column">
-
-        <h3>Maintain Your Toyota</h3>
-
-        ${maintain.map((item) => `
-          #
-        `).join('')}
-
-      </div>
-
-      <div class="support-callout">
-
-        <h3>${title}</h3>
-
-        <p>${description}</p>
-
-        #
-
-      </div>
-
+    <div class="support-menu-rendered">
+      ${fragmentHtml}
     </div>
   `;
   }
-  const supportFragmentPath =
-    getLinkValue('Support Fragment');
 
-  const supportHtml =
-    await loadFragment(supportFragmentPath);
 
-  const supportMenu =
-    buildSupportMenu(await supportHtml);
 
-  console.log('supportFragmentPath', supportFragmentPath);
-  console.log('supportFragmentHtml', supportFragmentHtml);
 
   const buildMobileSection = (title, items) => `
     <div class="mobile-menu-group">
@@ -175,20 +166,23 @@ export default async function decorate(block) {
 
     </div>
   `;
-
-  block.innerHTML = '';
-
-  const header = document.createElement('header');
-
-  header.className = 'header-v1';
   const supportFragmentPath =
     getLinkValue('Support Fragment');
+  console.log('supportFragmentPath', supportFragmentPath);)
 
   const supportFragmentHtml =
     await loadFragment(supportFragmentPath);
 
   const supportMenu =
     buildSupportMenu(supportFragmentHtml);
+
+  console.log('supportFragmentPath', supportFragmentPath);
+  console.log('supportFragmentHtml', supportFragmentHtml);
+  block.innerHTML = '';
+
+  const header = document.createElement('header');
+
+  header.className = 'header-v1';
 
   header.innerHTML = `
     <div class="header-v1-bar">
