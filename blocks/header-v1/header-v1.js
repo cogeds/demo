@@ -131,20 +131,8 @@ export default async function decorate(block) {
   // `;
   // }
   function buildSupportMenu(fragmentHtml) {
-    if (!fragmentHtml) {
-      return '';
-    }
-
-    return `
-    <div class="support-menu-rendered">
-      ${fragmentHtml}
-    </div>
-  `;
+    return fragmentHtml;
   }
-
-
-
-
   const buildMobileSection = (title, items) => `
     <div class="mobile-menu-group">
 
@@ -232,23 +220,9 @@ export default async function decorate(block) {
 
         </div>
 
-        <div class="menu-group">
-
-  <button class="menu-trigger" type="button">
-    Support
-  </button>
-
   <div class="dropdown-menu support-menu-wrapper">
 
-    ${supportMenu
-    || supportItems.map((item) => `
-        #="dropdown-item">
-          ${item}
-        </a>
-      `).join('')
-    }
-
-  </div>
+  ${supportMenu}
 
 </div>
 
