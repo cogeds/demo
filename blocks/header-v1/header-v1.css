@@ -104,15 +104,12 @@
 
 /* mega-menu fly-out ----------------------------------------------------- */
 .header-v1-flyout {
-    position: absolute;
-    top: 100%;
+    position: fixed;
     left: 50%;
     z-index: 90;
-    width: max-content;
-    max-width: min(960px, 92vw);
+    width: 100vw;
     background: var(--hv1-bg);
     border: 1px solid var(--hv1-border);
-    border-top: 3px solid var(--hv1-red);
     box-shadow: var(--hv1-shadow);
     opacity: 0;
     visibility: hidden;
@@ -173,7 +170,9 @@
     font-size: 15px;
     font-weight: 500;
     text-decoration: none;
-    transition: background 0.2s ease, color 0.2s ease;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
 }
 
 /* a column title authored as a link inherits the heading look, not the block-link look */
@@ -224,7 +223,9 @@
     display: block;
     height: 2px;
     background: var(--hv1-text);
-    transition: transform 0.25s ease, opacity 0.25s ease;
+    transition:
+        transform 0.25s ease,
+        opacity 0.25s ease;
 }
 
 .header-v1.mobile-open .header-v1-hamburger span:nth-child(1) {
@@ -246,7 +247,9 @@
     background: rgb(0 0 0 / 35%);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.24s ease, visibility 0.24s ease;
+    transition:
+        opacity 0.24s ease,
+        visibility 0.24s ease;
 }
 
 .header-v1-overlay.active {
@@ -477,7 +480,9 @@ a.link {
         box-shadow: var(--hv1-shadow);
         transform: translateX(-100%);
         visibility: hidden;
-        transition: transform 0.28s ease, visibility 0.28s ease;
+        transition:
+            transform 0.28s ease,
+            visibility 0.28s ease;
     }
 
     .header-v1.mobile-open .header-v1-nav {
