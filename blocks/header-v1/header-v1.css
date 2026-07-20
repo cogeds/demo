@@ -728,9 +728,8 @@ a.link {
     left: 50%;
     bottom: 0;
     width: 0;
-    height: 1px;
-    rotate: -45deg;
-    background: transparent;
+    height: 2px;
+    background: var(--hv1-red);
     transform: translateX(-50%);
     transition: width 0.3s ease;
 }
@@ -805,7 +804,7 @@ a.link {
         bottom: 0;
         height: 5px;
         margin: auto;
-        background: #000;
+        /* background: #000; */
     }
 
     .header-v1 .header-v1-account-label {
