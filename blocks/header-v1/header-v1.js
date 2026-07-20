@@ -121,7 +121,7 @@ function buildNavItem(li) {
   trigger.className = 'header-v1-trigger';
   trigger.setAttribute('aria-expanded', 'false');
   trigger.setAttribute('aria-haspopup', 'true');
-  trigger.innerHTML = `<span>${label}</span><span class="header-v1-caret" aria-hidden="true"></span>`;
+  trigger.innerHTML = `<span>${label}</span>`;
 
   const flyout = document.createElement('div');
   flyout.className = 'header-v1-flyout';
@@ -134,6 +134,34 @@ function buildNavItem(li) {
 
   item.append(trigger, flyout);
   return item;
+
+  async function loadVehiclesMenu(fragmentPath) {
+    const response = await fetch(`${fragmentPath}.plain.html`);
+
+    if (!response.ok) {
+      return '<p>Unable to load vehicles.</p>';
+    }
+    if (label === 'Vehicles') {
+      flyout.classList.add('vehicles-flyout');
+
+      loadVehiclesMenu(href).then((content) => {
+        flyout.innerHTML = content;
+      });
+
+      item.append(trigger, flyout);
+
+      return item;
+    }
+
+  }
+
+  const html = await response.text();
+
+  return `
+    <div class="vehicles-menu">
+      ${html}
+    </div>
+  `;
 }
 
 /* inline icons for the account (My Toyota) panel */

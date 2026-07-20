@@ -463,6 +463,85 @@ a.link {
     text-decoration: none;
 }
 
+.vehicles-flyout {
+    width: 100%;
+    background: #fff;
+}
+
+.vehicles-menu {
+    display: flex;
+    min-height: 500px;
+}
+
+.vehicles-left {
+    width: 260px;
+    border-right: 1px solid #eee;
+    padding: 24px;
+}
+
+.vehicles-left button {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+}
+
+.vehicles-left button.active {
+    color: #eb0a1e;
+    font-weight: 700;
+}
+
+.vehicles-right {
+    flex: 1;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding: 24px;
+}
+
+.vehicle-card {
+    width: 260px;
+}
+
+.vehicle-card img {
+    width: 100%;
+    display: block;
+}
+
+.vehicle-card h3 {
+    margin: 12px 0 6px;
+    font-size: 20px;
+}
+
+.vehicle-card p {
+    color: #555;
+}
+
+.vehicle-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.vehicle-actions a {
+    padding: 10px 16px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.vehicle-actions a:first-child {
+    background: #000;
+    color: white;
+}
+
+.vehicle-actions a:last-child {
+    border: 1px solid #000;
+}
+
 /* mobile drawer (< 900px) ---------------------------------------------- */
 @media (width <= 899px) {
     .header-v1-hamburger {
