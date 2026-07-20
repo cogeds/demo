@@ -556,16 +556,23 @@ a.link {
 }
 
 .header-v1 .vehicle-card {
-    width: 230px;
+    width: 28%;
     border: 1px solid var(--hv1-border);
     border-radius: 6px;
     overflow: hidden;
-    padding: 10px;
+    padding: 24px;
+}
+
+.header-v1 .vehicle-card:hover {
+    border: 1px solid var(--hv1-text);
 }
 
 .header-v1 .vehicle-image {
     position: relative;
-    display: block;
+    display: flex;
+    height: 160px;
+    align-items: flex-end;
+    justify-content: center;
 }
 
 .header-v1 .vehicle-image img {
@@ -578,24 +585,26 @@ a.link {
     position: absolute;
     top: 0;
     left: 0;
-    padding: 4px 8px;
-    background: #f0f0f0;
+    padding: 7px 11px;
     font-size: 11px;
-    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
+    background: #eef3ff;
+    border-radius: 4px;
 }
 
 .header-v1 .vehicle-card .as-shown {
     margin-top: 6px;
     color: var(--hv1-muted);
-    font-size: 13px;
+    font-size: 10px;
+    text-align: center;
 }
 
 .header-v1 .vehicle-card .year-selector {
     margin-top: 8px;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 12px;
+    border-bottom: 1px solid #000;
+    display: inline-block;
 }
 
 .header-v1 .vehicle-card .year-selector .active {
@@ -604,7 +613,7 @@ a.link {
 
 .header-v1 .vehicle-card h3 {
     margin: 8px 0 4px;
-    font-size: 18px;
+    font-size: 20px;
 }
 
 .header-v1 .vehicle-card h3 a {
