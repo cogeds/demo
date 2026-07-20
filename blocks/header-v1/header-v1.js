@@ -119,7 +119,10 @@ function buildVehicleCard(li) {
   const anchors = [...li.querySelectorAll('a')];
   const build = anchors.find((a) => /build/i.test(a.textContent));
   const shop = anchors.find((a) => /shop/i.test(a.textContent));
-  const modelLink = anchors.find((a) => a !== build && a !== shop);
+  // the model link is the non-CTA anchor that carries the name text; the image
+  // is often wrapped in its own (text-less) anchor pointing at the same page.
+  const others = anchors.filter((a) => a !== build && a !== shop);
+  const modelLink = others.find((a) => a.textContent.trim()) || others[0];
   const media = li.querySelector('picture') || li.querySelector('img');
 
   // remaining plain-text lines: price (contains "$") and an optional badge
@@ -129,8 +132,9 @@ function buildVehicleCard(li) {
   const price = lines.find((l) => l.includes('$')) || '';
   const badge = lines.find((l) => !l.includes('$')) || '';
 
-  const href = modelLink?.getAttribute('href') || '#';
-  const name = (modelLink?.textContent || media?.getAttribute?.('alt') || '').trim();
+  const href = modelLink?.getAttribute('href') || others[0]?.getAttribute('href') || '#';
+  const img = li.querySelector('img');
+  const name = (modelLink?.textContent.trim() || img?.getAttribute('alt') || '').trim();
 
   const image = document.createElement('a');
   image.className = 'vehicle-image';

@@ -557,6 +557,10 @@ a.link {
 
 .header-v1 .vehicle-card {
     width: 230px;
+    border: 1px solid var(--hv1-border);
+    border-radius: 6px;
+    overflow: hidden;
+    padding: 10px;
 }
 
 .header-v1 .vehicle-image {
@@ -624,7 +628,6 @@ a.link {
 
 .header-v1 .vehicle-actions a:last-child {
     border: 1px solid #000;
-    color: var(--hv1-text);
 }
 
 /* mobile drawer (< 900px) ---------------------------------------------- */
