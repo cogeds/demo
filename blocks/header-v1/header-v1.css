@@ -669,6 +669,10 @@ a.link {
 }
 
 .header-v1 .vehicle-actions a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 9px 24px;
     border-radius: 30px;
     font-size: 14px;
@@ -678,10 +682,35 @@ a.link {
     cursor: pointer;
     min-width: 80px;
     text-align: center;
+    color: var(--hv1-text);
+    transition: all 0.3s ease;
 }
 
 .header-v1 .vehicle-actions a {
     border: 1px solid #000;
+}
+
+/* Chevron */
+.header-v1 .vehicle-actions a::after {
+    content: "\2192"; /* → */
+    opacity: 0;
+    width: 0;
+    margin-left: 0;
+    transform: translateX(-6px);
+    transition: all 0.3s ease;
+}
+
+/* Hover */
+.header-v1 .vehicle-actions a:hover {
+    padding-right: 30px;
+    padding-left: 18px;
+}
+
+.header-v1 .vehicle-actions a:hover::after {
+    opacity: 1;
+    width: 12px;
+    margin-left: 6px;
+    transform: translateX(4px);
 }
 
 /* mobile drawer (< 900px) ---------------------------------------------- */
