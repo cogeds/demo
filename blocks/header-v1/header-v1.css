@@ -216,6 +216,7 @@
     border: 0;
     background: none;
     cursor: pointer;
+    order: 3;
 }
 
 .header-v1-hamburger span {
@@ -788,6 +789,10 @@ a.link {
         padding: 0 20px;
         font-size: 17px;
         justify-content: space-between;
+    }
+
+    .header-v1 .header-v1-account-label {
+        display: none;
     }
 
     /* fly-outs become inline accordions on mobile */
