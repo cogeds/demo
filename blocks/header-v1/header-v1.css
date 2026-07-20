@@ -791,20 +791,17 @@ a.link {
         justify-content: space-between;
     }
 
-    .header-v1-trigger::after {
-        position: absolute;
-        content: "";
+    .header-v1 .header-v1-trigger::after {
         border: solid #000;
         border-width: 0 2px 2px 0;
         display: inline-block;
         padding: 4px;
         transform: rotate(-45deg);
-        right: 4px;
         top: 0;
-        bottom: 0;
-        height: 5px;
         margin: auto;
-        /* background: #000; */
+        background: transparent;
+        height: 1px;
+        left: 90%;
     }
 
     .header-v1 .header-v1-account-label {
