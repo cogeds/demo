@@ -240,7 +240,7 @@
 }
 
 .header-v1-overlay {
-    position: fixed;
+    position: relative;
     inset: 0;
     z-index: 80;
     background: rgb(0 0 0 / 35%);
