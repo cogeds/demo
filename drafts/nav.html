@@ -1,0 +1,111 @@
+<!--
+  DA.LIVE AUTHORING STRUCTURE for the header-v1 "Vehicles" mega-menu.
+
+  In da.live the nav document is a plain nested BULLET LIST. The header block
+  reads every top-level list; each top-level <li> becomes a primary nav entry.
+
+  The "Vehicles" entry is decoded specially (blocks/header-v1/header-v1.js ->
+  buildVehiclesItem). Nesting rules an author follows in DA:
+
+    - Vehicles                      (top level -> the "Vehicles" trigger)
+      - <Category name>             (2nd level -> a left-rail tab / slide)
+        - <Vehicle>                 (3rd level -> a vehicle card)
+            image  (linked to the model page)
+            [Model Name](/model/)   (the card title link)
+            $00,000 Starting MSRP   (price line, must contain "$")
+            Hybrid EV Available     (OPTIONAL badge line, no "$")
+            [Build](/build-url/)    (link whose text is "Build")
+            [Shop](/shop-url/)      (link whose text is "Shop")
+
+  A category may instead GROUP vehicles under sub-headings (e.g. Electrified):
+
+    - Electrified
+      - Battery                     (3rd level WITH its own nested list -> subhead)
+        - <Vehicle>                 (4th level -> card under that subhead)
+
+  Everything below is the exact rendered markup (nav.plain.html equivalent) an
+  author's bullets produce. Test locally with:  aem up --html-folder drafts
+-->
+<div>
+  <p><a href="/"><img src="/icons/logo.svg" alt="Toyota"></a></p>
+  <ul>
+    <li>
+      Vehicles
+      <ul>
+        <li>
+          Crossovers &amp; SUVs
+          <ul>
+            <li>
+              <p><a href="/corollacross/"><img src="https://delivery.tcom.assetscs.toyota.com/adobe/assets/urn:aaid:aem:ab59bdfa-8b62-47c1-bd1f-05e7f260d120/as/base.png?format=webp&amp;quality=90" alt="Corolla Cross"></a></p>
+              <p><a href="/corollacross/">Corolla Cross</a></p>
+              <p>$25,235 Starting MSRP</p>
+              <p>Hybrid EV Available</p>
+              <p><a href="/configurator/build/step/model/year/2026/series/corollacross/">Build</a></p>
+              <p><a href="/search-inventory/model/corollacross">Shop</a></p>
+            </li>
+            <li>
+              <p><a href="/rav4/"><img src="https://delivery.tcom.assetscs.toyota.com/adobe/assets/urn:aaid:aem:8abfd804-08d1-4f7d-bb42-f35d90b98c13/as/base.png?format=webp&amp;quality=90" alt="RAV4"></a></p>
+              <p><a href="/rav4/">RAV4</a></p>
+              <p>$31,900 Starting MSRP</p>
+              <p>Hybrid EV</p>
+              <p><a href="/configurator/build/step/model/year/2026/series/rav4/">Build</a></p>
+              <p><a href="/search-inventory/model/rav4">Shop</a></p>
+            </li>
+          </ul>
+        </li>
+        <li>
+          Trucks
+          <ul>
+            <li>
+              <p><a href="/tacoma/"><img src="https://delivery.tcom.assetscs.toyota.com/adobe/assets/urn:aaid:aem:fb17a748-d0d7-43ba-add7-ef3acaffc953/as/base.png?format=webp&amp;quality=90" alt="Tacoma"></a></p>
+              <p><a href="/tacoma/">Tacoma</a></p>
+              <p>$32,445 Starting MSRP</p>
+              <p>Hybrid EV Available</p>
+              <p><a href="/configurator/build/step/model/year/2026/series/tacoma/">Build</a></p>
+              <p><a href="/search-inventory/model/tacoma">Shop</a></p>
+            </li>
+            <li>
+              <p><a href="/tundra/"><img src="https://delivery.tcom.assetscs.toyota.com/adobe/assets/urn:aaid:aem:6ac0db91-3c65-4283-8118-cd2fca7de22f/as/base.png?format=webp&amp;quality=90" alt="Tundra"></a></p>
+              <p><a href="/tundra/">Tundra</a></p>
+              <p>$41,260 Starting MSRP</p>
+              <p>Hybrid EV Available</p>
+              <p><a href="/configurator/build/step/model/year/2026/series/tundra/">Build</a></p>
+              <p><a href="/search-inventory/model/tundra">Shop</a></p>
+            </li>
+          </ul>
+        </li>
+        <li>
+          Electrified
+          <ul>
+            <li>
+              Battery
+              <ul>
+                <li>
+                  <p><a href="/bz/"><img src="https://delivery.tcom.assetscs.toyota.com/adobe/assets/urn:aaid:aem:d3d4b720-3a78-42e1-8d37-6280d578e301/as/base.png?format=webp&amp;quality=90" alt="bZ"></a></p>
+                  <p><a href="/bz/">bZ</a></p>
+                  <p>$34,900 Starting MSRP</p>
+                  <p>Battery EV</p>
+                  <p><a href="/configurator/build/step/model/year/2026/series/bz/">Build</a></p>
+                  <p><a href="/search-inventory/model/bz">Shop</a></p>
+                </li>
+              </ul>
+            </li>
+            <li>
+              Fuel Cell
+              <ul>
+                <li>
+                  <p><a href="/mirai/"><img src="https://delivery.tcom.assetscs.toyota.com/adobe/assets/urn:aaid:aem:9ecc27ea-056a-4770-b62e-065274af5150/as/base.png?format=webp&amp;quality=90" alt="Mirai"></a></p>
+                  <p><a href="/mirai/">Mirai</a></p>
+                  <p>$51,795 Starting MSRP</p>
+                  <p>Fuel Cell EV</p>
+                  <p><a href="/configurator/build/step/model/year/2026/series/mirai/">Build</a></p>
+                  <p><a href="/search-inventory/model/mirai">Shop</a></p>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>

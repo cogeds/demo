@@ -100,6 +100,157 @@ function buildColumn(colLi) {
   return col;
 }
 
+/** true when a nav item is the special, richly-authored "Vehicles" menu */
+function isVehiclesItem(li) {
+  return /^vehicles$/i.test(itemLabel(li));
+}
+
+/**
+ * Builds one vehicle card from an authored <li>. The item is expected to hold
+ * an image, a model link (the name), a price line ("$… Starting MSRP"), an
+ * optional badge line (e.g. "Hybrid EV"), and Build / Shop links.
+ * @param {Element} li
+ * @returns {Element}
+ */
+function buildVehicleCard(li) {
+  const card = document.createElement('div');
+  card.className = 'vehicle-card';
+
+  const anchors = [...li.querySelectorAll('a')];
+  const build = anchors.find((a) => /build/i.test(a.textContent));
+  const shop = anchors.find((a) => /shop/i.test(a.textContent));
+  const modelLink = anchors.find((a) => a !== build && a !== shop);
+  const media = li.querySelector('picture') || li.querySelector('img');
+
+  // remaining plain-text lines: price (contains "$") and an optional badge
+  const clone = li.cloneNode(true);
+  clone.querySelectorAll('a, picture, img, ul, ol').forEach((el) => el.remove());
+  const lines = clone.textContent.split('\n').map((s) => s.trim()).filter(Boolean);
+  const price = lines.find((l) => l.includes('$')) || '';
+  const badge = lines.find((l) => !l.includes('$')) || '';
+
+  const href = modelLink?.getAttribute('href') || '#';
+  const name = (modelLink?.textContent || media?.getAttribute?.('alt') || '').trim();
+
+  const image = document.createElement('a');
+  image.className = 'vehicle-image';
+  image.href = href;
+  if (badge) {
+    const b = document.createElement('span');
+    b.className = 'vehicle-badge';
+    b.textContent = badge;
+    image.append(b);
+  }
+  if (media) image.append(media.cloneNode(true));
+  card.append(image);
+
+  const heading = document.createElement('h3');
+  heading.append(buildLink('', name, href));
+  card.append(heading);
+
+  if (price) {
+    const p = document.createElement('p');
+    p.textContent = price;
+    card.append(p);
+  }
+
+  const actions = document.createElement('div');
+  actions.className = 'vehicle-actions';
+  if (build) actions.append(buildLink('', build.textContent.trim() || 'Build', build.getAttribute('href')));
+  if (shop) actions.append(buildLink('', shop.textContent.trim() || 'Shop', shop.getAttribute('href')));
+  if (actions.children.length) card.append(actions);
+
+  return card;
+}
+
+/** appends a grid of vehicle cards for the given source list items */
+function appendVehicleGrid(slide, items) {
+  const grid = document.createElement('div');
+  grid.className = 'vehicles-grid';
+  items.forEach((v) => grid.append(buildVehicleCard(v)));
+  slide.append(grid);
+}
+
+/**
+ * Builds the "Vehicles" mega-menu: a left rail of category tabs that switch the
+ * right-hand pane between slides of vehicle cards. A category may either list
+ * vehicles directly or group them under sub-category headings (e.g. Electrified
+ * -> Battery / Plug-in Hybrid / Hybrid / Fuel Cell).
+ * @param {Element} li source "Vehicles" nav item
+ * @returns {Element}
+ */
+function buildVehiclesItem(li) {
+  const item = document.createElement('li');
+  item.className = 'header-v1-item has-flyout vehicles';
+
+  const trigger = document.createElement('button');
+  trigger.type = 'button';
+  trigger.className = 'header-v1-trigger';
+  trigger.setAttribute('aria-expanded', 'false');
+  trigger.setAttribute('aria-haspopup', 'true');
+  trigger.innerHTML = `<span>${itemLabel(li)}</span>`;
+
+  const flyout = document.createElement('div');
+  flyout.className = 'header-v1-flyout vehicles-flyout';
+
+  const menu = document.createElement('div');
+  menu.className = 'vehicles-menu';
+
+  const left = document.createElement('div');
+  left.className = 'vehicles-left';
+  left.innerHTML = '<div class="all-models">All Models</div>';
+  const catList = document.createElement('ul');
+  catList.className = 'vehicles-cats';
+  left.append(catList);
+
+  const right = document.createElement('div');
+  right.className = 'vehicles-right';
+
+  const categories = childItems(getFlyoutList(li) || document.createElement('ul'));
+  categories.forEach((catLi, index) => {
+    const catItem = document.createElement('li');
+    const catBtn = document.createElement('button');
+    catBtn.type = 'button';
+    catBtn.dataset.cat = String(index);
+    catBtn.textContent = itemLabel(catLi);
+    if (index === 0) catBtn.classList.add('active');
+    catItem.append(catBtn);
+    catList.append(catItem);
+
+    const slide = document.createElement('div');
+    slide.className = 'vehicles-slide';
+    slide.dataset.cat = String(index);
+    if (index === 0) slide.classList.add('active');
+
+    const children = childItems(getFlyoutList(catLi) || document.createElement('ul'));
+    const hasSubs = children.some((c) => getFlyoutList(c));
+    if (hasSubs) {
+      children.forEach((sub) => {
+        const heading = document.createElement('p');
+        heading.className = 'vehicles-subcat';
+        heading.textContent = itemLabel(sub);
+        slide.append(heading);
+        appendVehicleGrid(slide, childItems(getFlyoutList(sub) || document.createElement('ul')));
+      });
+    } else {
+      appendVehicleGrid(slide, children);
+    }
+    right.append(slide);
+  });
+
+  catList.addEventListener('click', (event) => {
+    const btn = event.target.closest('button[data-cat]');
+    if (!btn) return;
+    catList.querySelectorAll('button').forEach((b) => b.classList.toggle('active', b === btn));
+    right.querySelectorAll('.vehicles-slide').forEach((s) => s.classList.toggle('active', s.dataset.cat === btn.dataset.cat));
+  });
+
+  menu.append(left, right);
+  flyout.append(menu);
+  item.append(trigger, flyout);
+  return item;
+}
+
 function buildNavItem(li) {
   const item = document.createElement('li');
   item.className = 'header-v1-item';
@@ -399,7 +550,9 @@ export default async function decorate(block) {
   header.querySelector('.header-v1-overlay').removeAttribute('hidden');
 
   const sections = header.querySelector('.header-v1-sections');
-  primaryItems.forEach((li) => sections.append(buildNavItem(li)));
+  primaryItems.forEach((li) => {
+    sections.append(isVehiclesItem(li) ? buildVehiclesItem(li) : buildNavItem(li));
+  });
 
   if (accountLi) header.querySelector('.header-v1-bar').append(buildAccount(accountLi));
 
