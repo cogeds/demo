@@ -764,7 +764,7 @@ a.link {
         transition:
             transform 0.28s ease,
             visibility 0.28s ease;
-        /* top: 130px; */
+        width: 100%;
     }
 
     .header-v1.mobile-open .header-v1-nav {
