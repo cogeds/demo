@@ -692,7 +692,7 @@ a.link {
 
 /* Chevron */
 .header-v1 .vehicle-actions a::after {
-    content: "\2192"; /* → */
+    content: "›";
     opacity: 0;
     width: 0;
     margin-left: 0;
