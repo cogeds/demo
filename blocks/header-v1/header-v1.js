@@ -125,12 +125,15 @@ function buildVehicleCard(li) {
   const modelLink = others.find((a) => a.textContent.trim()) || others[0];
   const media = li.querySelector('picture') || li.querySelector('img');
 
-  // remaining plain-text lines: price (contains "$") and an optional badge
+  // remaining plain-text lines: prices ("$…"), a model year ("2026"), a badge
   const clone = li.cloneNode(true);
   clone.querySelectorAll('a, picture, img, ul, ol').forEach((el) => el.remove());
   const lines = clone.textContent.split('\n').map((s) => s.trim()).filter(Boolean);
-  const price = lines.find((l) => l.includes('$')) || '';
-  const badge = lines.find((l) => !l.includes('$')) || '';
+  const priceLines = lines.filter((l) => l.includes('$'));
+  const asShown = priceLines.find((l) => /as shown/i.test(l)) || '';
+  const price = priceLines.find((l) => l !== asShown) || '';
+  const year = lines.find((l) => /^\d{4}$/.test(l)) || '';
+  const badge = lines.find((l) => !l.includes('$') && l !== year) || '';
 
   const href = modelLink?.getAttribute('href') || others[0]?.getAttribute('href') || '#';
   const img = li.querySelector('img');
@@ -147,6 +150,20 @@ function buildVehicleCard(li) {
   }
   if (media) image.append(media.cloneNode(true));
   card.append(image);
+
+  if (asShown) {
+    const shown = document.createElement('div');
+    shown.className = 'as-shown';
+    shown.textContent = asShown;
+    card.append(shown);
+  }
+
+  if (year) {
+    const yearSel = document.createElement('div');
+    yearSel.className = 'year-selector';
+    yearSel.innerHTML = `<div class="active">${year}</div>`;
+    card.append(yearSel);
+  }
 
   const heading = document.createElement('h3');
   heading.append(buildLink('', name, href));
