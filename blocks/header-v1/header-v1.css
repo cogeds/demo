@@ -10,7 +10,6 @@
     --hv1-hover-bg: #f5f5f5;
     --hv1-shadow: 0 12px 30px rgb(0 0 0 / 12%);
     --hv1-bar-height: 64px;
-
     position: relative;
     z-index: 1000;
     width: 100%;
@@ -729,8 +728,9 @@ a.link {
     left: 50%;
     bottom: 0;
     width: 0;
-    height: 2px;
-    background: var(--hv1-red);
+    height: 1px;
+    rotate: -45deg;
+    background: transparent;
     transform: translateX(-50%);
     transition: width 0.3s ease;
 }
@@ -749,26 +749,27 @@ a.link {
 @media (width <= 899px) {
     .header-v1-hamburger {
         display: flex;
+        z-index: 90;
     }
 
     .header-v1-nav {
-        position: fixed;
+        position: absolute;
         inset: var(--hv1-bar-height) auto 0 0;
         z-index: 90;
-        width: min(88vw, 380px);
         height: calc(100vh - var(--hv1-bar-height));
         overflow-y: auto;
         background: var(--hv1-bg);
         box-shadow: var(--hv1-shadow);
-        transform: translateX(-100%);
+        transform: translateY(-100%);
         visibility: hidden;
         transition:
             transform 0.28s ease,
             visibility 0.28s ease;
+        /* top: 130px; */
     }
 
     .header-v1.mobile-open .header-v1-nav {
-        transform: translateX(0);
+        transform: translateY(0);
         visibility: visible;
     }
 
@@ -789,6 +790,22 @@ a.link {
         padding: 0 20px;
         font-size: 17px;
         justify-content: space-between;
+    }
+
+    .header-v1-trigger::after {
+        position: absolute;
+        content: "";
+        border: solid #000;
+        border-width: 0 2px 2px 0;
+        display: inline-block;
+        padding: 4px;
+        transform: rotate(-45deg);
+        right: 4px;
+        top: 0;
+        bottom: 0;
+        height: 5px;
+        margin: auto;
+        background: #000;
     }
 
     .header-v1 .header-v1-account-label {
