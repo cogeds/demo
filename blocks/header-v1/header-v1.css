@@ -580,15 +580,30 @@ a.link {
     left: 0;
     padding: 4px 8px;
     background: #f0f0f0;
-    color: var(--hv1-text);
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
 
+.header-v1 .vehicle-card .as-shown {
+    margin-top: 6px;
+    color: var(--hv1-muted);
+    font-size: 13px;
+}
+
+.header-v1 .vehicle-card .year-selector {
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.header-v1 .vehicle-card .year-selector .active {
+    color: var(--hv1-text);
+}
+
 .header-v1 .vehicle-card h3 {
-    margin: 12px 0 4px;
+    margin: 8px 0 4px;
     font-size: 18px;
 }
 
