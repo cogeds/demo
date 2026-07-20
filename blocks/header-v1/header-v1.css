@@ -529,7 +529,7 @@ a.link {
     transition: transform 0.3s ease;
 }
 
-.header-v1 .vehicles-left button.active::after {
+.header-v1 .vehicles-left button::after {
     content: "";
     position: absolute;
     width: 100%;
