@@ -100,22 +100,6 @@ function buildColumn(colLi) {
   return col;
 }
 
-async function loadVehiclesMenu(fragmentPath) {
-  const response = await fetch(`${fragmentPath}.plain.html`);
-
-  if (!response.ok) {
-    return '<p>Unable to load vehicles.</p>';
-  }
-
-  const html = await response.text();
-
-  return `
-    <div class="vehicles-menu">
-      ${html}
-    </div>
-  `;
-}
-
 function buildNavItem(li) {
   const item = document.createElement('li');
   item.className = 'header-v1-item';
@@ -127,17 +111,6 @@ function buildNavItem(li) {
   if (!flyoutList) {
     // top-level item with no children -> a plain primary link, no mega-menu
     item.append(buildLink('header-v1-link', label, href));
-    return item;
-  }
-  if (label === 'Vehicles') {
-    flyout.classList.add('vehicles-flyout');
-
-    loadVehiclesMenu(href).then((content) => {
-      flyout.innerHTML = content;
-    });
-
-    item.append(trigger, flyout);
-
     return item;
   }
 
@@ -162,7 +135,6 @@ function buildNavItem(li) {
   item.append(trigger, flyout);
   return item;
 }
-
 
 /* inline icons for the account (My Toyota) panel */
 const ICON_USER = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9.2"/><circle cx="12" cy="10" r="3"/><path d="M6.4 18.6a5.7 5.7 0 0 1 11.2 0"/></svg>';
