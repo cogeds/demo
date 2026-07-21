@@ -160,17 +160,33 @@
 }
 
 .header-v1-flyout-inner a {
-    display: block;
-    padding: 8px 10px;
-    margin: 0 -10px;
-    border-radius: 4px;
+    position: relative;
+    display: inline-block;
+    padding: 8px 0;
+    margin: 0;
     color: var(--hv1-text);
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 400;
     text-decoration: none;
-    transition:
-        background 0.2s ease,
-        color 0.2s ease;
+    line-height: 28px;
+}
+
+/* Hidden underline */
+.header-v1-flyout-inner a::after {
+    content: "";
+    position: absolute;
+    left: 0%;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background: var(--hv1-red);
+    transform: translateX(0%);
+    transition: width 0.5s ease;
+}
+
+/* Hover animation from center */
+.header-v1-flyout-inner a:hover::after {
+    width: 100%;
 }
 
 /* a column title authored as a link inherits the heading look, not the block-link look */
@@ -181,12 +197,6 @@
     color: inherit;
     font: inherit;
     letter-spacing: inherit;
-}
-
-.header-v1-flyout-inner a:hover,
-.header-v1-flyout-inner a:focus-visible {
-    background: var(--hv1-hover-bg);
-    color: var(--hv1-red);
 }
 
 .header-v1-col-title a:hover,

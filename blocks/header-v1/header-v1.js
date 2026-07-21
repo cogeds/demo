@@ -70,13 +70,23 @@ function closeFlyouts(nav, except) {
  * @param {Element} li the source <li> from the nav fragment
  * @returns {Element}
  */
-function buildColumn(colLi) {
-  const col = document.createElement('div');
-  col.className = 'header-v1-col';
+function getColumnType(label) {
+  if (/\[promo\]/i.test(label)) return 'promo';
+  return 'default';
+}
 
-  const label = itemLabel(colLi);
+function cleanLabel(label) {
+  return label.replace(/\[promo\]/i, '').trim();
+}
+
+function buildColumn(colLi) {
+  const rawLabel = itemLabel(colLi);
+  const colType = getColumnType(rawLabel);
+  const label = cleanLabel(rawLabel);
   const href = itemLink(colLi)?.getAttribute('href');
   const links = getFlyoutList(colLi);
+  const col = document.createElement('div');
+  col.className = `header-v1-col ${colType === 'promo' ? 'header-v1-col-promo' : ''}`;
 
   if (!links) {
     // second-level item with no children -> a single stand-alone link column
