@@ -1,0 +1,230 @@
+.signin-card {
+    width: 100%;
+    max-width: 450px;
+    box-sizing: border-box;
+}
+
+.signin-card-inner {
+    width: 100%;
+    min-height: 680px;
+    padding: 56px 56px 58px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+}
+
+.signin-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28px;
+}
+
+.signin-card-icon img,
+.signin-card-icon picture {
+    display: block;
+    width: 92px;
+    max-width: 92px;
+    height: auto;
+}
+
+.signin-card-description {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.signin-card-description p {
+    margin: 0;
+    color: #1f1f1f;
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 1.55;
+    letter-spacing: -0.2px;
+}
+
+.signin-card-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.signin-card-btn {
+    width: 100%;
+    min-height: 62px;
+    padding: 16px 24px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+    border-radius: 0;
+    cursor: pointer;
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.signin-card-btn-primary {
+    color: #fff;
+    background: #000;
+    border: 1px solid #000;
+    margin-bottom: 36px;
+}
+
+.signin-card-btn-primary:hover,
+.signin-card-btn-primary:focus-visible {
+    background: #333;
+    border-color: #333;
+}
+
+.signin-card-btn-secondary {
+    color: #111;
+    background: transparent;
+    border: 1px solid #7b7b7b;
+}
+
+.signin-card-btn-secondary:hover,
+.signin-card-btn-secondary:focus-visible {
+    color: #fff;
+    background: #000;
+    border-color: #000;
+}
+
+.signin-card-btn:focus-visible {
+    outline: 2px solid #1a73e8;
+    outline-offset: 3px;
+}
+
+.signin-card-divider {
+    width: 100%;
+    margin: 36px 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #666;
+}
+
+.signin-card-divider::before,
+.signin-card-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #777;
+}
+
+.signin-card-divider span {
+    color: #666;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1;
+}
+
+.signin-card-btn-guest {
+    margin-top: 0;
+}
+
+/* Optional: when signin-card is placed inside hero */
+.hero .signin-card-wrapper {
+    position: relative;
+    z-index: 2;
+}
+
+/* Tablet */
+@media (width <= 991px) {
+    .signin-card {
+        max-width: 420px;
+    }
+
+    .signin-card-inner {
+        min-height: auto;
+        padding: 46px 40px 48px;
+    }
+
+    .signin-card-description p {
+        font-size: 19px;
+    }
+
+    .signin-card-btn {
+        min-height: 58px;
+        font-size: 17px;
+    }
+}
+
+/* Mobile */
+@media (width <= 767px) {
+    .signin-card {
+        max-width: 100%;
+    }
+
+    .signin-card-inner {
+        padding: 38px 24px 40px;
+        background: rgba(255, 255, 255, 0.92);
+    }
+
+    .signin-card-icon {
+        margin-bottom: 24px;
+    }
+
+    .signin-card-icon img,
+    .signin-card-icon picture {
+        width: 78px;
+        max-width: 78px;
+    }
+
+    .signin-card-description {
+        margin-bottom: 32px;
+    }
+
+    .signin-card-description p {
+        font-size: 18px;
+        line-height: 1.5;
+    }
+
+    .signin-card-btn {
+        min-height: 56px;
+        padding: 14px 18px;
+        font-size: 16px;
+    }
+
+    .signin-card-btn-primary {
+        margin-bottom: 28px;
+    }
+
+    .signin-card-divider {
+        margin: 30px 0;
+        gap: 14px;
+    }
+
+    .signin-card-divider span {
+        font-size: 22px;
+    }
+}
+
+/* Small mobile */
+@media (width <= 480px) {
+    .signin-card-inner {
+        padding: 34px 20px 36px;
+    }
+
+    .signin-card-description p {
+        font-size: 17px;
+    }
+
+    .signin-card-btn {
+        font-size: 15px;
+    }
+}
