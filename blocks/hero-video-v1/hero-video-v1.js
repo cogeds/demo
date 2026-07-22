@@ -151,7 +151,7 @@ export default function decorate(block) {
         player.classList.add('is-active');
         player.setAttribute('aria-hidden', 'false');
     });
-
+    // Code to create fullwidth wrapper
     const section = block.closest('.section');
     const sectionWrapper = block.closest('.hero-video-v1-wrapper');
 
