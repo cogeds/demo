@@ -2,7 +2,7 @@ function getYoutubeId(url) {
     if (!url) return '';
 
     try {
-        const parsed = new URL(url);
+        const parsed = new URL(url.trim());
 
         if (parsed.hostname.includes('youtu.be')) {
             return parsed.pathname.replace('/', '').split('/')[0];
@@ -26,31 +26,17 @@ function getYoutubeId(url) {
     return '';
 }
 
-function getCleanUrl(value) {
-    if (!value) return '';
-
-    const trimmedValue = value.trim();
-
-    try {
-        return new URL(trimmedValue).href;
-    } catch (error) {
-        return trimmedValue;
-    }
-}
-
 function getCellValue(cell) {
     if (!cell) return '';
 
     const link = cell.querySelector('a');
-
     if (link && link.href) {
-        return getCleanUrl(link.href);
+        return link.href.trim();
     }
 
     const img = cell.querySelector('img');
-
     if (img && img.src) {
-        return getCleanUrl(img.src);
+        return img.src.trim();
     }
 
     return cell.textContent.trim();
@@ -60,6 +46,14 @@ function getRowValue(row) {
     if (!row) return '';
 
     const cells = Array.from(row.children);
+
+    /*
+      Supports label/value authoring:
+  
+      Video URL     | https://www.youtube.com/watch?v=0IH4mmucIvQ
+      Poster Image  | https://brand.toyota.com/...
+      Title         | Welcome to the Toyota Brand Hub
+    */
 
     if (cells.length > 1) {
         return getCellValue(cells[1]);
@@ -87,6 +81,27 @@ function escapeAttribute(value) {
         .replaceAll('>', '&gt;');
 }
 
+function createYoutubeIframe(videoId, title) {
+    const iframe = document.createElement('iframe');
+
+    const params = new URLSearchParams({
+        autoplay: '1',
+        enablejsapi: '1',
+        modestbranding: '1',
+        rel: '0',
+        playsinline: '1',
+    });
+
+    iframe.className = 'hero-video-v1-iframe';
+    iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?${params.toString()}`;
+    iframe.title = title || 'Video Player';
+    iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+    iframe.allowFullscreen = true;
+    iframe.loading = 'eager';
+
+    return iframe;
+}
+
 export default function decorate(block) {
     const rows = Array.from(block.children);
 
@@ -110,12 +125,9 @@ export default function decorate(block) {
         return;
     }
 
-    const safePoster = escapeAttribute(poster);
-    const safeTitle = escapeAttribute(title);
-
     block.innerHTML = `
     <div class="hero-video-v1-inner">
-      <div class="hero-video-v1-poster" style="background-image: url('${safePoster}')">
+      <div class="hero-video-v1-poster" style="background-image: url('${escapeAttribute(poster)}')">
         <button class="hero-video-v1-play" type="button" aria-label="Play video">
           ${createPlayIcon()}
         </button>
@@ -130,12 +142,10 @@ export default function decorate(block) {
     const player = block.querySelector('.hero-video-v1-player');
 
     playBtn.addEventListener('click', () => {
-        const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&enablejsapi=1&modestbranding=1&rel=0`;
+        const iframe = createYoutubeIframe(videoId, title);
 
-        player.innerHTML = `
-      ${embedUrl}
-      </iframe>
-    `;
+        player.innerHTML = '';
+        player.append(iframe);
 
         posterEl.classList.add('is-hidden');
         player.classList.add('is-active');
