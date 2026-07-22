@@ -162,5 +162,6 @@ export default function decorate(block) {
     if (sectionWrapper) {
         sectionWrapper.style.maxWidth = '100%';
         sectionWrapper.style.width = '100%';
+        sectionWrapper.style.padding = '0';
     }
 }
