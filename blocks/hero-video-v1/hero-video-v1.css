@@ -1,3 +1,8 @@
+.hero-video-v1-wrapper {
+    max-width: 100%;
+    padding: 0;
+}
+
 .hero-video-v1 {
     width: 100%;
 }
