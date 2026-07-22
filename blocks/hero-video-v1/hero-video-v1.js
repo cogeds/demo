@@ -151,4 +151,16 @@ export default function decorate(block) {
         player.classList.add('is-active');
         player.setAttribute('aria-hidden', 'false');
     });
+
+    const section = block.closest('.section');
+    const sectionWrapper = block.closest('.hero-video-v1-wrapper');
+
+    if (section) {
+        section.style.padding = '0';
+    }
+
+    if (sectionWrapper) {
+        sectionWrapper.style.maxWidth = '100%';
+        sectionWrapper.style.width = '100%';
+    }
 }
