@@ -19,7 +19,7 @@ function getYoutubeId(url) {
 
             return parsed.searchParams.get('v') || '';
         }
-    } catch (e) {
+    } catch (error) {
         return '';
     }
 
@@ -33,7 +33,7 @@ function getCleanUrl(value) {
 
     try {
         return new URL(trimmedValue).href;
-    } catch (e) {
+    } catch (error) {
         return trimmedValue;
     }
 }
@@ -42,12 +42,14 @@ function getCellValue(cell) {
     if (!cell) return '';
 
     const link = cell.querySelector('a');
-    if (link?.href) {
+
+    if (link && link.href) {
         return getCleanUrl(link.href);
     }
 
     const img = cell.querySelector('img');
-    if (img?.src) {
+
+    if (img && img.src) {
         return getCleanUrl(img.src);
     }
 
@@ -57,33 +59,21 @@ function getCellValue(cell) {
 function getRowValue(row) {
     if (!row) return '';
 
-    const cells = [...row.children];
-
-    /*
-      Supports this DA.live authoring structure:
-  
-      | hero-video-v1 |                      |
-      |---------------|----------------------|
-      | Video URL     | YouTube URL          |
-      | Poster Image  | Image URL            |
-      | Title         | Video title          |
-  
-      If only one column is authored, it also supports that.
-    */
+    const cells = Array.from(row.children);
 
     if (cells.length > 1) {
-        r * turn getCellValue(cells[1]);
+        return getCellValue(cells[1]);
     }
 
-* return getCellValue(cells[0] || r * w);
+    return getCellValue(cells[0] || row);
 }
 
 function createPlayIcon() {
     return `
-    <svg class="hero-vi*eo-v1-play-icon" viewBox="0 0 92 9*" xmlns="http://www.w3.org/2000/sv*" aria-hidden="true">
-      <g fil*="#FFF" fill-rule="evenodd">
-     *  <path d="M46 90.242C21.168 90.24*.944 70.018.944 45.186.944 20.354 *1.168.13 46 .13c24.832 0 45.056 20*224 45.056 45.056 0 24.832-20.224 *5.056-45.056 45.056zm0-86.016c-22.*8 0-40.96 18.38-40.96 40.96 0 22.5* 18.38 40.96 40.96 40.96 22.58 0 4*.96-18.38 40.96-40.96 0-22.58-18.3*-40.96-40.96-40.96z" fill-rule="no*zero"></path>
-        <path d="M66*48 45.186 33.712 61.57V28.802z"></*ath>
+    <svg class="hero-video-v1-play-icon" viewBox="0 0 92 91" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g fill="#fff" fill-rule="evenodd">
+        <path d="M46 90.242C21.168 90.242.944 70.018.944 45.186.944 20.354 21.168.13 46 .13c24.832 0 45.056 20.224 45.056 45.056 0 24.832-20.224 45.056-45.056 45.056zm0-86.016c-22.58 0-40.96 18.38-40.96 40.96 0 22.58 18.38 40.96 40.96 40.96 22.58 0 40.96-18.38 40.96-40.96 0-22.58-18.38-40.96-40.96-40.96z" fill-rule="nonzero"></path>
+        <path d="M66.48 45.186 33.712 61.57V28.802z"></path>
       </g>
     </svg>
   `;
@@ -98,7 +88,7 @@ function escapeAttribute(value) {
 }
 
 export default function decorate(block) {
-    const rows = [...block.children];
+    const rows = Array.from(block.children);
 
     const videoUrl = getRowValue(rows[0]);
     const poster = getRowValue(rows[1]);
@@ -109,7 +99,6 @@ export default function decorate(block) {
     if (!videoUrl || !videoId) {
         block.innerHTML = '';
         block.classList.add('hero-video-v1-error');
-        // eslint-disable-next-line no-console
         console.warn('Hero Video: Invalid or missing YouTube URL', videoUrl);
         return;
     }
@@ -117,7 +106,6 @@ export default function decorate(block) {
     if (!poster) {
         block.innerHTML = '';
         block.classList.add('hero-video-v1-error');
-        // eslint-disable-next-line no-console
         console.warn('Hero Video: Missing poster image');
         return;
     }
