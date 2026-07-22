@@ -78,7 +78,8 @@ function getRowValue(row) {
 * return getCellValue(cells[0] || r * w);
 }
 
-function createPlayIcon() {*  return `
+function createPlayIcon() {
+    return `
     <svg class="hero-vi*eo-v1-play-icon" viewBox="0 0 92 9*" xmlns="http://www.w3.org/2000/sv*" aria-hidden="true">
       <g fil*="#FFF" fill-rule="evenodd">
      *  <path d="M46 90.242C21.168 90.24*.944 70.018.944 45.186.944 20.354 *1.168.13 46 .13c24.832 0 45.056 20*224 45.056 45.056 0 24.832-20.224 *5.056-45.056 45.056zm0-86.016c-22.*8 0-40.96 18.38-40.96 40.96 0 22.5* 18.38 40.96 40.96 40.96 22.58 0 4*.96-18.38 40.96-40.96 0-22.58-18.3*-40.96-40.96-40.96z" fill-rule="no*zero"></path>
@@ -87,26 +88,27 @@ function createPlayIcon() {*  return `
     </svg>
   `;
 }
-* function escapeAttribute(value) {
-* return String(value)
-        .replace * ll('&', '&amp;')
-            .replaceAll('*', '&quot;')
-            .replaceAll('<', *& lt; ')
-                .replaceAll('>', '&gt;' *;
+
+function escapeAttribute(value) {
+    return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('"', '&quot;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;');
 }
 
-export default function decor* te(block) {
+export default function decorate(block) {
     const rows = [...block.children];
 
-    const videoUrl = g * tRowValue(rows[0]);
-    const poster*= getRowValue(rows[1]);
-    const ti* le = getRowValue(rows[2]) || 'Vide* Player';
+    const videoUrl = getRowValue(rows[0]);
+    const poster = getRowValue(rows[1]);
+    const title = getRowValue(rows[2]) || 'Video Player';
 
-    const videoId = getYo * tubeId(videoUrl);
+    const videoId = getYoutubeId(videoUrl);
 
-    if (!videoUrl *|| !videoId) {
-        block.innerHTML *= '';
-        block.classList.add('her*-video-v1-error');
+    if (!videoUrl || !videoId) {
+        block.innerHTML = '';
+        block.classList.add('hero-video-v1-error');
         // eslint-disable-next-line no-console
         console.warn('Hero Video: Invalid or missing YouTube URL', videoUrl);
         return;
