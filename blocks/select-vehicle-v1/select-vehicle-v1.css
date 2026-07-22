@@ -87,6 +87,12 @@
     cursor: pointer;
 }
 
+.select-vehicle-v1 select:disabled {
+    color: #999;
+    cursor: not-allowed;
+    background: #f7f7f7;
+}
+
 .select-vehicle-v1 select:focus-visible {
     outline: 3px solid #000;
     outline-offset: -3px;
@@ -108,21 +114,33 @@
     border: 0;
     border-radius: 0;
     appearance: none;
-    background: #eb0a1e;
+    background: #9b9b9b;
     color: #fff;
     font: inherit;
     font-size: 18px;
     font-weight: 700;
     line-height: 1;
-    cursor: pointer;
+    cursor: not-allowed;
+    opacity: 1;
     transition:
         background-color 0.2s ease,
+        color 0.2s ease,
         transform 0.2s ease;
 }
 
-.select-vehicle-v1-submit:hover,
-.select-vehicle-v1-submit:focus-visible {
+.select-vehicle-v1-submit.is-enabled {
+    background: #eb0a1e;
+    cursor: pointer;
+}
+
+.select-vehicle-v1-submit.is-enabled:hover,
+.select-vehicle-v1-submit.is-enabled:focus-visible {
     background: #c90014;
+}
+
+.select-vehicle-v1-submit:disabled {
+    background: #9b9b9b;
+    cursor: not-allowed;
 }
 
 .select-vehicle-v1-submit:focus-visible {
