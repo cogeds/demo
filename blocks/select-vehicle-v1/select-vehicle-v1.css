@@ -1,6 +1,11 @@
 .select-vehicle-v1 {
-    width: 100%;
-    max-width: 100%;
+    height: 500px;
+    background-image: url(https://tmna.aemassets.toyota.com/is/image/toyota/toyota/owners/amcs/hero/HLD_MY22_0005_V001-2-2.png?fmt=jpeg&fit=crop&wid=3838);
+    background-size: contain;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .select-vehicle-v1-form {
