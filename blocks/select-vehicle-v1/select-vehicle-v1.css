@@ -100,7 +100,7 @@
 
 .select-vehicle-v1 select:focus-visible {
     outline: 3px solid #000;
-    outline-offset: -3px;
+    outline-offset: 0px;
 }
 
 .select-vehicle-v1-field.is-invalid .select-vehicle-v1-select-wrap {
