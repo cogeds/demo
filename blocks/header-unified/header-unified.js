@@ -4,13 +4,13 @@ import { loadFragment } from '../fragment/fragment.js';
 /**
  * Unified Toyota header decorator.
  *
- * Author one block named `header` and add a variant class in DA/live/EDS:
+ * Author one block named `header` and add one variant class:
  * - header-v1
  * - header-brand
  * - header-v3
  * - header-firm
  *
- * If no variant class is present, the default `header` implementation is used.
+ * If no variant class is added, the default header implementation is used.
  */
 function getHeaderVariant(block) {
     const variants = ['header-v1', 'header-brand', 'header-v3', 'header-firm'];
