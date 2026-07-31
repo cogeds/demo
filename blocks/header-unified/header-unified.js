@@ -22,7 +22,7 @@ function buildHeader(logoImg, links, pageTitleText) {
   <div class="global-site-header-wrapper">
     <div class="global-site-header-container">
 
-      <div class="global-site-header-logo"></div>
+    <div class="global-site-header-logo"></div>
 
       <button
         class="hamburger-button"
@@ -39,9 +39,9 @@ function buildHeader(logoImg, links, pageTitleText) {
 
         <button
           class="close-button"
-          aria-label="Close navigation">
+        aria-label="Close navigation">
 
-          <span class="text">Close</span>
+    <span class="text">Close</span>
           <span class="icon">×</span>
 
         </button>
@@ -1165,7 +1165,7 @@ function decorateHeaderBrand(block) {
       </svg>
     </div>
     <div class="icon-close">&#10005;</div>
-  `;
+`;
 
     const updateMobileDrawerPosition = () => {
         const headerWrapper = block.closest('header') || block.closest('.header-brand-wrapper') || block;
@@ -1375,4 +1375,3 @@ function getHeaderVariant(block) {
 
     return 'header';
 }
-`
