@@ -1361,29 +1361,35 @@ function decorateHeaderFirm(block) {
     block.replaceChildren(link);
 }
 
-
-export default async function decorate(block) {
-    const variant = getHeaderVariant(block);
-
-    if (variant === 'header-v1') {
-        await decorateHeaderV1(block);
-        return;
+function getHeaderVariant(block) {
+    if (
+        block.classList.contains('header-v1')
+        || block.closest('.header-v1-container')
+    ) {
+        return 'header-v1';
     }
 
-    if (variant === 'header-brand') {
-        decorateHeaderBrand(block);
-        return;
+    if (
+        block.classList.contains('header-brand')
+        || block.closest('.header-brand-container')
+    ) {
+        return 'header-brand';
     }
 
-    if (variant === 'header-v3') {
-        decorateHeaderV3(block);
-        return;
+    if (
+        block.classList.contains('header-v3')
+        || block.closest('.header-v3-container')
+    ) {
+        return 'header-v3';
     }
 
-    if (variant === 'header-firm') {
-        decorateHeaderFirm(block);
-        return;
+    if (
+        block.classList.contains('header-firm')
+        || block.closest('.header-firm-container')
+    ) {
+        return 'header-firm';
     }
 
-    await decorateHeaderDefault(block);
+    return 'header';
 }
+`
