@@ -1244,6 +1244,7 @@ function detectBrandClass(src = '', alt = '', fallbackIndex = 0) {
 }
 
 function decorateHeaderV3(block) {
+    console.log('HEADER V3 EXECUTED');
     const rows = [...block.children];
     let titleText = 'My Toyota & Lexus Communications Profile';
     const imageEls = [];
