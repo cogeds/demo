@@ -1,6 +1,31 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
+/**
+ * Returns the requested header variant.
+ * Supports both block-level classes and section container classes.
+ */
+function getHeaderVariant(block) {
+    if (block.classList.contains('header-v1') || block.closest('.header-v1-container')) {
+        return 'header-v1';
+    }
+
+    if (block.classList.contains('header-brand') || block.closest('.header-brand-container')) {
+        return 'header-brand';
+    }
+
+    if (block.classList.contains('header-v3') || block.closest('.header-v3-container')) {
+        return 'header-v3';
+    }
+
+    if (block.classList.contains('header-firm') || block.closest('.header-firm-container')) {
+        return 'header-firm';
+    }
+
+    return 'header';
+}
+
+
 /* --------------------------------------------------------------------------
  * Default header variant
  * -------------------------------------------------------------------------- */
@@ -22,7 +47,7 @@ function buildHeader(logoImg, links, pageTitleText) {
   <div class="global-site-header-wrapper">
     <div class="global-site-header-container">
 
-    <div class="global-site-header-logo"></div>
+      <div class="global-site-header-logo"></div>
 
       <button
         class="hamburger-button"
@@ -39,9 +64,9 @@ function buildHeader(logoImg, links, pageTitleText) {
 
         <button
           class="close-button"
-        aria-label="Close navigation">
+          aria-label="Close navigation">
 
-    <span class="text">Close</span>
+          <span class="text">Close</span>
           <span class="icon">×</span>
 
         </button>
@@ -1165,7 +1190,7 @@ function decorateHeaderBrand(block) {
       </svg>
     </div>
     <div class="icon-close">&#10005;</div>
-`;
+  `;
 
     const updateMobileDrawerPosition = () => {
         const headerWrapper = block.closest('header') || block.closest('.header-brand-wrapper') || block;
@@ -1244,7 +1269,6 @@ function detectBrandClass(src = '', alt = '', fallbackIndex = 0) {
 }
 
 function decorateHeaderV3(block) {
-    console.log('HEADER V3 EXECUTED');
     const rows = [...block.children];
     let titleText = 'My Toyota & Lexus Communications Profile';
     const imageEls = [];
@@ -1345,36 +1369,29 @@ function decorateHeaderFirm(block) {
     block.replaceChildren(link);
 }
 
+
 export default async function decorate(block) {
     const variant = getHeaderVariant(block);
 
-    console.log('BLOCK CLASS:', block.className);
-    console.log('VARIANT:', variant);
-
     if (variant === 'header-v1') {
-        console.log('CALLING V1');
         await decorateHeaderV1(block);
         return;
     }
 
     if (variant === 'header-brand') {
-        console.log('CALLING BRAND');
         decorateHeaderBrand(block);
         return;
     }
 
     if (variant === 'header-v3') {
-        console.log('CALLING V3');
         decorateHeaderV3(block);
         return;
     }
 
     if (variant === 'header-firm') {
-        console.log('CALLING FIRM');
         decorateHeaderFirm(block);
         return;
     }
 
-    console.log('CALLING DEFAULT');
     await decorateHeaderDefault(block);
 }
