@@ -1345,34 +1345,36 @@ function decorateHeaderFirm(block) {
     block.replaceChildren(link);
 }
 
-function getHeaderVariant(block) {
-    if (
-        block.classList.contains('header-v1')
-        || block.closest('.header-v1-container')
-    ) {
-        return 'header-v1';
+export default async function decorate(block) {
+    const variant = getHeaderVariant(block);
+
+    console.log('BLOCK CLASS:', block.className);
+    console.log('VARIANT:', variant);
+
+    if (variant === 'header-v1') {
+        console.log('CALLING V1');
+        await decorateHeaderV1(block);
+        return;
     }
 
-    if (
-        block.classList.contains('header-brand')
-        || block.closest('.header-brand-container')
-    ) {
-        return 'header-brand';
+    if (variant === 'header-brand') {
+        console.log('CALLING BRAND');
+        decorateHeaderBrand(block);
+        return;
     }
 
-    if (
-        block.classList.contains('header-v3')
-        || block.closest('.header-v3-container')
-    ) {
-        return 'header-v3';
+    if (variant === 'header-v3') {
+        console.log('CALLING V3');
+        decorateHeaderV3(block);
+        return;
     }
 
-    if (
-        block.classList.contains('header-firm')
-        || block.closest('.header-firm-container')
-    ) {
-        return 'header-firm';
+    if (variant === 'header-firm') {
+        console.log('CALLING FIRM');
+        decorateHeaderFirm(block);
+        return;
     }
 
-    return 'header';
+    console.log('CALLING DEFAULT');
+    await decorateHeaderDefault(block);
 }
