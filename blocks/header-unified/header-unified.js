@@ -1369,7 +1369,13 @@ function decorateHeaderV3(block) {
 //     block.replaceChildren(link);
 // }
 async function decorateHeaderFirm(block) {
-    const fragment = await Promise.resolve(loadFragment('/nav/header-firm'));
+    const navMeta = getMetadata('nav');
+
+    const navPath = navMeta
+        ? new URL(navMeta, window.location).pathname
+        : '/nav/header-firm';
+
+    const fragment = await Promise.resolve(loadFragment(navPath));
 
     if (!fragment) return;
 
