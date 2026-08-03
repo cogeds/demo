@@ -540,17 +540,17 @@ function setupInteractions(header) {
  * @param {Element} block The block element
  */
 export default async function decorate(block) {
-  const navMeta = getMetadata('nav');
-  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav/nav';
+  // Row 2 = Logo
+  const logoRow = block.children[1];
+  const logo = logoRow?.querySelector('picture');
 
-  const fragment = await loadFragment(navPath);
-  if (!fragment) return;
+  // Row 3 = Navigation
+  const navRow = block.children[2];
 
-  const logo = fragment.querySelector('picture');
-  // every top-level list item across the fragment becomes a primary nav entry
-  const sourceItems = [...fragment.querySelectorAll('ul')]
-    .filter((ul) => !ul.closest('li')) // only top-level lists, not nested ones
-    .flatMap((ul) => [...ul.children].filter((li) => li.tagName === 'LI'));
+  const sourceItems = [...navRow.querySelectorAll('ul')]
+    .filter((ul) => !ul.closest('li'))
+    .flatMap((ul) => [...ul.children]
+      .filter((li) => li.tagName === 'LI'));
 
   // the "Account" / "My Toyota" item is pulled out and pinned to the right
   const isAccountItem = (li) => /^(account|my\s*toyota)$/i.test(itemLabel(li));
