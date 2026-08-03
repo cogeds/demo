@@ -1374,7 +1374,11 @@ async function decorateHeaderFirm(block) {
 
     if (!fragment) return;
 
-    const rows = [...fragment.children];
+    const content = fragment.querySelector('.section > div');
+
+    if (!content) return;
+
+    const rows = [...content.children];
 
     if (rows.length < 2) return;
 
