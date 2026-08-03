@@ -196,7 +196,7 @@ async function decorateHeaderDefault(block) {
         : '/nav';
 
     const fragment =
-        await loadFragment(navPath);
+        await Promise.resolve(loadFragment(navPath));
 
     if (!fragment) return;
 
@@ -1334,8 +1334,46 @@ function decorateHeaderV3(block) {
  * Header firm variant
  * -------------------------------------------------------------------------- */
 
-function decorateHeaderFirm(block) {
-    const rows = [...block.children];
+// function decorateHeaderFirm(block) {
+//     const rows = [...block.children];
+
+//     if (rows.length < 2) return;
+
+//     const logoRow = rows[0];
+//     const titleRow = rows[1];
+
+//     const logoLink = logoRow.querySelector('a');
+//     const titleLink = titleRow.querySelector('a');
+
+//     const picture = logoRow.querySelector('picture');
+
+//     // Use authored URL
+//     const href = logoLink?.href || titleLink?.href || '#';
+
+//     const link = document.createElement('a');
+//     link.href = href;
+//     link.className = 'header-firm-link';
+
+//     if (picture) {
+//         link.append(picture);
+//     }
+
+//     const titleEl = document.createElement('span');
+//     titleEl.className = 'header-firm-title';
+//     titleEl.textContent = titleLink
+//         ? titleLink.textContent.trim()
+//         : titleRow.textContent.trim();
+
+//     link.append(titleEl);
+
+//     block.replaceChildren(link);
+// }
+async function decorateHeaderFirm(block) {
+    const fragment = await Promise.resolve(loadFragment('/nav/header-firm'));
+
+    if (!fragment) return;
+
+    const rows = [...fragment.children];
 
     if (rows.length < 2) return;
 
@@ -1347,7 +1385,6 @@ function decorateHeaderFirm(block) {
 
     const picture = logoRow.querySelector('picture');
 
-    // Use authored URL
     const href = logoLink?.href || titleLink?.href || '#';
 
     const link = document.createElement('a');
@@ -1355,7 +1392,7 @@ function decorateHeaderFirm(block) {
     link.className = 'header-firm-link';
 
     if (picture) {
-        link.append(picture);
+        link.append(picture.cloneNode(true));
     }
 
     const titleEl = document.createElement('span');
@@ -1368,7 +1405,6 @@ function decorateHeaderFirm(block) {
 
     block.replaceChildren(link);
 }
-
 
 export default async function decorate(block) {
     const variant = getHeaderVariant(block);
