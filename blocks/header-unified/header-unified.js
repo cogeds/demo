@@ -22,6 +22,10 @@ function getHeaderVariant(block) {
         return 'header-firm';
     }
 
+    if (block.classList.contains('header-toyotamobility') || block.closest('.header-toyotamobility-container')) {
+        return 'header-toyotamobility';
+    }
+
     return 'header';
 }
 
@@ -39,9 +43,13 @@ function createNavLink(link) {
     return li;
 }
 
-function buildHeader(logoImg, links, pageTitleText) {
+function buildHeader(logoImg, links, pageTitleText, variantName = '') {
     const wrapper = document.createElement('div');
     wrapper.className = 'global-site-header';
+
+    if (variantName) {
+        wrapper.classList.add(variantName);
+    }
 
     wrapper.innerHTML = `
   <div class="global-site-header-wrapper">
@@ -188,6 +196,41 @@ function setupMobileMenu(header) {
     );
 }
 
+async function decorateHeaderToyotaMobility(block) {
+    const navMeta = getMetadata('nav');
+
+    const navPath = navMeta
+        ? new URL(navMeta, window.location).pathname
+        : '/nav/toyotamobility';
+
+    const fragment = await loadFragment(navPath);
+
+    if (!fragment) return;
+
+    const logoImg = fragment.querySelector('picture img');
+    const navLinks = [...fragment.querySelectorAll('a')]
+        .filter((link) => !link.querySelector('img'));
+
+    const authoredH1 = document.querySelector('main h1');
+    const pageTitleText = authoredH1 ? authoredH1.textContent.trim() : '';
+
+    const header = buildHeader(
+        logoImg?.cloneNode(true),
+        navLinks,
+        pageTitleText,
+        'header-toyotamobility',
+    );
+
+    if (authoredH1) {
+        authoredH1.remove();
+    }
+
+    setupMobileMenu(header);
+
+    block.textContent = '';
+    block.append(header);
+}
+
 async function decorateHeaderDefault(block) {
     const navMeta = getMetadata('nav');
 
@@ -195,23 +238,16 @@ async function decorateHeaderDefault(block) {
         ? new URL(navMeta, window.location).pathname
         : '/nav';
 
-    const fragment =
-        await Promise.resolve(loadFragment(navPath));
+    const fragment = await loadFragment(navPath);
 
     if (!fragment) return;
 
-    const logoImg =
-        fragment.querySelector('picture img');
-
-    const navLinks = [
-        ...fragment.querySelectorAll('a'),
-    ].filter((link) => !link.querySelector('img'));
+    const logoImg = fragment.querySelector('picture img');
+    const navLinks = [...fragment.querySelectorAll('a')]
+        .filter((link) => !link.querySelector('img'));
 
     const authoredH1 = document.querySelector('main h1');
-
-    const pageTitleText = authoredH1
-        ? authoredH1.textContent.trim()
-        : '';
+    const pageTitleText = authoredH1 ? authoredH1.textContent.trim() : '';
 
     const header = buildHeader(
         logoImg?.cloneNode(true),
@@ -226,7 +262,6 @@ async function decorateHeaderDefault(block) {
     setupMobileMenu(header);
 
     block.textContent = '';
-
     block.append(header);
 }
 
@@ -1370,16 +1405,11 @@ function decorateHeaderV3(block) {
 // }
 async function decorateHeaderFirm(block) {
     const fragment = await Promise.resolve(loadFragment('/nav/header-firm'));
-    console.log(fragment?.innerHTML);
 
     if (!fragment) return;
 
-    const content = fragment.querySelector('.section > div');
-
-    if (!content) return;
-
-    const rows = [...content.children];
-
+    const rows = [...fragment.children];
+    console.log(rows);
     if (rows.length < 2) return;
 
     const logoRow = rows[0];
@@ -1431,6 +1461,11 @@ export default async function decorate(block) {
 
     if (variant === 'header-firm') {
         decorateHeaderFirm(block);
+        return;
+    }
+
+    if (variant === 'header-toyotamobility') {
+        await decorateHeaderToyotaMobility(block);
         return;
     }
 
