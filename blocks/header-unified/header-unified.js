@@ -1391,34 +1391,84 @@ async function decorateHeaderPreferences(block) {
         || fragment;
     const rows = [...content.children].filter((child) => child.tagName !== 'SCRIPT');
 
-    if (rows.length < 2) return;
+    if (!rows.length) return;
 
-    const logoRow = rows[0];
-    const titleRow = rows[1];
+    const imageEls = [];
+    let titleText = 'My Toyota & Lexus Communications Profile';
 
-    const logoLink = logoRow.querySelector('a');
-    const titleLink = titleRow.querySelector('a');
-    const picture = logoRow.querySelector('picture') || logoRow.querySelector('img');
+    rows.forEach((row) => {
+        const rowImages = [...row.querySelectorAll('picture, img')].filter((el) => {
+            if (el.tagName === 'IMG') return !el.closest('picture');
+            return true;
+        });
 
-    const href = logoLink?.href || titleLink?.href || '#';
+        if (rowImages.length === 0) {
+            const text = [...row.querySelectorAll('p, span, div, h1, h2, h3, h4, h5, h6')]
+                .map((el) => el.textContent.trim())
+                .filter(Boolean)
+                .join(' ')
+                .trim();
 
-    const link = document.createElement('a');
-    link.href = href;
-    link.className = 'header-preferences-link';
+            if (text) {
+                titleText = text;
+            }
+            return;
+        }
 
-    if (picture) {
-        link.append(picture.cloneNode(true));
-    }
+        rowImages.forEach((el) => imageEls.push(el));
+    });
 
-    const titleEl = document.createElement('span');
-    titleEl.className = 'header-preferences-title';
-    titleEl.textContent = titleLink
-        ? titleLink.textContent.trim()
-        : titleRow.textContent.trim();
+    if (!imageEls.length && !titleText) return;
 
-    link.append(titleEl);
+    block.textContent = '';
 
-    block.replaceChildren(link);
+    const headerWrap = document.createElement('div');
+    headerWrap.className = 'header-wrap row';
+
+    const col = document.createElement('div');
+    col.className = 'col';
+
+    const logoWrap = document.createElement('div');
+    logoWrap.className = 'logo-wrap';
+    logoWrap.setAttribute('role', 'img');
+    logoWrap.setAttribute('aria-label', 'Brand logos');
+
+    imageEls.forEach((el, index) => {
+        const picture = el.tagName === 'PICTURE' ? el : null;
+        const img = picture ? picture.querySelector('img') : el;
+
+        if (!img) return;
+
+        const src = img.getAttribute('src') || '';
+        const alt = img.getAttribute('alt') || '';
+        const brandClass = detectBrandClass(src, alt, index);
+        const existingLink = el.closest('a');
+        const href = existingLink?.getAttribute('href') || DEFAULT_HREFS[brandClass] || '#';
+
+        const link = document.createElement('a');
+        link.href = href;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.className = brandClass;
+        link.append(picture ? picture.cloneNode(true) : img.cloneNode(true));
+
+        logoWrap.append(link);
+    });
+
+    col.append(logoWrap);
+    headerWrap.append(col);
+
+    const headerCnt = document.createElement('div');
+    headerCnt.className = 'header-cnt col';
+
+    const titleEl = document.createElement('p');
+    titleEl.className = 'header-title';
+    titleEl.textContent = titleText;
+
+    headerCnt.append(titleEl);
+    headerWrap.append(headerCnt);
+
+    block.append(headerWrap);
 }
 
 export default async function decorate(block) {
