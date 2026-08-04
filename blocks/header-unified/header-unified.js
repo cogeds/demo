@@ -867,8 +867,23 @@ async function decorateHeaderV1(block) {
  * Header brand variant
  * -------------------------------------------------------------------------- */
 
-function decorateHeaderBrand(block) {
-    const rows = [...block.children];
+async function decorateHeaderBrand(block) {
+    const navMeta = getMetadata('nav');
+    const navPath = navMeta
+        ? new URL(navMeta, window.location).pathname
+        : '/nav/header-brand';
+
+    const fragment = await loadFragment(navPath);
+
+    const content = fragment?.querySelector(':scope > .section > div')
+        || fragment?.querySelector(':scope > div')
+        || fragment;
+    const rows = content
+        ? [...content.children].filter((child) => child.tagName !== 'SCRIPT')
+        : [...block.children];
+
+    if (!rows.length) return;
+
     const nav = document.createElement('nav');
     nav.className = 'nav-brand';
     nav.setAttribute('aria-label', 'Brand site header');
@@ -1480,7 +1495,7 @@ export default async function decorate(block) {
     }
 
     if (variant === 'header-brand') {
-        decorateHeaderBrand(block);
+        await decorateHeaderBrand(block);
         return;
     }
 
