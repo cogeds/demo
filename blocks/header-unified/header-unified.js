@@ -14,8 +14,8 @@ function getHeaderVariant(block) {
         return 'header-brand';
     }
 
-    if (block.classList.contains('header-v3') || block.closest('.header-v3-container')) {
-        return 'header-v3';
+    if (block.classList.contains('header-preferences') || block.closest('.header-preferences-container')) {
+        return 'header-preferences';
     }
 
     if (block.classList.contains('header-firm') || block.closest('.header-firm-container')) {
@@ -1303,68 +1303,6 @@ function detectBrandClass(src = '', alt = '', fallbackIndex = 0) {
     return fallbackIndex === 0 ? 'toyota-logo' : 'lexus-logo';
 }
 
-function decorateHeaderV3(block) {
-    const rows = [...block.children];
-    let titleText = 'My Toyota & Lexus Communications Profile';
-    const imageEls = [];
-    rows.forEach((row) => {
-        const cells = [...row.children];
-        const rowImages = [...row.querySelectorAll('picture, img')].filter((el) => {
-            if (el.tagName === 'IMG') return !el.closest('picture');
-            return true;
-        });
-
-        if (rowImages.length === 0) {
-            const text = cells.map((c) => c.textContent.trim()).join(' ').trim();
-            if (text) titleText = text;
-            return;
-        }
-
-        rowImages.forEach((el) => imageEls.push(el));
-    });
-
-    block.textContent = '';
-    const headerWrap = document.createElement('div');
-    headerWrap.className = 'header-wrap row';
-    const col = document.createElement('div');
-    col.className = 'col';
-
-    const logoWrap = document.createElement('div');
-    logoWrap.className = 'logo-wrap';
-    logoWrap.setAttribute('role', 'img');
-    logoWrap.setAttribute('aria-label', 'Brand Logo');
-
-    imageEls.forEach((el, index) => {
-        const picture = el.tagName === 'PICTURE' ? el : null;
-        const img = picture ? picture.querySelector('img') : el;
-        if (!img) return;
-        const src = img.getAttribute('src') || '';
-        const alt = img.getAttribute('alt') || '';
-        const brandClass = detectBrandClass(src, alt, index);
-        const existingLink = el.closest('a');
-        const href = existingLink?.getAttribute('href') || DEFAULT_HREFS[brandClass];
-        const a = document.createElement('a');
-        a.href = href;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        a.className = brandClass;
-        a.append(picture || img);
-        logoWrap.append(a);
-    });
-
-    col.append(logoWrap);
-    headerWrap.append(col);
-    const headerCnt = document.createElement('div');
-    headerCnt.className = 'header-cnt col';
-    const title = document.createElement('p');
-    title.className = 'header-title';
-    title.textContent = titleText;
-    headerCnt.append(title);
-    headerWrap.append(headerCnt);
-    block.append(headerWrap);
-}
-
-
 /* --------------------------------------------------------------------------
  * Header firm variant
  * -------------------------------------------------------------------------- */
@@ -1443,6 +1381,46 @@ async function decorateHeaderFirm(block) {
     block.replaceChildren(link);
 }
 
+async function decorateHeaderPreferences(block) {
+    const fragment = await loadFragment('/nav/header-preferences');
+
+    if (!fragment) return;
+
+    const content = fragment.querySelector(':scope > .section > div')
+        || fragment.querySelector(':scope > div')
+        || fragment;
+    const rows = [...content.children].filter((child) => child.tagName !== 'SCRIPT');
+
+    if (rows.length < 2) return;
+
+    const logoRow = rows[0];
+    const titleRow = rows[1];
+
+    const logoLink = logoRow.querySelector('a');
+    const titleLink = titleRow.querySelector('a');
+    const picture = logoRow.querySelector('picture') || logoRow.querySelector('img');
+
+    const href = logoLink?.href || titleLink?.href || '#';
+
+    const link = document.createElement('a');
+    link.href = href;
+    link.className = 'header-preferences-link';
+
+    if (picture) {
+        link.append(picture.cloneNode(true));
+    }
+
+    const titleEl = document.createElement('span');
+    titleEl.className = 'header-preferences-title';
+    titleEl.textContent = titleLink
+        ? titleLink.textContent.trim()
+        : titleRow.textContent.trim();
+
+    link.append(titleEl);
+
+    block.replaceChildren(link);
+}
+
 export default async function decorate(block) {
     const variant = getHeaderVariant(block);
 
@@ -1456,8 +1434,8 @@ export default async function decorate(block) {
         return;
     }
 
-    if (variant === 'header-v3') {
-        decorateHeaderV3(block);
+    if (variant === 'header-preferences') {
+        await decorateHeaderPreferences(block);
         return;
     }
 

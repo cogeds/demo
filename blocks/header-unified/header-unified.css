@@ -1658,7 +1658,7 @@ a.link {
   bottom: 0;
   width: 0;
   height: 2px;
-  background: var(--color-red--cta);
+  background: var(--color-red-cta);
   transform: translateX(-50%);
   transition: width 0.3s ease;
 }
@@ -1792,19 +1792,19 @@ a.link {
   }
 }
 /* --------------------------------------------------------------------------
- * Header v3 styles
+ * Header preferences styles
  * -------------------------------------------------------------------------- */
-.header-v3.block {
+.header-preferences.block {
   padding: 16px 80px 16px 80px;
 }
 
-.header-v3 {
+.header-preferences {
   background: var(--color-white);
   border-bottom: 1px solid var(--color-grey-border);
   padding: 16px 24px;
 }
 
-.header-v3 .header-wrap.row {
+.header-preferences .header-wrap.row {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -1813,40 +1813,40 @@ a.link {
   margin: 0 auto;
 }
 
-.header-v3 .col {
+.header-preferences .col {
   align-items: center;
 }
 
-.header-v3 .logo-wrap {
+.header-preferences .logo-wrap {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.header-v3 .logo-wrap a {
+.header-preferences .logo-wrap a {
   display: flex;
   align-items: center;
   text-decoration: none;
   line-height: 0;
 }
 
-.header-v3 .logo-wrap a:hover img,
-.header-v3 .logo-wrap a:focus-visible img {
+.header-preferences .logo-wrap a:hover img,
+.header-preferences .logo-wrap a:focus-visible img {
   opacity: 0.8;
 }
 
-.header-v3 .logo-wrap a.toyota-logo img {
+.header-preferences .logo-wrap a.toyota-logo img {
   height: 32px;
   width: auto;
   display: block;
 }
 
-.header-v3 .logo-wrap a.lexus-logo {
+.header-preferences .logo-wrap a.lexus-logo {
   position: relative;
   padding-left: 12px;
 }
 
-.header-v3 .logo-wrap a.lexus-logo::before {
+.header-preferences .logo-wrap a.lexus-logo::before {
   content: "";
   position: absolute;
   left: 0;
@@ -1857,17 +1857,17 @@ a.link {
   background: var(--color-gray-lighter);
 }
 
-.header-v3 .logo-wrap a.lexus-logo img {
+.header-preferences .logo-wrap a.lexus-logo img {
   height: 30px;
   width: auto;
   display: block;
 }
 
-.header-v3 .header-cnt {
+.header-preferences .header-cnt {
   flex: 1 1 auto;
 }
 
-.header-v3 .header-cnt .header-title {
+.header-preferences .header-cnt .header-title {
   font-size: 18px;
   font-weight: 400;
   line-height: 1.3;
@@ -1877,15 +1877,15 @@ a.link {
 }
 
 @media (width >= 768px) {
-  .header-v3 {
+  .header-preferences {
     padding: 20px 48px;
   }
-  .header-v3 .header-wrap.row {
+  .header-preferences .header-wrap.row {
     flex-wrap: nowrap;
     justify-content: space-between;
     padding-left: 38px;
   }
-  .header-v3 .header-cnt .header-title {
+  .header-preferences .header-cnt .header-title {
     font-size: 16px;
     text-align: center;
     padding-bottom: 10px;
@@ -1893,19 +1893,19 @@ a.link {
   }
 }
 @media (width < 768px) {
-  .header-v3 .header-wrap.row {
+  .header-preferences .header-wrap.row {
     justify-content: flex-start;
     text-align: center;
   }
-  .header-v3 .logo-wrap {
+  .header-preferences .logo-wrap {
     gap: 8px;
     width: 46%;
   }
-  .header-v3 .col {
+  .header-preferences .col {
     justify-content: flex-start;
     width: 100%;
   }
-  .header-v3 .header-cnt .header-title {
+  .header-preferences .header-cnt .header-title {
     flex-basis: 100%;
     order: 3;
     text-align: center;
