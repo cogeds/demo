@@ -10,6 +10,10 @@ function getHeaderVariant(block) {
         return 'header-privacy';
     }
 
+    if (block.classList.contains('header-usa') || block.closest('.header-usa-container')) {
+        return 'header-usa';
+    }
+
     if (block.classList.contains('header-brand') || block.closest('.header-brand-container')) {
         return 'header-brand';
     }
@@ -231,12 +235,19 @@ async function decorateHeaderToyotaMobility(block) {
     block.append(header);
 }
 
-async function decorateHeaderDefault(block) {
+async function decorateHeaderDefault(block, variantName = 'header') {
     const navMeta = getMetadata('nav');
 
-    const navPath = navMeta
+    const fragmentPathByVariant = {
+        header: '/nav',
+        'header-usa': '/nav/header-usa',
+        'header-toyotamobility': '/nav/header-toyotamobility',
+    };
+
+    const defaultPath = fragmentPathByVariant[variantName] || '/nav';
+    const navPath = navMeta && variantName === 'header'
         ? new URL(navMeta, window.location).pathname
-        : '/nav';
+        : defaultPath;
 
     const fragment = await loadFragment(navPath);
 
@@ -253,6 +264,7 @@ async function decorateHeaderDefault(block) {
         logoImg?.cloneNode(true),
         navLinks,
         pageTitleText,
+        variantName === 'header' ? '' : variantName,
     );
 
     if (authoredH1) {
@@ -1501,6 +1513,11 @@ export default async function decorate(block) {
 
     if (variant === 'header-privacy') {
         await decorateHeaderPrivacy(block);
+        return;
+    }
+
+    if (variant === 'header-usa') {
+        await decorateHeaderDefault(block, 'header-usa');
         return;
     }
 
