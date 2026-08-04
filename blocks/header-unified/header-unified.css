@@ -889,10 +889,10 @@ body.nav-open {
   }
 }
 /* --------------------------------------------------------------------------
- * Header v1 styles
+ * Header privacy styles
  * -------------------------------------------------------------------------- */
 /* Toyota global-header-v2 style header, EDS variant */
-.header-v1 {
+.header-privacy {
   --hv1-shadow: 0 12px 30px rgb(0 0 0 / 12%);
   --hv1-bar-height: 64px;
   position: relative;
@@ -904,7 +904,7 @@ body.nav-open {
 }
 
 /* main bar -------------------------------------------------------------- */
-.header-v1-bar {
+.header-privacy-bar {
   display: flex;
   align-items: center;
   gap: 24px;
@@ -914,14 +914,14 @@ body.nav-open {
   padding: 0 24px;
 }
 
-.header-v1-brand {
+.header-privacy-brand {
   display: inline-flex;
   align-items: center;
   flex: 0 0 auto;
   text-decoration: none;
 }
 
-.header-v1-brand img {
+.header-privacy-brand img {
   display: block;
   width: auto;
   max-width: 200px;
@@ -930,11 +930,11 @@ body.nav-open {
 }
 
 /* primary navigation ---------------------------------------------------- */
-.header-v1-nav {
+.header-privacy-nav {
   flex: 1 1 auto;
 }
 
-.header-v1-sections {
+.header-privacy-sections {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -943,13 +943,13 @@ body.nav-open {
   list-style: none;
 }
 
-.header-v1-item:after {
+.header-privacy-item:after {
   position: relative;
   /* border-bottom: 3px solid var(--color-red--cta); */
 }
 
-.header-v1-link,
-.header-v1-trigger {
+.header-privacy-link,
+.header-privacy-trigger {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -967,7 +967,7 @@ body.nav-open {
   cursor: pointer;
 }
 
-.header-v1-caret {
+.header-privacy-caret {
   width: 8px;
   height: 8px;
   border-right: 2px solid currentcolor;
@@ -976,12 +976,12 @@ body.nav-open {
   transition: transform 0.2s ease;
 }
 
-.header-v1-item.open .header-v1-caret {
+.header-privacy-item.open .header-privacy-caret {
   transform: rotate(-135deg);
 }
 
 /* mega-menu fly-out ----------------------------------------------------- */
-.header-v1-flyout {
+.header-privacy-flyout {
   position: fixed;
   left: 50%;
   z-index: 90;
@@ -996,30 +996,30 @@ body.nav-open {
   transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s ease;
 }
 
-.header-v1-item.open .header-v1-flyout {
+.header-privacy-item.open .header-privacy-flyout {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
   transform: translate(-50%, 0);
 }
 
-.header-v1-flyout-inner {
+.header-privacy-flyout-inner {
   display: flex;
   justify-content: space-evenly;
   flex-wrap: wrap;
   padding: 28px 50px;
 }
 
-.header-v1-col {
+.header-privacy-col {
   flex: 0 1 auto;
   min-width: 180px;
 }
 
-.header-v1-col-promo {
+.header-privacy-col-promo {
   max-width: 300px;
 }
 
-.header-v1-col-promo .header-v1-col-title {
+.header-privacy-col-promo .header-privacy-col-title {
   margin: 0 0 12px;
   color: var(--color-gray-dark);
   font-size: 12px;
@@ -1028,18 +1028,18 @@ body.nav-open {
   text-transform: uppercase;
 }
 
-.header-v1-col-promo ul {
+.header-privacy-col-promo ul {
   margin-top: 12px;
 }
 
-.header-v1-col-promo ul li:first-child a {
+.header-privacy-col-promo ul li:first-child a {
   font-size: 22px;
   font-weight: 600;
   line-height: 28px;
   margin-bottom: 16px;
 }
 
-.header-v1-col-promo ul li:nth-child(2) a {
+.header-privacy-col-promo ul li:nth-child(2) a {
   color: var(--color-gray-dark);
   font-size: 14px;
   font-weight: 400;
@@ -1047,7 +1047,7 @@ body.nav-open {
   margin-bottom: 24px;
 }
 
-.header-v1-col-promo ul li:nth-child(3) a {
+.header-privacy-col-promo ul li:nth-child(3) a {
   color: var(--color-white);
   background: var(--color-text-light);
   font-size: 14px;
@@ -1057,16 +1057,16 @@ body.nav-open {
   border-radius: 40px;
 }
 
-.header-v1-col-promo li a::after {
+.header-privacy-col-promo li a::after {
   content: "";
   position: absolute;
   height: 0;
   background: var(--color-gray-dark);
 }
 
-.header-v1-flyout-inner h2,
-.header-v1-flyout-inner h3,
-.header-v1-flyout-inner h4 {
+.header-privacy-flyout-inner h2,
+.header-privacy-flyout-inner h3,
+.header-privacy-flyout-inner h4 {
   margin: 0 0 12px;
   color: var(--color-gray-dark);
   font-size: 12px;
@@ -1075,17 +1075,17 @@ body.nav-open {
   text-transform: uppercase;
 }
 
-.header-v1-flyout-inner ul {
+.header-privacy-flyout-inner ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.header-v1-flyout-inner li {
+.header-privacy-flyout-inner li {
   margin: 0;
 }
 
-.header-v1-flyout-inner a {
+.header-privacy-flyout-inner a {
   position: relative;
   display: inline-block;
   padding: 8px 0;
@@ -1098,7 +1098,7 @@ body.nav-open {
 }
 
 /* Hidden underline */
-.header-v1-flyout-inner a::after {
+.header-privacy-flyout-inner a::after {
   content: "";
   position: absolute;
   left: 0%;
@@ -1111,12 +1111,12 @@ body.nav-open {
 }
 
 /* Hover animation from center */
-.header-v1-flyout-inner a:hover::after {
+.header-privacy-flyout-inner a:hover::after {
   width: 100%;
 }
 
 /* a column title authored as a link inherits the heading look, not the block-link look */
-.header-v1-col-title a {
+.header-privacy-col-title a {
   display: inline;
   padding: 0;
   margin: 0;
@@ -1125,13 +1125,13 @@ body.nav-open {
   letter-spacing: inherit;
 }
 
-.header-v1-col-title a:hover,
-.header-v1-col-title a:focus-visible {
+.header-privacy-col-title a:hover,
+.header-privacy-col-title a:focus-visible {
   background: none;
   color: var(--color-red--cta);
 }
 
-.header-v1-flyout-inner picture img {
+.header-privacy-flyout-inner picture img {
   display: block;
   width: 100%;
   height: auto;
@@ -1139,7 +1139,7 @@ body.nav-open {
 }
 
 /* hamburger + overlay --------------------------------------------------- */
-.header-v1-hamburger {
+.header-privacy-hamburger {
   display: none;
   flex-direction: column;
   justify-content: center;
@@ -1154,26 +1154,26 @@ body.nav-open {
   order: 3;
 }
 
-.header-v1-hamburger span {
+.header-privacy-hamburger span {
   display: block;
   height: 2px;
   background: var(--color-text-light);
   transition: transform 0.25s ease, opacity 0.25s ease;
 }
 
-.header-v1.mobile-open .header-v1-hamburger span:nth-child(1) {
+.header-privacy.mobile-open .header-privacy-hamburger span:nth-child(1) {
   transform: translateY(7px) rotate(45deg);
 }
 
-.header-v1.mobile-open .header-v1-hamburger span:nth-child(2) {
+.header-privacy.mobile-open .header-privacy-hamburger span:nth-child(2) {
   opacity: 0;
 }
 
-.header-v1.mobile-open .header-v1-hamburger span:nth-child(3) {
+.header-privacy.mobile-open .header-privacy-hamburger span:nth-child(3) {
   transform: translateY(-7px) rotate(-45deg);
 }
 
-.header-v1-overlay {
+.header-privacy-overlay {
   position: relative;
   inset: 0;
   z-index: 80;
@@ -1183,23 +1183,23 @@ body.nav-open {
   transition: opacity 0.24s ease, visibility 0.24s ease;
 }
 
-.header-v1-overlay.active {
+.header-privacy-overlay.active {
   opacity: 0;
   visibility: visible;
 }
 
-.header-v1-no-scroll {
+.header-privacy-no-scroll {
   overflow: hidden;
 }
 
 /* account (My Toyota) — pinned right ----------------------------------- */
-.header-v1-account {
+.header-privacy-account {
   position: relative;
   flex: 0 0 auto;
   margin-left: 8px;
 }
 
-.header-v1-account-trigger {
+.header-privacy-account-trigger {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -1215,19 +1215,19 @@ body.nav-open {
   cursor: pointer;
 }
 
-.header-v1-account-icon {
+.header-privacy-account-icon {
   display: inline-flex;
 }
 
-.header-v1-account-trigger:hover {
+.header-privacy-account-trigger:hover {
   color: var(--color-red--cta);
 }
 
-.header-v1-account.open .header-v1-account-trigger {
+.header-privacy-account.open .header-privacy-account-trigger {
   color: var(--color-text-light);
 }
 
-.header-v1-account.open .header-v1-account-trigger::after {
+.header-privacy-account.open .header-privacy-account-trigger::after {
   content: "";
   position: absolute;
   left: 8px;
@@ -1237,7 +1237,7 @@ body.nav-open {
   background: var(--color-red--cta);
 }
 
-.header-v1-account-panel {
+.header-privacy-account-panel {
   position: absolute;
   top: 100%;
   right: 0;
@@ -1253,7 +1253,7 @@ body.nav-open {
   transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
 }
 
-.header-v1-account.open .header-v1-account-panel {
+.header-privacy-account.open .header-privacy-account-panel {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
@@ -1392,11 +1392,11 @@ a.link {
 }
 
 /* vehicles mega-menu ---------------------------------------------------- */
-.header-v1-item.vehicles .vehicles-flyout {
+.header-privacy-item.vehicles .vehicles-flyout {
   background: var(--color-white);
 }
 
-.header-v1 .vehicles-menu {
+.header-privacy .vehicles-menu {
   display: flex;
   max-width: 1440px;
   min-height: 520px;
@@ -1404,14 +1404,14 @@ a.link {
   margin: 0 auto;
 }
 
-.header-v1 .vehicles-left {
+.header-privacy .vehicles-left {
   flex: 0 0 260px;
   padding: 24px 16px;
   border-right: 1px solid var(--color-grey-bg-dark);
   overflow-y: auto;
 }
 
-.header-v1 .vehicles-left .all-models {
+.header-privacy .vehicles-left .all-models {
   padding: 0 12px 12px;
   color: var(--color-gray-dark);
   font-size: 12px;
@@ -1420,13 +1420,13 @@ a.link {
   text-transform: uppercase;
 }
 
-.header-v1 .vehicles-cats {
+.header-privacy .vehicles-cats {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.header-v1 .vehicles-left button {
+.header-privacy .vehicles-left button {
   position: relative;
   display: block;
   width: 100%;
@@ -1443,12 +1443,12 @@ a.link {
   isolation: isolate;
 }
 
-.header-v1 .vehicles-left button.active {
+.header-privacy .vehicles-left button.active {
   font-weight: 700;
 }
 
 /* red left indicator bar */
-.header-v1 .vehicles-left button::before {
+.header-privacy .vehicles-left button::before {
   content: "";
   position: absolute;
   top: 0;
@@ -1460,12 +1460,12 @@ a.link {
   transition: transform 0.3s ease;
 }
 
-.header-v1 .vehicles-left button.active::before {
+.header-privacy .vehicles-left button.active::before {
   transform: scaleY(1);
 }
 
 /* pink gradient wash */
-.header-v1 .vehicles-left button::after {
+.header-privacy .vehicles-left button::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -1475,45 +1475,45 @@ a.link {
   background: linear-gradient(90deg, #fff2f3 0%, rgba(255, 255, 255, 0) 100%);
 }
 
-.header-v1 .vehicles-left button.active::after {
+.header-privacy .vehicles-left button.active::after {
   opacity: 1;
 }
 
-.header-v1 .vehicles-right {
+.header-privacy .vehicles-right {
   flex: 1 1 auto;
   padding: 24px;
   overflow-y: auto;
 }
 
-.header-v1 .vehicles-slide {
+.header-privacy .vehicles-slide {
   display: none;
 }
 
-.header-v1 .vehicles-slide.active {
+.header-privacy .vehicles-slide.active {
   display: block;
 }
 
-.header-v1 .vehicles-subcat {
+.header-privacy .vehicles-subcat {
   margin: 8px 0 16px;
   font-size: 18px;
   font-weight: 700;
 }
 
-.header-v1 .vehicles-subcat span {
+.header-privacy .vehicles-subcat span {
   display: block;
   color: var(--color-gray-dark);
   font-size: 13px;
   font-weight: 400;
 }
 
-.header-v1 .vehicles-grid {
+.header-privacy .vehicles-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 24px 20px;
   margin-bottom: 24px;
 }
 
-.header-v1 .vehicle-card {
+.header-privacy .vehicle-card {
   width: 26%;
   border: 1px solid var(--color-grey-bg-dark);
   border-radius: 6px;
@@ -1522,11 +1522,11 @@ a.link {
   transition: border-color 0.2s ease;
 }
 
-.header-v1 .vehicle-card:hover {
+.header-privacy .vehicle-card:hover {
   border: 1px solid var(--color-text-light);
 }
 
-.header-v1 .vehicle-image {
+.header-privacy .vehicle-image {
   position: relative;
   display: flex;
   height: 160px;
@@ -1534,13 +1534,13 @@ a.link {
   justify-content: center;
 }
 
-.header-v1 .vehicle-image img {
+.header-privacy .vehicle-image img {
   display: block;
   width: 100%;
   height: auto;
 }
 
-.header-v1 .vehicle-badge {
+.header-privacy .vehicle-badge {
   position: absolute;
   top: 0;
   left: 0;
@@ -1552,51 +1552,51 @@ a.link {
   border-radius: 4px;
 }
 
-.header-v1 .vehicle-card .as-shown {
+.header-privacy .vehicle-card .as-shown {
   margin-top: 6px;
   color: var(--color-gray-dark);
   font-size: 10px;
   text-align: center;
 }
 
-.header-v1 .vehicle-card .year-selector {
+.header-privacy .vehicle-card .year-selector {
   margin-top: 8px;
   font-size: 12px;
   border-bottom: 1px solid var(--color-black);
   display: inline-block;
 }
 
-.header-v1 .vehicle-card .year-selector .active {
+.header-privacy .vehicle-card .year-selector .active {
   color: var(--color-text-light);
 }
 
-.header-v1 .vehicle-card h3 {
+.header-privacy .vehicle-card h3 {
   margin: 8px 0 4px;
   font-size: 20px;
 }
 
-.header-v1 .vehicle-card h3 a {
+.header-privacy .vehicle-card h3 a {
   color: var(--color-text-light);
   text-decoration: none;
 }
 
-.header-v1 .vehicle-card h3 a:hover {
+.header-privacy .vehicle-card h3 a:hover {
   color: var(--color-red--cta);
 }
 
-.header-v1 .vehicle-card > p {
+.header-privacy .vehicle-card > p {
   margin: 0;
   color: var(--color-gray-dark);
   font-size: 14px;
 }
 
-.header-v1 .vehicle-actions {
+.header-privacy .vehicle-actions {
   display: flex;
   gap: 8px;
   margin-top: 12px;
 }
 
-.header-v1 .vehicle-actions a {
+.header-privacy .vehicle-actions a {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -1614,12 +1614,12 @@ a.link {
   transition: all 0.3s ease;
 }
 
-.header-v1 .vehicle-actions a {
+.header-privacy .vehicle-actions a {
   border: 1px solid var(--color-black);
 }
 
 /* Chevron */
-.header-v1 .vehicle-actions a::after {
+.header-privacy .vehicle-actions a::after {
   content: "›";
   opacity: 0;
   width: 0;
@@ -1629,19 +1629,19 @@ a.link {
 }
 
 /* Hover */
-.header-v1 .vehicle-actions a:hover {
+.header-privacy .vehicle-actions a:hover {
   padding-right: 30px;
   padding-left: 18px;
 }
 
-.header-v1 .vehicle-actions a:hover::after {
+.header-privacy .vehicle-actions a:hover::after {
   opacity: 1;
   width: 12px;
   margin-left: 6px;
   transform: translateX(4px);
 }
 
-.header-v1 .header-v1-trigger {
+.header-privacy .header-privacy-trigger {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -1651,7 +1651,7 @@ a.link {
 }
 
 /* Hidden underline */
-.header-v1 .header-v1-trigger::after {
+.header-privacy .header-privacy-trigger::after {
   content: "";
   position: absolute;
   left: 50%;
@@ -1664,22 +1664,22 @@ a.link {
 }
 
 /* Hover animation from center */
-.header-v1 .header-v1-trigger:hover::after {
+.header-privacy .header-privacy-trigger:hover::after {
   width: 100%;
 }
 
 /* Active menu */
-.header-v1 .header-v1-trigger[aria-expanded=true]::after {
+.header-privacy .header-privacy-trigger[aria-expanded=true]::after {
   width: 100%;
 }
 
 /* mobile drawer (< 900px) ---------------------------------------------- */
 @media (width <= 899px) {
-  .header-v1-hamburger {
+  .header-privacy-hamburger {
     display: flex;
     z-index: 90;
   }
-  .header-v1-nav {
+  .header-privacy-nav {
     position: absolute;
     inset: var(--hv1-bar-height) auto 0 0;
     z-index: 90;
@@ -1692,27 +1692,27 @@ a.link {
     transition: transform 0.28s ease, visibility 0.28s ease;
     width: 100%;
   }
-  .header-v1.mobile-open .header-v1-nav {
+  .header-privacy.mobile-open .header-privacy-nav {
     transform: translateY(0);
     visibility: visible;
   }
-  .header-v1-sections {
+  .header-privacy-sections {
     flex-direction: column;
     align-items: stretch;
     gap: 0;
   }
-  .header-v1-item {
+  .header-privacy-item {
     border-bottom: 1px solid var(--color-grey-bg-dark);
   }
-  .header-v1-link,
-  .header-v1-trigger {
+  .header-privacy-link,
+  .header-privacy-trigger {
     width: 100%;
     min-height: 54px;
     padding: 0 20px;
     font-size: 17px;
     justify-content: space-between;
   }
-  .header-v1 .header-v1-trigger::after {
+  .header-privacy .header-privacy-trigger::after {
     border: solid var(--color-black);
     border-width: 0 2px 2px 0;
     display: inline-block;
@@ -1724,11 +1724,11 @@ a.link {
     height: 1px;
     left: 90%;
   }
-  .header-v1 .header-v1-account-label {
+  .header-privacy .header-privacy-account-label {
     display: none;
   }
   /* fly-outs become inline accordions on mobile */
-  .header-v1-flyout {
+  .header-privacy-flyout {
     position: static;
     width: auto;
     max-width: none;
@@ -1742,52 +1742,52 @@ a.link {
     transform: none;
     transition: max-height 0.28s ease;
   }
-  .header-v1-item.open .header-v1-flyout {
+  .header-privacy-item.open .header-privacy-flyout {
     max-height: 1200px;
     transform: none;
   }
-  .header-v1-flyout-inner {
+  .header-privacy-flyout-inner {
     flex-flow: column nowrap;
     gap: 4px;
     padding: 4px 20px 20px;
     background: #fafafa;
   }
-  .header-v1-col {
+  .header-privacy-col {
     min-width: 0;
   }
-  .header-v1-flyout-inner picture {
+  .header-privacy-flyout-inner picture {
     display: none;
   }
   /* vehicles mega-menu stacks vertically inside the mobile drawer */
-  .header-v1 .vehicles-menu {
+  .header-privacy .vehicles-menu {
     flex-direction: column;
     min-height: 0;
     max-height: none;
   }
-  .header-v1 .vehicles-left {
+  .header-privacy .vehicles-left {
     flex: 0 0 auto;
     border-right: 0;
     border-bottom: 1px solid var(--color-grey-bg-dark);
   }
-  .header-v1 .vehicle-card {
+  .header-privacy .vehicle-card {
     width: 100%;
   }
 }
 @media (width <= 600px) {
-  .header-v1-bar {
+  .header-privacy-bar {
     padding: 0 16px;
   }
-  .header-v1-brand img {
+  .header-privacy-brand img {
     max-width: 160px;
     height: 30px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .header-v1-flyout,
-  .header-v1-nav,
-  .header-v1-overlay,
-  .header-v1-caret,
-  .header-v1-hamburger span {
+  .header-privacy-flyout,
+  .header-privacy-nav,
+  .header-privacy-overlay,
+  .header-privacy-caret,
+  .header-privacy-hamburger span {
     transition: none;
   }
 }

@@ -6,8 +6,8 @@ import { loadFragment } from '../fragment/fragment.js';
  * Supports both block-level classes and section container classes.
  */
 function getHeaderVariant(block) {
-    if (block.classList.contains('header-v1') || block.closest('.header-v1-container')) {
-        return 'header-v1';
+    if (block.classList.contains('header-privacy') || block.closest('.header-privacy-container')) {
+        return 'header-privacy';
     }
 
     if (block.classList.contains('header-brand') || block.closest('.header-brand-container')) {
@@ -267,7 +267,7 @@ async function decorateHeaderDefault(block) {
 
 
 /* --------------------------------------------------------------------------
- * Header v1 variant
+ * Header privacy variant
  * -------------------------------------------------------------------------- */
 
 // media query used to switch between the desktop mega-menu and the mobile drawer
@@ -314,7 +314,17 @@ function itemLabel(li) {
 /** builds a single anchor, preserving the authored href */
 function buildLink(className, label, href) {
     const a = document.createElement('a');
-    a.className = className;
+    const classNames = [className]
+        .filter(Boolean)
+        .flatMap((name) => name.split(/\s+/))
+        .filter(Boolean);
+
+    const legacyClass = className?.replace('header-privacy', 'header-v1');
+    if (legacyClass && legacyClass !== className) {
+        classNames.push(legacyClass);
+    }
+
+    a.className = [...new Set(classNames)].join(' ');
     a.href = href || '#';
     a.textContent = label;
     return a;
@@ -326,10 +336,10 @@ function buildLink(className, label, href) {
  * @param {Element} [except] optional item to leave open
  */
 function closeFlyouts(nav, except) {
-    nav.querySelectorAll('.header-v1-item.open').forEach((item) => {
+    nav.querySelectorAll('.header-privacy-item.open').forEach((item) => {
         if (item === except) return;
         item.classList.remove('open');
-        item.querySelector('.header-v1-trigger')?.setAttribute('aria-expanded', 'false');
+        item.querySelector('.header-privacy-trigger')?.setAttribute('aria-expanded', 'false');
     });
 }
 
@@ -355,17 +365,17 @@ function buildColumn(colLi) {
     const href = itemLink(colLi)?.getAttribute('href');
     const links = getFlyoutList(colLi);
     const col = document.createElement('div');
-    col.className = `header-v1-col ${colType === 'promo' ? 'header-v1-col-promo' : ''}`;
+    col.className = `header-privacy-col header-v1-col ${colType === 'promo' ? 'header-privacy-col-promo header-v1-col-promo' : ''}`;
 
     if (!links) {
         // second-level item with no children -> a single stand-alone link column
-        col.append(buildLink('header-v1-col-link', label, href));
+        col.append(buildLink('header-privacy-col-link', label, href));
         return col;
     }
 
     // second-level item WITH children -> a titled column of links
     const heading = document.createElement('h3');
-    heading.className = 'header-v1-col-title';
+    heading.className = 'header-privacy-col-title header-v1-col-title';
     heading.append(href ? buildLink('', label, href) : document.createTextNode(label));
     col.append(heading);
 
@@ -481,17 +491,17 @@ function appendVehicleGrid(slide, items) {
  */
 function buildVehiclesItem(li) {
     const item = document.createElement('li');
-    item.className = 'header-v1-item has-flyout vehicles';
+    item.className = 'header-privacy-item header-v1-item has-flyout vehicles';
 
     const trigger = document.createElement('button');
     trigger.type = 'button';
-    trigger.className = 'header-v1-trigger';
+    trigger.className = 'header-privacy-trigger header-v1-trigger';
     trigger.setAttribute('aria-expanded', 'false');
     trigger.setAttribute('aria-haspopup', 'true');
     trigger.innerHTML = `<span>${itemLabel(li)}</span>`;
 
     const flyout = document.createElement('div');
-    flyout.className = 'header-v1-flyout vehicles-flyout';
+    flyout.className = 'header-privacy-flyout header-v1-flyout vehicles-flyout';
 
     const menu = document.createElement('div');
     menu.className = 'vehicles-menu';
@@ -553,7 +563,7 @@ function buildVehiclesItem(li) {
 
 function buildNavItem(li) {
     const item = document.createElement('li');
-    item.className = 'header-v1-item';
+    item.className = 'header-privacy-item header-v1-item';
 
     const label = itemLabel(li);
     const href = itemLink(li)?.getAttribute('href');
@@ -561,7 +571,7 @@ function buildNavItem(li) {
 
     if (!flyoutList) {
         // top-level item with no children -> a plain primary link, no mega-menu
-        item.append(buildLink('header-v1-link', label, href));
+        item.append(buildLink('header-privacy-link', label, href));
         return item;
     }
 
@@ -569,16 +579,16 @@ function buildNavItem(li) {
 
     const trigger = document.createElement('button');
     trigger.type = 'button';
-    trigger.className = 'header-v1-trigger';
+    trigger.className = 'header-privacy-trigger header-v1-trigger';
     trigger.setAttribute('aria-expanded', 'false');
     trigger.setAttribute('aria-haspopup', 'true');
     trigger.innerHTML = `<span>${label}</span>`;
 
     const flyout = document.createElement('div');
-    flyout.className = 'header-v1-flyout';
+    flyout.className = 'header-privacy-flyout header-v1-flyout';
 
     const inner = document.createElement('div');
-    inner.className = 'header-v1-flyout-inner';
+    inner.className = 'header-privacy-flyout-inner';
     // each second-level list item becomes a mega-menu column
     childItems(flyoutList).forEach((colLi) => inner.append(buildColumn(colLi)));
     flyout.append(inner);
@@ -675,13 +685,13 @@ function buildAccount(accountLi) {
     const rows = linkItems.slice(1);
 
     const wrap = document.createElement('div');
-    wrap.className = 'header-v1-account';
+    wrap.className = 'header-privacy-account header-v1-account';
     wrap.innerHTML = `
-    <button type="button" class="header-v1-account-trigger" aria-expanded="false" aria-haspopup="true">
-      <span class="header-v1-account-icon" aria-hidden="true">${ICON_USER}</span>
-      <span class="header-v1-account-label">${triggerLabel}</span>
+    <button type="button" class="header-privacy-account-trigger header-v1-account-trigger" aria-expanded="false" aria-haspopup="true">
+      <span class="header-privacy-account-icon" aria-hidden="true">${ICON_USER}</span>
+      <span class="header-privacy-account-label">${triggerLabel}</span>
     </button>
-    <div class="header-v1-account-panel my-toyota-view" data-wrapper="mytoyota">
+    <div class="header-privacy-account-panel header-v1-account-panel my-toyota-view" data-wrapper="mytoyota">
       <div class="account-logged-out-block">
         <div class="account-title">${title}</div>
         ${descriptions.map((d) => `<p>${d}</p>`).join('')}
@@ -705,12 +715,12 @@ function buildAccount(accountLi) {
  * @param {Element} header
  */
 function setupInteractions(header) {
-    const nav = header.querySelector('.header-v1-nav');
-    const overlay = header.querySelector('.header-v1-overlay');
-    const hamburger = header.querySelector('.header-v1-hamburger');
-    const account = header.querySelector('.header-v1-account');
-    const accountTrigger = account?.querySelector('.header-v1-account-trigger');
-    const items = [...header.querySelectorAll('.header-v1-item.has-flyout')];
+    const nav = header.querySelector('.header-privacy-nav');
+    const overlay = header.querySelector('.header-privacy-overlay');
+    const hamburger = header.querySelector('.header-privacy-hamburger');
+    const account = header.querySelector('.header-privacy-account');
+    const accountTrigger = account?.querySelector('.header-privacy-account-trigger');
+    const items = [...header.querySelectorAll('.header-privacy-item.has-flyout')];
 
     const closeAccount = () => {
         account?.classList.remove('open');
@@ -721,7 +731,7 @@ function setupInteractions(header) {
         closeFlyouts(nav, item);
         closeAccount();
         item.classList.add('open');
-        item.querySelector('.header-v1-trigger')?.setAttribute('aria-expanded', 'true');
+        item.querySelector('.header-privacy-trigger')?.setAttribute('aria-expanded', 'true');
         overlay?.classList.add('active');
     };
 
@@ -752,7 +762,7 @@ function setupInteractions(header) {
     });
 
     items.forEach((item) => {
-        const trigger = item.querySelector('.header-v1-trigger');
+        const trigger = item.querySelector('.header-privacy-trigger');
 
         // open/close strictly on click (no hover)
         trigger.addEventListener('click', () => {
@@ -770,7 +780,7 @@ function setupInteractions(header) {
         const expanded = hamburger.getAttribute('aria-expanded') === 'true';
         hamburger.setAttribute('aria-expanded', String(!expanded));
         header.classList.toggle('mobile-open', !expanded);
-        document.body.classList.toggle('header-v1-no-scroll', !expanded);
+        document.body.classList.toggle('header-privacy-no-scroll', !expanded);
         if (expanded) closeAll();
     });
 
@@ -778,7 +788,7 @@ function setupInteractions(header) {
         closeAll();
         header.classList.remove('mobile-open');
         hamburger?.setAttribute('aria-expanded', 'false');
-        document.body.classList.remove('header-v1-no-scroll');
+        document.body.classList.remove('header-privacy-no-scroll');
     });
 
     // click outside closes any open desktop fly-out
@@ -792,7 +802,7 @@ function setupInteractions(header) {
         closeAll();
         header.classList.remove('mobile-open');
         hamburger?.setAttribute('aria-expanded', 'false');
-        document.body.classList.remove('header-v1-no-scroll');
+        document.body.classList.remove('header-privacy-no-scroll');
     });
 
     // reset drawer/fly-out state when crossing the desktop breakpoint
@@ -800,17 +810,17 @@ function setupInteractions(header) {
         closeAll();
         header.classList.remove('mobile-open');
         hamburger?.setAttribute('aria-expanded', 'false');
-        document.body.classList.remove('header-v1-no-scroll');
+        document.body.classList.remove('header-privacy-no-scroll');
     });
 }
 
 /**
- * loads and decorates the header-v1 block
+ * loads and decorates the header-privacy block
  * @param {Element} block The block element
  */
-async function decorateHeaderV1(block) {
+async function decorateHeaderPrivacy(block) {
     const navMeta = getMetadata('nav');
-    const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav/nav';
+    const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav/header-privacy';
 
     const fragment = await loadFragment(navPath);
     if (!fragment) return;
@@ -827,34 +837,34 @@ async function decorateHeaderV1(block) {
     const primaryItems = sourceItems.filter((li) => li !== accountLi);
 
     const header = document.createElement('header');
-    header.className = 'header-v1';
+    header.className = 'header-privacy header-v1';
     header.innerHTML = `
-    <div class="header-v1-bar">
-      <a class="header-v1-brand" href="/" aria-label="Home"></a>
+    <div class="header-privacy-bar header-v1-bar">
+      <a class="header-privacy-brand header-v1-brand" href="/" aria-label="Home"></a>
       <button
-        class="header-v1-hamburger"
+        class="header-privacy-hamburger header-v1-hamburger"
         type="button"
         aria-label="Toggle navigation"
         aria-expanded="false"
-        aria-controls="header-v1-nav">
+        aria-controls="header-privacy-nav">
         <span></span><span></span><span></span>
       </button>
-      <nav id="header-v1-nav" class="header-v1-nav" aria-label="Primary">
-        <ul class="header-v1-sections"></ul>
+      <nav id="header-privacy-nav" class="header-privacy-nav header-v1-nav" aria-label="Primary">
+        <ul class="header-privacy-sections header-v1-sections"></ul>
       </nav>
     </div>
-    <div class="header-v1-overlay" hidden></div>
+    <div class="header-privacy-overlay header-v1-overlay" hidden></div>
   `;
 
-    if (logo) header.querySelector('.header-v1-brand').append(logo.cloneNode(true));
-    header.querySelector('.header-v1-overlay').removeAttribute('hidden');
+    if (logo) header.querySelector('.header-privacy-brand').append(logo.cloneNode(true));
+    header.querySelector('.header-privacy-overlay').removeAttribute('hidden');
 
-    const sections = header.querySelector('.header-v1-sections');
+    const sections = header.querySelector('.header-privacy-sections');
     primaryItems.forEach((li) => {
         sections.append(isVehiclesItem(li) ? buildVehiclesItem(li) : buildNavItem(li));
     });
 
-    if (accountLi) header.querySelector('.header-v1-bar').append(buildAccount(accountLi));
+    if (accountLi) header.querySelector('.header-privacy-bar').append(buildAccount(accountLi));
 
     setupInteractions(header);
 
@@ -1489,8 +1499,8 @@ async function decorateHeaderPreferences(block) {
 export default async function decorate(block) {
     const variant = getHeaderVariant(block);
 
-    if (variant === 'header-v1') {
-        await decorateHeaderV1(block);
+    if (variant === 'header-privacy') {
+        await decorateHeaderPrivacy(block);
         return;
     }
 
