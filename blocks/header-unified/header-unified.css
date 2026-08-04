@@ -555,7 +555,7 @@ body.nav-open {
 
 .header-brand.block .nav-mega-col {
   padding: 0 24px;
-  border-right: 1px solid var(--color-tab-bg-mob, #e5e5e5);
+  border-right: 1px solid var(--color-tab-bg-mob, #e6e6e6);
   display: flex;
   flex-direction: column;
   gap: 28px;
@@ -737,7 +737,7 @@ body.nav-open {
   text-decoration: none;
 }
 
-@media (max-width: 991px) {
+@media (max-width: 1023px) {
   .header-brand.block .nav-login {
     display: none;
   }
@@ -927,7 +927,7 @@ body.nav-open {
   display: flex;
   align-items: center;
   gap: 24px;
-  max-width: 1440px;
+  max-width: 1500px;
   min-height: var(--hv1-bar-height);
   margin: 0 auto;
   padding: 0 24px;
@@ -1348,7 +1348,7 @@ a.link {
 .link .icon {
   display: inline-flex;
   flex: 0 0 auto;
-  color: #b0b0b0;
+  color: #adadad;
 }
 
 .link .label {
@@ -1417,7 +1417,7 @@ a.link {
 
 .header-privacy .vehicles-menu {
   display: flex;
-  max-width: 1440px;
+  max-width: 1500px;
   min-height: 520px;
   max-height: min(80vh, 720px);
   margin: 0 auto;
@@ -1693,7 +1693,7 @@ a.link {
 }
 
 /* mobile drawer (< 900px) ---------------------------------------------- */
-@media (width <= 899px) {
+@media (width <= 1023px) {
   .header-privacy-hamburger {
     display: flex;
     z-index: 90;
@@ -1769,7 +1769,7 @@ a.link {
     flex-flow: column nowrap;
     gap: 4px;
     padding: 4px 20px 20px;
-    background: #fafafa;
+    background: #f6f6f6;
   }
   .header-privacy-col {
     min-width: 0;
@@ -1792,7 +1792,7 @@ a.link {
     width: 100%;
   }
 }
-@media (width <= 600px) {
+@media (width <= 767px) {
   .header-privacy-bar {
     padding: 0 16px;
   }
@@ -1828,8 +1828,9 @@ a.link {
   align-items: center;
   flex-wrap: wrap;
   gap: 16px 32px;
-  max-width: 1280px;
+  max-width: 1320px;
   margin: 0 auto;
+  padding: 20px 20px;
 }
 
 .header-preferences .col {
