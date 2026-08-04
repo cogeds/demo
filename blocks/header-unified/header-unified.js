@@ -201,7 +201,7 @@ async function decorateHeaderToyotaMobility(block) {
 
     const navPath = navMeta
         ? new URL(navMeta, window.location).pathname
-        : '/nav/toyotamobility';
+        : '/nav/header-toyotamobility';
 
     const fragment = await loadFragment(navPath);
 
