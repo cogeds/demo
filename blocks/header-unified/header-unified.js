@@ -1,256 +1,111 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
-/**
- * Returns the requested header variant.
- * Supports both block-level classes and section container classes.
- */
+// variant order matters: the first match wins
+const VARIANTS = [
+    'header-privacy',
+    'header-usa',
+    'header-brand',
+    'header-preferences',
+    'header-firm',
+    'header-toyotamobility',
+];
+
+/** resolves the requested variant from the block class or its section container */
 function getHeaderVariant(block) {
-    if (block.classList.contains('header-privacy') || block.closest('.header-privacy-container')) {
-        return 'header-privacy';
-    }
-
-    if (block.classList.contains('header-usa') || block.closest('.header-usa-container')) {
-        return 'header-usa';
-    }
-
-    if (block.classList.contains('header-brand') || block.closest('.header-brand-container')) {
-        return 'header-brand';
-    }
-
-    if (block.classList.contains('header-preferences') || block.closest('.header-preferences-container')) {
-        return 'header-preferences';
-    }
-
-    if (block.classList.contains('header-firm') || block.closest('.header-firm-container')) {
-        return 'header-firm';
-    }
-
-    if (block.classList.contains('header-toyotamobility') || block.closest('.header-toyotamobility-container')) {
-        return 'header-toyotamobility';
-    }
-
-    return 'header';
+    return VARIANTS.find((variant) => block.classList.contains(variant)
+        || block.closest(`.${variant}-container`)) || 'header';
 }
 
-
-/* --------------------------------------------------------------------------
- * Default header variant
- * -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+/* Default header variant                                                     */
+/* -------------------------------------------------------------------------- */
 
 function createNavLink(link) {
     const li = document.createElement('li');
     li.className = 'global-site-header-link';
-
     li.append(link);
-
     return li;
 }
 
 function buildHeader(logoImg, links, pageTitleText, variantName = '') {
     const wrapper = document.createElement('div');
     wrapper.className = 'global-site-header';
-
-    if (variantName) {
-        wrapper.classList.add(variantName);
-    }
+    if (variantName) wrapper.classList.add(variantName);
 
     wrapper.innerHTML = `
-  <div class="global-site-header-wrapper">
-    <div class="global-site-header-container">
-
-      <div class="global-site-header-logo"></div>
-
-      <button
-        class="hamburger-button"
-        aria-label="Toggle navigation"
-        aria-expanded="false"
-        aria-controls="menu-drawer">
-        ☰
-      </button>
-
-      <div
-        id="menu-drawer"
-        class="menu-drawer"
-        aria-hidden="true">
-
+    <div class="global-site-header-wrapper">
+      <div class="global-site-header-container">
+        <div class="global-site-header-logo"></div>
         <button
-          class="close-button"
-          aria-label="Close navigation">
-
-          <span class="text">Close</span>
-          <span class="icon">×</span>
-
-        </button>
-
-        <ul class="global-site-header-links mobile-nav"></ul>
-
+          class="hamburger-button"
+          aria-label="Toggle navigation"
+          aria-expanded="false"
+          aria-controls="menu-drawer">☰</button>
+        <div id="menu-drawer" class="menu-drawer" aria-hidden="true">
+          <button class="close-button" aria-label="Close navigation">
+            <span class="text">Close</span>
+            <span class="icon">×</span>
+          </button>
+          <ul class="global-site-header-links mobile-nav"></ul>
+        </div>
+        <nav class="global-site-header-navigation" aria-label="Global Site Navigation">
+          <ul class="global-site-header-links desktop-only"></ul>
+        </nav>
       </div>
-
-      <nav
-        class="global-site-header-navigation"
-        aria-label="Global Site Navigation">
-
-        <ul
-          class="global-site-header-links desktop-only">
-        </ul>
-
-      </nav>
-
     </div>
-  </div>
-
-  ${pageTitleText
-            ? `
-      <div class="page-title">
-        <h1>${pageTitleText}</h1>
-      </div>
-    `
-            : ''
-        }
-`;
-
-    const logoContainer =
-        wrapper.querySelector('.global-site-header-logo');
+    ${pageTitleText ? `<div class="page-title"><h1>${pageTitleText}</h1></div>` : ''}
+  `;
 
     const logoLink = document.createElement('a');
-
     logoLink.href = '/';
+    if (logoImg) logoLink.append(logoImg);
+    wrapper.querySelector('.global-site-header-logo').append(logoLink);
 
-    if (logoImg) {
-        logoLink.append(logoImg);
-    }
-
-    logoContainer.append(logoLink);
-
-    const desktopNav =
-        wrapper.querySelector('.desktop-only');
-
-    const mobileNav =
-        wrapper.querySelector('.mobile-nav');
-
+    const desktopNav = wrapper.querySelector('.desktop-only');
+    const mobileNav = wrapper.querySelector('.mobile-nav');
     links.forEach((link) => {
-        desktopNav.append(
-            createNavLink(link.cloneNode(true)),
-        );
-
-        mobileNav.append(
-            createNavLink(link.cloneNode(true)),
-        );
+        desktopNav.append(createNavLink(link.cloneNode(true)));
+        mobileNav.append(createNavLink(link.cloneNode(true)));
     });
 
     return wrapper;
 }
 
 function setupMobileMenu(header) {
-    const hamburger =
-        header.querySelector('.hamburger-button');
+    const hamburger = header.querySelector('.hamburger-button');
+    const drawer = header.querySelector('.menu-drawer');
+    const closeButton = header.querySelector('.close-button');
 
-    const drawer =
-        header.querySelector('.menu-drawer');
-
-    const closeButton =
-        header.querySelector('.close-button');
-
-    const openMenu = () => {
-        drawer.classList.add('is-open');
-
-        drawer.setAttribute(
-            'aria-hidden',
-            'false',
-        );
-
-        hamburger.setAttribute(
-            'aria-expanded',
-            'true',
-        );
+    const setOpen = (open) => {
+        drawer.classList.toggle('is-open', open);
+        drawer.setAttribute('aria-hidden', String(!open));
+        hamburger.setAttribute('aria-expanded', String(open));
     };
 
-    const closeMenu = () => {
-        drawer.classList.remove('is-open');
-
-        drawer.setAttribute(
-            'aria-hidden',
-            'true',
-        );
-
-        hamburger.setAttribute(
-            'aria-expanded',
-            'false',
-        );
-    };
-
-    hamburger.addEventListener(
-        'click',
-        openMenu,
-    );
-
-    closeButton.addEventListener(
-        'click',
-        closeMenu,
-    );
-
-    document.addEventListener(
-        'keydown',
-        (e) => {
-            if (e.key === 'Escape') {
-                closeMenu();
-            }
-        },
-    );
+    hamburger.addEventListener('click', () => setOpen(true));
+    closeButton.addEventListener('click', () => setOpen(false));
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') setOpen(false);
+    });
 }
 
-async function decorateHeaderToyotaMobility(block) {
-    const navMeta = getMetadata('nav');
+const FRAGMENT_PATHS = {
+    header: '/nav',
+    'header-usa': '/nav/header-usa',
+    'header-toyotamobility': '/nav/header-toyotamobility',
+};
 
-    const navPath = navMeta
-        ? new URL(navMeta, window.location).pathname
-        : '/nav/header-toyotamobility';
-
-    const fragment = await loadFragment(navPath);
-
-    if (!fragment) return;
-
-    const logoImg = fragment.querySelector('picture img');
-    const navLinks = [...fragment.querySelectorAll('a')]
-        .filter((link) => !link.querySelector('img'));
-
-    const authoredH1 = document.querySelector('main h1');
-    const pageTitleText = authoredH1 ? authoredH1.textContent.trim() : '';
-
-    const header = buildHeader(
-        logoImg?.cloneNode(true),
-        navLinks,
-        pageTitleText,
-        'header-toyotamobility',
-    );
-
-    if (authoredH1) {
-        authoredH1.remove();
-    }
-
-    setupMobileMenu(header);
-
-    block.textContent = '';
-    block.append(header);
-}
+// variants that let the `nav` page metadata override the fragment path
+const NAV_META_VARIANTS = ['header', 'header-toyotamobility'];
 
 async function decorateHeaderDefault(block, variantName = 'header') {
     const navMeta = getMetadata('nav');
-
-    const fragmentPathByVariant = {
-        header: '/nav',
-        'header-usa': '/nav/header-usa',
-        'header-toyotamobility': '/nav/header-toyotamobility',
-    };
-
-    const defaultPath = fragmentPathByVariant[variantName] || '/nav';
-    const navPath = navMeta && variantName === 'header'
+    const navPath = navMeta && NAV_META_VARIANTS.includes(variantName)
         ? new URL(navMeta, window.location).pathname
-        : defaultPath;
+        : FRAGMENT_PATHS[variantName] || '/nav';
 
     const fragment = await loadFragment(navPath);
-
     if (!fragment) return;
 
     const logoImg = fragment.querySelector('picture img');
@@ -267,9 +122,7 @@ async function decorateHeaderDefault(block, variantName = 'header') {
         variantName === 'header' ? '' : variantName,
     );
 
-    if (authoredH1) {
-        authoredH1.remove();
-    }
+    if (authoredH1) authoredH1.remove();
 
     setupMobileMenu(header);
 
@@ -277,19 +130,13 @@ async function decorateHeaderDefault(block, variantName = 'header') {
     block.append(header);
 }
 
+/* -------------------------------------------------------------------------- */
+/* Header privacy variant                                                     */
+/* -------------------------------------------------------------------------- */
 
-/* --------------------------------------------------------------------------
- * Header privacy variant
- * -------------------------------------------------------------------------- */
-
-// media query used to switch between the desktop mega-menu and the mobile drawer
 const isDesktop = window.matchMedia('(min-width: 900px)');
 
-/**
- * Returns the direct child list of an <li>, if it has one (its fly-out content).
- * @param {Element} li
- * @returns {Element|null}
- */
+/** the fly-out content of an <li>, i.e. its direct child list */
 function getFlyoutList(li) {
     return li.querySelector(':scope > ul');
 }
@@ -299,10 +146,7 @@ function childItems(list) {
     return [...list.children].filter((el) => el.tagName === 'LI');
 }
 
-/**
- * The label anchor of an <li> (the link the author put on the label itself),
- * ignoring any anchors that belong to the nested sub-list.
- */
+/** the label anchor of an <li>, ignoring anchors belonging to its sub-list */
 function itemLink(li) {
     const sublist = getFlyoutList(li);
     const anchor = li.querySelector('a');
@@ -312,8 +156,8 @@ function itemLink(li) {
 
 /**
  * The text label of an <li>, ignoring its nested list. Document authoring often
- * wraps the label in a <p> (e.g. `<li><p>Vehicles</p><ul>…</ul></li>`), so read
- * the item's text with any nested list removed rather than direct text nodes.
+ * wraps the label in a <p>, so read the text with any nested list removed
+ * rather than relying on direct text nodes.
  */
 function itemLabel(li) {
     const link = itemLink(li);
@@ -323,30 +167,24 @@ function itemLabel(li) {
     return clone.textContent.replace(/\s+/g, ' ').trim();
 }
 
-/** builds a single anchor, preserving the authored href */
+/** builds a single anchor, preserving the authored href and legacy class names */
 function buildLink(className, label, href) {
-    const a = document.createElement('a');
     const classNames = [className]
         .filter(Boolean)
         .flatMap((name) => name.split(/\s+/))
         .filter(Boolean);
 
     const legacyClass = className?.replace('header-privacy', 'header-v1');
-    if (legacyClass && legacyClass !== className) {
-        classNames.push(legacyClass);
-    }
+    if (legacyClass && legacyClass !== className) classNames.push(legacyClass);
 
+    const a = document.createElement('a');
     a.className = [...new Set(classNames)].join(' ');
     a.href = href || '#';
     a.textContent = label;
     return a;
 }
 
-/**
- * Closes every open fly-out in the header and resets the trigger state.
- * @param {Element} nav
- * @param {Element} [except] optional item to leave open
- */
+/** closes every open fly-out, optionally leaving one item open */
 function closeFlyouts(nav, except) {
     nav.querySelectorAll('.header-privacy-item.open').forEach((item) => {
         if (item === except) return;
@@ -355,15 +193,9 @@ function closeFlyouts(nav, except) {
     });
 }
 
-/**
- * Builds a single primary navigation item. Items that carry a nested list are
- * rendered as a fly-out trigger + mega-menu panel; plain items stay as links.
- * @param {Element} li the source <li> from the nav fragment
- * @returns {Element}
- */
+// authors mark a promo column by adding [promo] to its label
 function getColumnType(label) {
-    if (/\[promo\]/i.test(label)) return 'promo';
-    return 'default';
+    return /\[promo\]/i.test(label) ? 'promo' : 'default';
 }
 
 function cleanLabel(label) {
@@ -380,12 +212,11 @@ function buildColumn(colLi) {
     col.className = `header-privacy-col header-v1-col ${colType === 'promo' ? 'header-privacy-col-promo header-v1-col-promo' : ''}`;
 
     if (!links) {
-        // second-level item with no children -> a single stand-alone link column
+        // no children -> a single stand-alone link column
         col.append(buildLink('header-privacy-col-link', label, href));
         return col;
     }
 
-    // second-level item WITH children -> a titled column of links
     const heading = document.createElement('h3');
     heading.className = 'header-privacy-col-title header-v1-col-title';
     heading.append(href ? buildLink('', label, href) : document.createTextNode(label));
@@ -407,11 +238,9 @@ function isVehiclesItem(li) {
 }
 
 /**
- * Builds one vehicle card from an authored <li>. The item is expected to hold
- * an image, a model link (the name), a price line ("$… Starting MSRP"), an
- * optional badge line (e.g. "Hybrid EV"), and Build / Shop links.
- * @param {Element} li
- * @returns {Element}
+ * Builds one vehicle card. The authored <li> is expected to hold an image, a
+ * model link (the name), a price line ("$… Starting MSRP"), an optional badge
+ * line (e.g. "Hybrid EV"), and Build / Shop links.
  */
 function buildVehicleCard(li) {
     const card = document.createElement('div');
@@ -420,8 +249,8 @@ function buildVehicleCard(li) {
     const anchors = [...li.querySelectorAll('a')];
     const build = anchors.find((a) => /build/i.test(a.textContent));
     const shop = anchors.find((a) => /shop/i.test(a.textContent));
-    // the model link is the non-CTA anchor that carries the name text; the image
-    // is often wrapped in its own (text-less) anchor pointing at the same page.
+    // the model link is the non-CTA anchor carrying the name text; the image is
+    // often wrapped in its own (text-less) anchor pointing at the same page
     const others = anchors.filter((a) => a !== build && a !== shop);
     const modelLink = others.find((a) => a.textContent.trim()) || others[0];
     const media = li.querySelector('picture') || li.querySelector('img');
@@ -485,7 +314,6 @@ function buildVehicleCard(li) {
     return card;
 }
 
-/** appends a grid of vehicle cards for the given source list items */
 function appendVehicleGrid(slide, items) {
     const grid = document.createElement('div');
     grid.className = 'vehicles-grid';
@@ -495,11 +323,8 @@ function appendVehicleGrid(slide, items) {
 
 /**
  * Builds the "Vehicles" mega-menu: a left rail of category tabs that switch the
- * right-hand pane between slides of vehicle cards. A category may either list
- * vehicles directly or group them under sub-category headings (e.g. Electrified
- * -> Battery / Plug-in Hybrid / Hybrid / Fuel Cell).
- * @param {Element} li source "Vehicles" nav item
- * @returns {Element}
+ * right-hand pane between slides of vehicle cards. A category may list vehicles
+ * directly or group them under sub-category headings.
  */
 function buildVehiclesItem(li) {
     const item = document.createElement('li');
@@ -573,6 +398,10 @@ function buildVehiclesItem(li) {
     return item;
 }
 
+/**
+ * Builds a primary nav item. Items with a nested list render as a fly-out
+ * trigger + mega-menu panel; plain items stay as links.
+ */
 function buildNavItem(li) {
     const item = document.createElement('li');
     item.className = 'header-privacy-item header-v1-item';
@@ -582,7 +411,6 @@ function buildNavItem(li) {
     const flyoutList = getFlyoutList(li);
 
     if (!flyoutList) {
-        // top-level item with no children -> a plain primary link, no mega-menu
         item.append(buildLink('header-privacy-link', label, href));
         return item;
     }
@@ -667,17 +495,13 @@ function accountRowHtml(li) {
 
 /**
  * Builds the right-aligned Account (My Toyota) control: a trigger plus a
- * logged-out panel (title, description, sign-in CTA) and Notifications /
- * My Saves / Settings rows. Hrefs are taken from the authored account item's
- * links where they match, otherwise sensible defaults are used.
- * @param {Element} [accountLi] the source "Account" nav item, if authored
- * @returns {Element}
+ * logged-out panel (title, description, sign-in CTA) and the action rows.
+ * Plain-text bullets carry the title / description, link bullets carry the CTA
+ * (first) and the action rows (rest).
  */
 function buildAccount(accountLi) {
     const triggerLabel = itemLabel(accountLi) || 'Account';
 
-    // split the authored Account children: plain-text bullets carry the title /
-    // description, link bullets carry the CTA (first) and the action rows (rest).
     const list = getFlyoutList(accountLi);
     const children = list ? childItems(list) : [];
     const textItems = children.filter((li) => !itemLink(li));
@@ -721,11 +545,7 @@ function buildAccount(accountLi) {
     return wrap;
 }
 
-/**
- * Wires the desktop mega-menu, the right-aligned account panel, and the
- * mobile drawer behaviour.
- * @param {Element} header
- */
+/** wires the desktop mega-menu, the account panel, and the mobile drawer */
 function setupInteractions(header) {
     const nav = header.querySelector('.header-privacy-nav');
     const overlay = header.querySelector('.header-privacy-overlay');
@@ -753,7 +573,12 @@ function setupInteractions(header) {
         overlay?.classList.remove('active');
     };
 
-    // account panel (right side) — click to toggle
+    const closeMobile = () => {
+        header.classList.remove('mobile-open');
+        hamburger?.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('header-privacy-no-scroll');
+    };
+
     accountTrigger?.addEventListener('click', () => {
         const isOpen = account.classList.contains('open');
         closeAll();
@@ -764,7 +589,6 @@ function setupInteractions(header) {
         }
     });
 
-    // notifications expand/collapse inside the account panel
     const notif = account?.querySelector('.link-notifications-content');
     notif?.addEventListener('click', () => {
         const row = notif.closest('.link-notifications');
@@ -773,21 +597,14 @@ function setupInteractions(header) {
         row.classList.toggle('expanded', !expanded);
     });
 
+    // fly-outs open/close strictly on click (no hover)
     items.forEach((item) => {
-        const trigger = item.querySelector('.header-privacy-trigger');
-
-        // open/close strictly on click (no hover)
-        trigger.addEventListener('click', () => {
-            const isOpen = item.classList.contains('open');
-            if (isOpen) {
-                closeAll();
-            } else {
-                openItem(item);
-            }
+        item.querySelector('.header-privacy-trigger').addEventListener('click', () => {
+            if (item.classList.contains('open')) closeAll();
+            else openItem(item);
         });
     });
 
-    // hamburger toggles the mobile drawer
     hamburger?.addEventListener('click', () => {
         const expanded = hamburger.getAttribute('aria-expanded') === 'true';
         hamburger.setAttribute('aria-expanded', String(!expanded));
@@ -798,38 +615,26 @@ function setupInteractions(header) {
 
     overlay?.addEventListener('click', () => {
         closeAll();
-        header.classList.remove('mobile-open');
-        hamburger?.setAttribute('aria-expanded', 'false');
-        document.body.classList.remove('header-privacy-no-scroll');
+        closeMobile();
     });
 
-    // click outside closes any open desktop fly-out
     document.addEventListener('click', (event) => {
         if (!header.contains(event.target) && isDesktop.matches) closeAll();
     });
 
-    // escape closes everything
     document.addEventListener('keydown', (event) => {
         if (event.key !== 'Escape') return;
         closeAll();
-        header.classList.remove('mobile-open');
-        hamburger?.setAttribute('aria-expanded', 'false');
-        document.body.classList.remove('header-privacy-no-scroll');
+        closeMobile();
     });
 
     // reset drawer/fly-out state when crossing the desktop breakpoint
     isDesktop.addEventListener('change', () => {
         closeAll();
-        header.classList.remove('mobile-open');
-        hamburger?.setAttribute('aria-expanded', 'false');
-        document.body.classList.remove('header-privacy-no-scroll');
+        closeMobile();
     });
 }
 
-/**
- * loads and decorates the header-privacy block
- * @param {Element} block The block element
- */
 async function decorateHeaderPrivacy(block) {
     const navMeta = getMetadata('nav');
     const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav/header-privacy';
@@ -840,7 +645,7 @@ async function decorateHeaderPrivacy(block) {
     const logo = fragment.querySelector('picture');
     // every top-level list item across the fragment becomes a primary nav entry
     const sourceItems = [...fragment.querySelectorAll('ul')]
-        .filter((ul) => !ul.closest('li')) // only top-level lists, not nested ones
+        .filter((ul) => !ul.closest('li'))
         .flatMap((ul) => [...ul.children].filter((li) => li.tagName === 'LI'));
 
     // the "Account" / "My Toyota" item is pulled out and pinned to the right
@@ -865,11 +670,10 @@ async function decorateHeaderPrivacy(block) {
         <ul class="header-privacy-sections header-v1-sections"></ul>
       </nav>
     </div>
-    <div class="header-privacy-overlay header-v1-overlay" hidden></div>
+    <div class="header-privacy-overlay header-v1-overlay"></div>
   `;
 
     if (logo) header.querySelector('.header-privacy-brand').append(logo.cloneNode(true));
-    header.querySelector('.header-privacy-overlay').removeAttribute('hidden');
 
     const sections = header.querySelector('.header-privacy-sections');
     primaryItems.forEach((li) => {
@@ -884,10 +688,15 @@ async function decorateHeaderPrivacy(block) {
     block.append(header);
 }
 
+/* -------------------------------------------------------------------------- */
+/* Header brand variant                                                       */
+/* -------------------------------------------------------------------------- */
 
-/* --------------------------------------------------------------------------
- * Header brand variant
- * -------------------------------------------------------------------------- */
+const CHEVRON_RIGHT = `
+  <span class="right-chevron" aria-hidden="true">
+    <svg viewBox="0 0 8 12"><path d="M1 1l5 5-5 5" /></svg>
+  </span>
+`;
 
 async function decorateHeaderBrand(block) {
     const navMeta = getMetadata('nav');
@@ -914,7 +723,7 @@ async function decorateHeaderBrand(block) {
     overlay.className = 'nav-mobile-overlay';
     overlay.setAttribute('aria-hidden', 'true');
 
-    // --- Row 0: Logo ---
+    // row 0 holds the logo
     const brandRow = rows[0];
     if (brandRow) {
         const brandWrap = document.createElement('a');
@@ -938,11 +747,10 @@ async function decorateHeaderBrand(block) {
         nav.append(brandWrap);
     }
 
-    // --- Desktop Navigation Bar ---
     const sections = document.createElement('ul');
     sections.className = 'nav-sections';
 
-    // --- Mobile Drawer Shell ---
+    // mobile drawer shell: a root panel plus a sub panel slid in on demand
     const drawer = document.createElement('div');
     drawer.className = 'nav-drawer';
 
@@ -965,6 +773,7 @@ async function decorateHeaderBrand(block) {
     backBtn.type = 'button';
     backBtn.className = 'mobile-back-btn';
     backBtn.innerHTML = '&#8249;';
+    backBtn.addEventListener('click', () => drawer.classList.remove('sub-open'));
 
     const subTitle = document.createElement('span');
     subTitle.className = 'mobile-sub-title';
@@ -975,22 +784,12 @@ async function decorateHeaderBrand(block) {
     subList.className = 'mobile-menu-list';
     subPanel.append(subHeader, subList);
 
-    backBtn.addEventListener('click', () => {
-        drawer.classList.remove('sub-open');
-    });
-
     panels.append(rootPanel, subPanel);
     drawer.append(panels);
 
-    function isDecorativeRow(cellText) {
-        return cellText === '';
-    }
-
     function getLabelAndHref(element) {
         const link = element.querySelector(':scope > a, :scope > p > a, :scope > strong > a, :scope > div > a');
-        if (link) {
-            return { label: link.textContent.trim(), href: link.href };
-        }
+        if (link) return { label: link.textContent.trim(), href: link.href };
 
         let text = '';
         element.childNodes.forEach((node) => {
@@ -1004,16 +803,6 @@ async function decorateHeaderBrand(block) {
         return { label: text.trim(), href: '#' };
     }
 
-    function getRightChevronSVG() {
-        return `
-      <span class="right-chevron" aria-hidden="true">
-        <svg viewBox="0 0 8 12">
-          <path d="M1 1l5 5-5 5" />
-        </svg>
-      </span>
-    `;
-    }
-
     function buildMegaGroup(li) {
         const group = document.createElement('div');
         group.className = 'nav-mega-group';
@@ -1024,7 +813,7 @@ async function decorateHeaderBrand(block) {
         const title = document.createElement('a');
         title.className = 'nav-mega-group-title';
         title.href = href;
-        title.innerHTML = `<span>${label}</span>${getRightChevronSVG()}`;
+        title.innerHTML = `<span>${label}</span>${CHEVRON_RIGHT}`;
         group.append(title);
 
         if (nestedList) {
@@ -1032,11 +821,11 @@ async function decorateHeaderBrand(block) {
             list.className = 'nav-mega-group-list';
 
             [...nestedList.children].forEach((item) => {
-                const { label: itemLabel, href: itemHref } = getLabelAndHref(item);
+                const { label: itemText, href: itemHref } = getLabelAndHref(item);
                 const liItem = document.createElement('li');
                 const aItem = document.createElement('a');
                 aItem.href = itemHref;
-                aItem.textContent = itemLabel;
+                aItem.textContent = itemText;
                 liItem.append(aItem);
                 list.append(liItem);
             });
@@ -1061,10 +850,9 @@ async function decorateHeaderBrand(block) {
             const hasSubCategories = topLi.querySelector(':scope > ul');
             const { label } = getLabelAndHref(topLi);
 
+            // an unlabelled item is a column wrapper, not a group of its own
             if (hasSubCategories && !label) {
-                [...hasSubCategories.children].forEach((subLi) => {
-                    col.append(buildMegaGroup(subLi));
-                });
+                [...hasSubCategories.children].forEach((subLi) => col.append(buildMegaGroup(subLi)));
             } else {
                 col.append(buildMegaGroup(topLi));
             }
@@ -1076,35 +864,28 @@ async function decorateHeaderBrand(block) {
         return mega;
     }
 
+    let hamburger;
+
     function clearAllActiveStates() {
         nav.querySelectorAll('.nav-dropdown-trigger[aria-expanded="true"]').forEach((btn) => {
             btn.setAttribute('aria-expanded', 'false');
         });
-        nav.querySelectorAll('.nav-link.active').forEach((link) => {
-            link.classList.remove('active');
-        });
+        nav.querySelectorAll('.nav-link.active').forEach((link) => link.classList.remove('active'));
         block.classList.remove('nav-open');
         drawer.classList.remove('sub-open');
         if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
-        if (overlay) {
-            overlay.classList.remove('is-active');
-            overlay.setAttribute('aria-hidden', 'true');
-        }
+        overlay.classList.remove('is-active');
+        overlay.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('nav-menu-open');
     }
 
     function triggerBlink(element) {
         element.classList.remove('blink-effect');
-        void element.offsetWidth;
+        void element.offsetWidth; // force a reflow so the animation restarts
         element.classList.add('blink-effect');
-
-        element.addEventListener(
-            'animationend',
-            () => {
-                element.classList.remove('blink-effect');
-            },
-            { once: true }
-        );
+        element.addEventListener('animationend', () => {
+            element.classList.remove('blink-effect');
+        }, { once: true });
     }
 
     function buildSearch() {
@@ -1128,129 +909,120 @@ async function decorateHeaderBrand(block) {
         return wrapper;
     }
 
-    // Parse items from table
+    // remaining rows are nav entries: first cell is the label, second the sub-menu
     for (let i = 1; i < rows.length; i += 1) {
-        const row = rows[i];
-        const cells = [...row.children];
+        const cells = [...rows[i].children];
         const firstCellText = cells[0]?.textContent.trim() ?? '';
-        if (isDecorativeRow(firstCellText)) continue;
-
         const label = firstCellText.toLowerCase();
-        if (label === 'search' || label === 'log in') continue;
+        // blank rows are decorative; search and log in are rendered as actions
+        if (firstCellText && label !== 'search' && label !== 'log in') {
+            const nestedList = cells[1]?.querySelector('ul');
+            const firstLink = cells[0].querySelector('a');
 
-        const nestedList = cells[1]?.querySelector('ul');
-        const firstLink = cells[0].querySelector('a');
+            const li = document.createElement('li');
+            li.className = 'nav-section';
 
-        // Desktop
-        const li = document.createElement('li');
-        li.className = 'nav-section';
-
-        if (nestedList) {
-            const trigger = document.createElement('button');
-            trigger.type = 'button';
-            trigger.className = 'nav-dropdown-trigger';
-            trigger.setAttribute('aria-expanded', 'false');
-            trigger.innerHTML = `
+            if (nestedList) {
+                const trigger = document.createElement('button');
+                trigger.type = 'button';
+                trigger.className = 'nav-dropdown-trigger';
+                trigger.setAttribute('aria-expanded', 'false');
+                trigger.innerHTML = `
         ${firstCellText}
         <span class="nav-caret" aria-hidden="true">
-          <svg viewBox="0 0 12 8">
-            <path d="M1 1l5 5 5-5" />
-          </svg>
+          <svg viewBox="0 0 12 8"><path d="M1 1l5 5 5-5" /></svg>
         </span>
       `;
 
-            trigger.addEventListener('click', (e) => {
-                e.stopPropagation();
-                triggerBlink(trigger);
+                trigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    triggerBlink(trigger);
 
-                const expanded = trigger.getAttribute('aria-expanded') === 'true';
-                clearAllActiveStates();
+                    const expanded = trigger.getAttribute('aria-expanded') === 'true';
+                    clearAllActiveStates();
 
-                if (!expanded) {
-                    trigger.setAttribute('aria-expanded', 'true');
-                    if (overlay) {
+                    if (!expanded) {
+                        trigger.setAttribute('aria-expanded', 'true');
                         overlay.classList.add('is-active');
                         overlay.setAttribute('aria-hidden', 'false');
                     }
-                }
-            });
-
-            li.append(trigger, buildMegaMenu(nestedList));
-        } else {
-            const a = document.createElement('a');
-            a.className = 'nav-link';
-            a.href = firstLink ? firstLink.href : '#';
-            a.textContent = firstCellText;
-
-            a.addEventListener('click', () => {
-                triggerBlink(a);
-                clearAllActiveStates();
-                a.classList.add('active');
-            });
-
-            li.append(a);
-        }
-        sections.append(li);
-
-        // Mobile
-        const mLi = document.createElement('li');
-        if (nestedList) {
-            const mBtn = document.createElement('button');
-            mBtn.type = 'button';
-            mBtn.innerHTML = `<span>${firstCellText}</span><span class="mobile-chevron">&#8250;</span>`;
-
-            mBtn.addEventListener('click', () => {
-                subTitle.textContent = firstCellText;
-                subList.innerHTML = '';
-
-                [...nestedList.children].forEach((topLi) => {
-                    const { label: subLabel, href: subHref } = getLabelAndHref(topLi);
-                    const sLi = document.createElement('li');
-                    const sA = document.createElement('a');
-                    sA.href = subHref;
-                    sA.textContent = subLabel;
-                    sLi.append(sA);
-                    subList.append(sLi);
                 });
 
-                drawer.classList.add('sub-open');
-            });
+                li.append(trigger, buildMegaMenu(nestedList));
+            } else {
+                const a = document.createElement('a');
+                a.className = 'nav-link';
+                a.href = firstLink ? firstLink.href : '#';
+                a.textContent = firstCellText;
 
-            mLi.append(mBtn);
-        } else {
-            const mA = document.createElement('a');
-            mA.href = firstLink ? firstLink.href : '#';
-            mA.textContent = firstCellText;
-            mLi.append(mA);
+                a.addEventListener('click', () => {
+                    triggerBlink(a);
+                    clearAllActiveStates();
+                    a.classList.add('active');
+                });
+
+                li.append(a);
+            }
+            sections.append(li);
+
+            // mirror the entry into the mobile drawer
+            const mLi = document.createElement('li');
+            if (nestedList) {
+                const mBtn = document.createElement('button');
+                mBtn.type = 'button';
+                mBtn.innerHTML = `<span>${firstCellText}</span><span class="mobile-chevron">&#8250;</span>`;
+
+                mBtn.addEventListener('click', () => {
+                    subTitle.textContent = firstCellText;
+                    subList.innerHTML = '';
+
+                    [...nestedList.children].forEach((topLi) => {
+                        const { label: subLabel, href: subHref } = getLabelAndHref(topLi);
+                        const sLi = document.createElement('li');
+                        const sA = document.createElement('a');
+                        sA.href = subHref;
+                        sA.textContent = subLabel;
+                        sLi.append(sA);
+                        subList.append(sLi);
+                    });
+
+                    drawer.classList.add('sub-open');
+                });
+
+                mLi.append(mBtn);
+            } else {
+                const mA = document.createElement('a');
+                mA.href = firstLink ? firstLink.href : '#';
+                mA.textContent = firstCellText;
+                mLi.append(mA);
+            }
+            rootList.append(mLi);
         }
-        rootList.append(mLi);
     }
 
-    // Log In mobile link
     const loginRow = rows.find((r) => r.children[0]?.textContent.trim().toLowerCase() === 'log in');
-    const loginLink = loginRow?.querySelector('a');
+    const loginHref = loginRow?.querySelector('a')?.href || '#';
 
     const mLoginLi = document.createElement('li');
     const mLoginA = document.createElement('a');
-    mLoginA.href = loginLink ? loginLink.href : '#';
+    mLoginA.href = loginHref;
     mLoginA.textContent = 'Log In';
     mLoginLi.append(mLoginA);
     rootList.append(mLoginLi);
 
     nav.append(sections);
 
-    // Right Side Actions
     const actions = document.createElement('div');
     actions.className = 'nav-actions';
     actions.append(buildSearch());
 
     const loginBtn = document.createElement('a');
     loginBtn.className = 'nav-login';
-    loginBtn.href = loginLink ? loginLink.href : '#';
+    loginBtn.href = loginHref;
     loginBtn.textContent = 'Log In';
     actions.append(loginBtn);
 
-    const hamburger = document.createElement('button');
+    hamburger = document.createElement('button');
     hamburger.type = 'button';
     hamburger.className = 'nav-hamburger';
     hamburger.setAttribute('aria-label', 'Toggle Navigation');
@@ -1264,15 +1036,14 @@ async function decorateHeaderBrand(block) {
     <div class="icon-close">&#10005;</div>
   `;
 
+    // the drawer hangs off the bottom of the header, which can move on scroll
     const updateMobileDrawerPosition = () => {
         const headerWrapper = block.closest('header') || block.closest('.header-brand-wrapper') || block;
-        const rect = headerWrapper.getBoundingClientRect();
-        const topOffset = Math.max(rect.bottom, 0);
-
-        drawer.style.setProperty('--mobile-nav-top', `${topOffset}px`);
+        const { bottom } = headerWrapper.getBoundingClientRect();
+        drawer.style.setProperty('--mobile-nav-top', `${Math.max(bottom, 0)}px`);
     };
 
-    const toggleMobileMenu = () => {
+    hamburger.addEventListener('click', () => {
         const isExpanded = hamburger.getAttribute('aria-expanded') === 'true';
 
         updateMobileDrawerPosition();
@@ -1280,53 +1051,73 @@ async function decorateHeaderBrand(block) {
 
         const willBeOpen = !isExpanded;
         hamburger.setAttribute('aria-expanded', String(willBeOpen));
-
         block.classList.toggle('nav-open', willBeOpen);
         document.body.classList.toggle('nav-menu-open', willBeOpen);
-
-        if (overlay) {
-            overlay.classList.toggle('is-active', willBeOpen);
-            overlay.setAttribute('aria-hidden', String(!willBeOpen));
-        }
-    };
-
-    hamburger.addEventListener('click', toggleMobileMenu);
-
-    overlay.addEventListener('click', () => {
-        clearAllActiveStates();
+        overlay.classList.toggle('is-active', willBeOpen);
+        overlay.setAttribute('aria-hidden', String(!willBeOpen));
     });
 
+    overlay.addEventListener('click', clearAllActiveStates);
+
     window.addEventListener('resize', () => {
-        if (block.classList.contains('nav-open')) {
-            updateMobileDrawerPosition();
-        }
+        if (block.classList.contains('nav-open')) updateMobileDrawerPosition();
     });
 
     actions.append(hamburger);
-    nav.append(actions);
-    nav.append(drawer);
-    nav.append(overlay);
+    nav.append(actions, drawer, overlay);
 
     document.addEventListener('click', (e) => {
-        if (!block.contains(e.target)) {
-            clearAllActiveStates();
-        }
+        if (!block.contains(e.target)) clearAllActiveStates();
     });
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            clearAllActiveStates();
-        }
+        if (e.key === 'Escape') clearAllActiveStates();
     });
 
     block.textContent = '';
     block.append(nav);
 }
 
+/* -------------------------------------------------------------------------- */
+/* Header firm variant                                                        */
+/* -------------------------------------------------------------------------- */
 
-/* --------------------------------------------------------------------------
- * Header v3 variant
- * -------------------------------------------------------------------------- */
+async function decorateHeaderFirm(block) {
+    const fragment = await loadFragment('/nav/header-firm');
+    if (!fragment) return;
+
+    const content = fragment.querySelector(':scope > .section > div')
+        || fragment.querySelector(':scope > div')
+        || fragment;
+    const rows = [...content.children].filter((child) => child.tagName !== 'SCRIPT');
+
+    if (rows.length < 2) return;
+
+    const [logoRow, titleRow] = rows;
+    const logoLink = logoRow.querySelector('a');
+    const titleLink = titleRow.querySelector('a');
+    const picture = logoRow.querySelector('picture') || logoRow.querySelector('img');
+
+    const link = document.createElement('a');
+    link.href = logoLink?.href || titleLink?.href || '#';
+    link.className = 'header-firm-link';
+
+    if (picture) link.append(picture.cloneNode(true));
+
+    const titleEl = document.createElement('span');
+    titleEl.className = 'header-firm-title';
+    titleEl.textContent = titleLink
+        ? titleLink.textContent.trim()
+        : titleRow.textContent.trim();
+
+    link.append(titleEl);
+
+    block.replaceChildren(link);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Header preferences variant                                                 */
+/* -------------------------------------------------------------------------- */
 
 const DEFAULT_HREFS = {
     'toyota-logo': 'https://www.toyota.com',
@@ -1340,87 +1131,8 @@ function detectBrandClass(src = '', alt = '', fallbackIndex = 0) {
     return fallbackIndex === 0 ? 'toyota-logo' : 'lexus-logo';
 }
 
-/* --------------------------------------------------------------------------
- * Header firm variant
- * -------------------------------------------------------------------------- */
-
-// function decorateHeaderFirm(block) {
-//     const rows = [...block.children];
-
-//     if (rows.length < 2) return;
-
-//     const logoRow = rows[0];
-//     const titleRow = rows[1];
-
-//     const logoLink = logoRow.querySelector('a');
-//     const titleLink = titleRow.querySelector('a');
-
-//     const picture = logoRow.querySelector('picture');
-
-//     // Use authored URL
-//     const href = logoLink?.href || titleLink?.href || '#';
-
-//     const link = document.createElement('a');
-//     link.href = href;
-//     link.className = 'header-firm-link';
-
-//     if (picture) {
-//         link.append(picture);
-//     }
-
-//     const titleEl = document.createElement('span');
-//     titleEl.className = 'header-firm-title';
-//     titleEl.textContent = titleLink
-//         ? titleLink.textContent.trim()
-//         : titleRow.textContent.trim();
-
-//     link.append(titleEl);
-
-//     block.replaceChildren(link);
-// }
-async function decorateHeaderFirm(block) {
-    const fragment = await loadFragment('/nav/header-firm');
-
-    if (!fragment) return;
-
-    const content = fragment.querySelector(':scope > .section > div')
-        || fragment.querySelector(':scope > div')
-        || fragment;
-    const rows = [...content.children].filter((child) => child.tagName !== 'SCRIPT');
-
-    if (rows.length < 2) return;
-
-    const logoRow = rows[0];
-    const titleRow = rows[1];
-
-    const logoLink = logoRow.querySelector('a');
-    const titleLink = titleRow.querySelector('a');
-    const picture = logoRow.querySelector('picture') || logoRow.querySelector('img');
-
-    const href = logoLink?.href || titleLink?.href || '#';
-
-    const link = document.createElement('a');
-    link.href = href;
-    link.className = 'header-firm-link';
-
-    if (picture) {
-        link.append(picture.cloneNode(true));
-    }
-
-    const titleEl = document.createElement('span');
-    titleEl.className = 'header-firm-title';
-    titleEl.textContent = titleLink
-        ? titleLink.textContent.trim()
-        : titleRow.textContent.trim();
-
-    link.append(titleEl);
-
-    block.replaceChildren(link);
-}
-
 async function decorateHeaderPreferences(block) {
     const fragment = await loadFragment('/nav/header-preferences');
-
     if (!fragment) return;
 
     const content = fragment.querySelector(':scope > .section > div')
@@ -1430,32 +1142,27 @@ async function decorateHeaderPreferences(block) {
 
     if (!rows.length) return;
 
+    // rows carrying images are logos, text-only rows override the title
     const imageEls = [];
     let titleText = 'My Toyota & Lexus Communications Profile';
 
     rows.forEach((row) => {
-        const rowImages = [...row.querySelectorAll('picture, img')].filter((el) => {
-            if (el.tagName === 'IMG') return !el.closest('picture');
-            return true;
-        });
+        const rowImages = [...row.querySelectorAll('picture, img')]
+            .filter((el) => el.tagName !== 'IMG' || !el.closest('picture'));
 
-        if (rowImages.length === 0) {
+        if (!rowImages.length) {
             const text = [...row.querySelectorAll('p, span, div, h1, h2, h3, h4, h5, h6')]
                 .map((el) => el.textContent.trim())
                 .filter(Boolean)
                 .join(' ')
                 .trim();
 
-            if (text) {
-                titleText = text;
-            }
+            if (text) titleText = text;
             return;
         }
 
         rowImages.forEach((el) => imageEls.push(el));
     });
-
-    if (!imageEls.length && !titleText) return;
 
     block.textContent = '';
 
@@ -1473,21 +1180,20 @@ async function decorateHeaderPreferences(block) {
     imageEls.forEach((el, index) => {
         const picture = el.tagName === 'PICTURE' ? el : null;
         const img = picture ? picture.querySelector('img') : el;
-
         if (!img) return;
 
-        const src = img.getAttribute('src') || '';
-        const alt = img.getAttribute('alt') || '';
-        const brandClass = detectBrandClass(src, alt, index);
-        const existingLink = el.closest('a');
-        const href = existingLink?.getAttribute('href') || DEFAULT_HREFS[brandClass] || '#';
+        const brandClass = detectBrandClass(
+            img.getAttribute('src') || '',
+            img.getAttribute('alt') || '',
+            index,
+        );
 
         const link = document.createElement('a');
-        link.href = href;
+        link.href = el.closest('a')?.getAttribute('href') || DEFAULT_HREFS[brandClass] || '#';
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         link.className = brandClass;
-        link.append(picture ? picture.cloneNode(true) : img.cloneNode(true));
+        link.append((picture || img).cloneNode(true));
 
         logoWrap.append(link);
     });
@@ -1508,38 +1214,20 @@ async function decorateHeaderPreferences(block) {
     block.append(headerWrap);
 }
 
+const DECORATORS = {
+    'header-privacy': decorateHeaderPrivacy,
+    'header-brand': decorateHeaderBrand,
+    'header-firm': decorateHeaderFirm,
+    'header-preferences': decorateHeaderPreferences,
+    'header-usa': (block) => decorateHeaderDefault(block, 'header-usa'),
+    'header-toyotamobility': (block) => decorateHeaderDefault(block, 'header-toyotamobility'),
+};
+
+/**
+ * loads and decorates the block
+ * @param {Element} block The block element
+ */
 export default async function decorate(block) {
-    const variant = getHeaderVariant(block);
-
-    if (variant === 'header-privacy') {
-        await decorateHeaderPrivacy(block);
-        return;
-    }
-
-    if (variant === 'header-usa') {
-        await decorateHeaderDefault(block, 'header-usa');
-        return;
-    }
-
-    if (variant === 'header-brand') {
-        await decorateHeaderBrand(block);
-        return;
-    }
-
-    if (variant === 'header-preferences') {
-        await decorateHeaderPreferences(block);
-        return;
-    }
-
-    if (variant === 'header-firm') {
-        decorateHeaderFirm(block);
-        return;
-    }
-
-    if (variant === 'header-toyotamobility') {
-        await decorateHeaderToyotaMobility(block);
-        return;
-    }
-
-    await decorateHeaderDefault(block);
+    const decorator = DECORATORS[getHeaderVariant(block)] || decorateHeaderDefault;
+    await decorator(block);
 }
