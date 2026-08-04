@@ -203,12 +203,18 @@ async function decorateHeaderDefault(block, content, variantName = 'header') {
     if (!content) return;
 
     const logoImg = content.querySelector('picture img');
+
+    // the title bar is authorable in the header-usa / header-toyotamobility
+    // content: any heading authored there wins, otherwise fall back to the
+    // page's own <h1>
+    const authoredH1 = PAGE_TITLE_VARIANTS.includes(variantName)
+        ? content.querySelector('h1, h2, h3, h4, h5, h6') || document.querySelector('main h1')
+        : null;
+    if (authoredH1) authoredH1.remove();
+
     const navLinks = [...content.querySelectorAll('a')]
         .filter((link) => !link.querySelector('img'));
 
-    const authoredH1 = PAGE_TITLE_VARIANTS.includes(variantName)
-        ? document.querySelector('main h1')
-        : null;
     const pageTitleText = authoredH1 ? authoredH1.textContent.trim() : '';
 
     const header = buildHeader(
@@ -217,8 +223,6 @@ async function decorateHeaderDefault(block, content, variantName = 'header') {
         pageTitleText,
         variantName === 'header' ? '' : variantName,
     );
-
-    if (authoredH1) authoredH1.remove();
 
     setupMobileMenu(header);
 
