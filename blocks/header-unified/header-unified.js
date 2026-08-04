@@ -1404,12 +1404,15 @@ function decorateHeaderV3(block) {
 //     block.replaceChildren(link);
 // }
 async function decorateHeaderFirm(block) {
-    const fragment = await Promise.resolve(loadFragment('/nav/header-firm'));
+    const fragment = await loadFragment('/nav/header-firm');
 
     if (!fragment) return;
 
-    const rows = [...fragment.children];
-    console.log(rows);
+    const content = fragment.querySelector(':scope > .section > div')
+        || fragment.querySelector(':scope > div')
+        || fragment;
+    const rows = [...content.children].filter((child) => child.tagName !== 'SCRIPT');
+
     if (rows.length < 2) return;
 
     const logoRow = rows[0];
@@ -1417,8 +1420,7 @@ async function decorateHeaderFirm(block) {
 
     const logoLink = logoRow.querySelector('a');
     const titleLink = titleRow.querySelector('a');
-
-    const picture = logoRow.querySelector('picture');
+    const picture = logoRow.querySelector('picture') || logoRow.querySelector('img');
 
     const href = logoLink?.href || titleLink?.href || '#';
 
