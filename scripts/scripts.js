@@ -1,5 +1,4 @@
 import {
-  loadHeader,
   loadFooter,
   decorateIcons,
   decorateSections,
@@ -10,6 +9,8 @@ import {
   loadSections,
   loadCSS,
   buildBlock,
+  decorateBlock,
+  loadBlock,
 } from './aem.js';
 
 /**
@@ -152,6 +153,22 @@ async function loadEager(doc) {
   } catch (e) {
     // do nothing
   }
+}
+
+/**
+ * Loads the site header. The `header-unified` block reads the nav document to
+ * work out which variant to render, so no variant is named here: authoring a
+ * `header-unified (header-preferences)` block in `/nav` switches the header for
+ * every page.
+ * @param {Element} header The header element
+ * @returns {Promise}
+ */
+async function loadHeader(header) {
+  if (!header) return;
+  const block = buildBlock('header-unified', '');
+  header.append(block);
+  decorateBlock(block);
+  await loadBlock(block);
 }
 
 /**

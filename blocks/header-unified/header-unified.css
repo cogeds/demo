@@ -21,6 +21,25 @@ header .header.block {
   padding: 0;
 }
 
+/* The block renders the site header, so the fixed `--nav-height` in styles.css
+ * has to become a floor rather than a cap: it still reserves space against
+ * layout shift, but the taller variants are no longer clipped. Hide until
+ * decorated, matching the boilerplate rule for `header .header`. */
+header.header-unified-wrapper {
+  height: auto;
+  min-height: var(--nav-height);
+}
+
+header .header-unified.block {
+  margin: 0;
+  padding: 0;
+  visibility: hidden;
+}
+
+header .header-unified.block[data-block-status=loaded] {
+  visibility: visible;
+}
+
 .toyota-mobility-header {
   width: 100%;
   background: #ffffff;

@@ -1,5 +1,9 @@
-import { getMetadata } from '../../scripts/aem.js';
-import { loadFragment } from '../fragment/fragment.js';
+import {
+    decorateBlocks,
+    decorateIcons,
+    decorateSections,
+    getMetadata,
+} from '../../scripts/aem.js';
 
 // variant order matters: the first match wins
 const VARIANTS = [
@@ -11,10 +15,112 @@ const VARIANTS = [
     'header-toyotamobility',
 ];
 
-/** resolves the requested variant from the block class or its section container */
-function getHeaderVariant(block) {
-    return VARIANTS.find((variant) => block.classList.contains(variant)
-        || block.closest(`.${variant}-container`)) || 'header';
+// where a variant reads its content from when it is not authored inline
+const CONTENT_PATHS = {
+    'header-privacy': '/nav/header-privacy',
+    'header-usa': '/nav/header-usa',
+    'header-brand': '/nav/header-brand',
+    'header-preferences': '/nav/header-preferences',
+    'header-firm': '/nav/header-firm',
+    'header-toyotamobility': '/nav/header-toyotamobility',
+};
+
+/** the nav document for this page; `nav` metadata overrides the default */
+function navDocPath() {
+    const navMeta = getMetadata('nav');
+    return navMeta ? new URL(navMeta, window.location).pathname : '/nav';
+}
+
+/** the variant named by an element's classes, with or without the `header-` prefix */
+function variantFromClasses(el) {
+    return VARIANTS.find((variant) => el.classList.contains(variant)
+        || el.classList.contains(variant.slice('header-'.length))) || null;
+}
+
+/** the variant requested on the page, by block class or section container class */
+function pageVariant(block) {
+    return variantFromClasses(block)
+        || VARIANTS.find((variant) => block.closest(`.${variant}-container`))
+        || null;
+}
+
+async function fetchNavDoc(path) {
+    const resp = await fetch(`${path}.plain.html`);
+    if (!resp.ok) return null;
+
+    const doc = document.createElement('main');
+    doc.innerHTML = await resp.text();
+
+    // re-base authored media against the nav document
+    doc.querySelectorAll('img[src^="./media_"], source[srcset^="./media_"]').forEach((el) => {
+        const attr = el.tagName === 'SOURCE' ? 'srcset' : 'src';
+        el[attr] = new URL(el.getAttribute(attr), new URL(path, window.location)).href;
+    });
+
+    decorateIcons(doc);
+    decorateSections(doc);
+    decorateBlocks(doc);
+    return doc;
+}
+
+const navDocs = new Map();
+
+/**
+ * Loads a nav document, memoised per path. This deliberately does not use
+ * `loadFragment`, which would also *load* the blocks it finds: a `header-unified`
+ * block in a nav document only declares a variant, and loading it would render a
+ * second header and clear the content we still need to read.
+ */
+function loadNavDoc(path) {
+    if (!navDocs.has(path)) navDocs.set(path, fetchNavDoc(path));
+    return navDocs.get(path);
+}
+
+/** true when an element carries authored rows rather than only naming a variant */
+function hasContent(el) {
+    return [...el.children]
+        .some((row) => row.textContent.trim() || row.querySelector('picture, img'));
+}
+
+/** the authored rows of a content root, whether that is a nav document or a block */
+function contentRows(root) {
+    const container = root.classList.contains('header-unified')
+        ? root
+        : root.querySelector(':scope > .section > div') || root.querySelector(':scope > div') || root;
+    return [...container.children].filter((child) => child.tagName !== 'SCRIPT');
+}
+
+/**
+ * Resolves which variant to render and where its content comes from.
+ *
+ * A variant named on the page (block class or section container class) wins.
+ * Otherwise the nav document decides: authoring a `header-unified` block there,
+ * e.g. `header-unified (header-preferences)`, selects that variant for every
+ * page. Either way the content is read from the block when authored inline, and
+ * from the variant's own nav document (`/nav/header-preferences`) when not.
+ *
+ * @param {Element} block The block element
+ * @returns {Promise<{variant: string, content: Element|null}>}
+ */
+async function resolveHeader(block) {
+    const onPage = pageVariant(block);
+    if (onPage) {
+        return {
+            variant: onPage,
+            content: hasContent(block) ? block : await loadNavDoc(CONTENT_PATHS[onPage]),
+        };
+    }
+
+    const navDoc = await loadNavDoc(navDocPath());
+    const declaration = navDoc?.querySelector('.header-unified');
+    if (!declaration) return { variant: 'header', content: navDoc };
+
+    const variant = variantFromClasses(declaration) || 'header';
+    if (hasContent(declaration)) return { variant, content: declaration };
+    return {
+        variant,
+        content: CONTENT_PATHS[variant] ? await loadNavDoc(CONTENT_PATHS[variant]) : navDoc,
+    };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -90,29 +196,19 @@ function setupMobileMenu(header) {
     });
 }
 
-const FRAGMENT_PATHS = {
-    header: '/nav',
-    'header-usa': '/nav/header-usa',
-    'header-toyotamobility': '/nav/header-toyotamobility',
-};
+// variants that pull the page's own <h1> up into the header as a title bar
+const PAGE_TITLE_VARIANTS = ['header-usa', 'header-toyotamobility'];
 
-// variants that let the `nav` page metadata override the fragment path
-const NAV_META_VARIANTS = ['header', 'header-toyotamobility'];
+async function decorateHeaderDefault(block, content, variantName = 'header') {
+    if (!content) return;
 
-async function decorateHeaderDefault(block, variantName = 'header') {
-    const navMeta = getMetadata('nav');
-    const navPath = navMeta && NAV_META_VARIANTS.includes(variantName)
-        ? new URL(navMeta, window.location).pathname
-        : FRAGMENT_PATHS[variantName] || '/nav';
-
-    const fragment = await loadFragment(navPath);
-    if (!fragment) return;
-
-    const logoImg = fragment.querySelector('picture img');
-    const navLinks = [...fragment.querySelectorAll('a')]
+    const logoImg = content.querySelector('picture img');
+    const navLinks = [...content.querySelectorAll('a')]
         .filter((link) => !link.querySelector('img'));
 
-    const authoredH1 = document.querySelector('main h1');
+    const authoredH1 = PAGE_TITLE_VARIANTS.includes(variantName)
+        ? document.querySelector('main h1')
+        : null;
     const pageTitleText = authoredH1 ? authoredH1.textContent.trim() : '';
 
     const header = buildHeader(
@@ -635,16 +731,12 @@ function setupInteractions(header) {
     });
 }
 
-async function decorateHeaderPrivacy(block) {
-    const navMeta = getMetadata('nav');
-    const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav/header-privacy';
+async function decorateHeaderPrivacy(block, content) {
+    if (!content) return;
 
-    const fragment = await loadFragment(navPath);
-    if (!fragment) return;
-
-    const logo = fragment.querySelector('picture');
-    // every top-level list item across the fragment becomes a primary nav entry
-    const sourceItems = [...fragment.querySelectorAll('ul')]
+    const logo = content.querySelector('picture');
+    // every top-level list item across the content becomes a primary nav entry
+    const sourceItems = [...content.querySelectorAll('ul')]
         .filter((ul) => !ul.closest('li'))
         .flatMap((ul) => [...ul.children].filter((li) => li.tagName === 'LI'));
 
@@ -698,21 +790,10 @@ const CHEVRON_RIGHT = `
   </span>
 `;
 
-async function decorateHeaderBrand(block) {
-    const navMeta = getMetadata('nav');
-    const navPath = navMeta
-        ? new URL(navMeta, window.location).pathname
-        : '/nav/header-brand';
+async function decorateHeaderBrand(block, content) {
+    if (!content) return;
 
-    const fragment = await loadFragment(navPath);
-
-    const content = fragment?.querySelector(':scope > .section > div')
-        || fragment?.querySelector(':scope > div')
-        || fragment;
-    const rows = content
-        ? [...content.children].filter((child) => child.tagName !== 'SCRIPT')
-        : [...block.children];
-
+    const rows = contentRows(content);
     if (!rows.length) return;
 
     const nav = document.createElement('nav');
@@ -1082,15 +1163,10 @@ async function decorateHeaderBrand(block) {
 /* Header firm variant                                                        */
 /* -------------------------------------------------------------------------- */
 
-async function decorateHeaderFirm(block) {
-    const fragment = await loadFragment('/nav/header-firm');
-    if (!fragment) return;
+async function decorateHeaderFirm(block, content) {
+    if (!content) return;
 
-    const content = fragment.querySelector(':scope > .section > div')
-        || fragment.querySelector(':scope > div')
-        || fragment;
-    const rows = [...content.children].filter((child) => child.tagName !== 'SCRIPT');
-
+    const rows = contentRows(content);
     if (rows.length < 2) return;
 
     const [logoRow, titleRow] = rows;
@@ -1131,15 +1207,10 @@ function detectBrandClass(src = '', alt = '', fallbackIndex = 0) {
     return fallbackIndex === 0 ? 'toyota-logo' : 'lexus-logo';
 }
 
-async function decorateHeaderPreferences(block) {
-    const fragment = await loadFragment('/nav/header-preferences');
-    if (!fragment) return;
+async function decorateHeaderPreferences(block, content) {
+    if (!content) return;
 
-    const content = fragment.querySelector(':scope > .section > div')
-        || fragment.querySelector(':scope > div')
-        || fragment;
-    const rows = [...content.children].filter((child) => child.tagName !== 'SCRIPT');
-
+    const rows = contentRows(content);
     if (!rows.length) return;
 
     // rows carrying images are logos, text-only rows override the title
@@ -1215,12 +1286,13 @@ async function decorateHeaderPreferences(block) {
 }
 
 const DECORATORS = {
+    header: decorateHeaderDefault,
     'header-privacy': decorateHeaderPrivacy,
     'header-brand': decorateHeaderBrand,
     'header-firm': decorateHeaderFirm,
     'header-preferences': decorateHeaderPreferences,
-    'header-usa': (block) => decorateHeaderDefault(block, 'header-usa'),
-    'header-toyotamobility': (block) => decorateHeaderDefault(block, 'header-toyotamobility'),
+    'header-usa': (block, content) => decorateHeaderDefault(block, content, 'header-usa'),
+    'header-toyotamobility': (block, content) => decorateHeaderDefault(block, content, 'header-toyotamobility'),
 };
 
 /**
@@ -1228,6 +1300,11 @@ const DECORATORS = {
  * @param {Element} block The block element
  */
 export default async function decorate(block) {
-    const decorator = DECORATORS[getHeaderVariant(block)] || decorateHeaderDefault;
-    await decorator(block);
+    const { variant, content } = await resolveHeader(block);
+
+    // expose the resolved variant so the variant CSS applies when it came from
+    // the nav document rather than from a class on the block
+    if (variant !== 'header') block.classList.add(variant);
+
+    await (DECORATORS[variant] || decorateHeaderDefault)(block, content);
 }
