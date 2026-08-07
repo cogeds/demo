@@ -1,46 +1,46 @@
-{
-    "project": "Toyota Microsite Blocks Library",
-    "host": "main--demo--cogeds.aem.live",
-    "previewHost": "main--demo--cogeds.aem.page",
-    "liveHost": "main--demo--cogeds.aem.live",
-    "plugins": [
-        {
-            "id": "library",
-            "title": "Toyota Microsite Blocks Library",
-            "environments": [
-                "edit"
-            ],
-            "url": "/tools/sidekick/library.html",
-            "icon": "https://brand.toyota.com/content/dam/brandhub/guidelines/logo/four-column/BHUB_Logo_ColorVariations_SingleColor_03.svg",
-            "isPalette": true,
-            "includePaths": [
-                "**.docx**",
-                "**.html**"
-            ]
-        },
-        {
-            "id": "asset-library",
-            "title": "Assets",
-            "environments": [
-                "edit"
-            ],
-            "url": "https://experience.adobe.com/solutions/CQ-helix-assets-addon/static-assets/resources/asset-selector.html",
-            "isPalette": true,
-            "passConfig": true,
-            "paletteRect": "top:50px;right:10px;width:450px;height:calc(100vh - 60px)"
-        },
-        {
-            "id": "aem-genai-variations",
-            "titleI18n": {
-                "en": "Generate with AI"
-            },
-            "environments": [
-                "preview"
-            ],
-            "includePaths": [
-                "**.docx**"
-            ],
-            "event": "aem-genai-variations-sidekick"
-        }
-    ]
-}
+// {
+//     "project": "Toyota Microsite Blocks Library",
+//     "host": "main--demo--cogeds.aem.live",
+//     "previewHost": "main--demo--cogeds.aem.page",
+//     "liveHost": "main--demo--cogeds.aem.live",
+//     "plugins": [
+//         {
+//             "id": "library",
+//             "title": "Toyota Microsite Blocks Library",
+//             "environments": [
+//                 "edit"
+//             ],
+//             "url": "/tools/sidekick/library.html",
+//             "icon": "https://brand.toyota.com/content/dam/brandhub/guidelines/logo/four-column/BHUB_Logo_ColorVariations_SingleColor_03.svg",
+//             "isPalette": true,
+//             "includePaths": [
+//                 "**.docx**",
+//                 "**.html**"
+//             ]
+//         },
+//         {
+//             "id": "asset-library",
+//             "title": "Assets",
+//             "environments": [
+//                 "edit"
+//             ],
+//             "url": "https://experience.adobe.com/solutions/CQ-helix-assets-addon/static-assets/resources/asset-selector.html",
+//             "isPalette": true,
+//             "passConfig": true,
+//             "paletteRect": "top:50px;right:10px;width:450px;height:calc(100vh - 60px)"
+//         },
+//         {
+//             "id": "aem-genai-variations",
+//             "titleI18n": {
+//                 "en": "Generate with AI"
+//             },
+//             "environments": [
+//                 "preview"
+//             ],
+//             "includePaths": [
+//                 "**.docx**"
+//             ],
+//             "event": "aem-genai-variations-sidekick"
+//         }
+//     ]
+// }
