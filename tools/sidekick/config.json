@@ -28,6 +28,19 @@
             "isPalette": true,
             "passConfig": true,
             "paletteRect": "top:50px;right:10px;width:450px;height:calc(100vh - 60px)"
+        },
+        {
+            "id": "aem-genai-variations",
+            "titleI18n": {
+                "en": "Generate with AI"
+            },
+            "environments": [
+                "preview"
+            ],
+            "includePaths": [
+                "**.docx**"
+            ],
+            "event": "aem-genai-variations-sidekick"
         }
     ]
 }
